@@ -19,6 +19,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
@@ -448,7 +449,19 @@ public class GCal {
 
 	private void removeTask(String id) throws IOException {
 		log.fine("removeTask:" + id);
-		tservice.tasks().delete(taskList, id).execute();
+        try {
+            tservice.tasks().delete(taskList, id).execute();
+        } catch (IOException e) {
+            if (e instanceof GoogleJsonResponseException ge) {
+                if (ge.getDetails() != null && ge.getDetails().getCode() == 404) {
+                    // could not find task to delete in google - may have removed due date and then deleted later
+                    logBoth("Task not found in google - ignoring:\n" + e.getMessage());
+                } else
+                    throw e;
+
+            } else
+                throw e;
+        }
 	}
 
 	private void addTask(Task t) throws IOException {
