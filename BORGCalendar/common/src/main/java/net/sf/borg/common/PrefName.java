@@ -304,12 +304,12 @@ public class PrefName {
 	public static PrefName CALDAV_USE_SSL = new PrefName("caldav-use-ssl", "false");
 	public static PrefName CALDAV_ALLOW_SELF_SIGNED_CERT = new PrefName("caldav-self-signed", "false");
 
-	//public static final PrefName ENABLE_GOOGLE_FEATURE = new PrefName("enable_google_feature", "false");
 	public static final PrefName GOOGLE_SYNC = new PrefName("google_sync", "false");
 	public static final PrefName GCAL_CAL_ID = new PrefName("google_cal_id", "");
 	public static final PrefName GCAL_TASKLIST_ID = new PrefName("google_tasklist_id", "");
 	public static final PrefName GOOGLE_CRED_FILE = new PrefName("google_cred_file", "");
 	public static final PrefName GOOGLE_TOKEN_DIR = new PrefName("google_token_dir", "");
+	public static final PrefName GCAL_EXPORTYEARS = new PrefName("gcal-export-years", Integer.valueOf(2));
 
 
 

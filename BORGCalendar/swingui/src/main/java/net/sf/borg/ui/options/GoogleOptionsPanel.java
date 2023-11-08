@@ -27,10 +27,13 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
@@ -52,6 +55,8 @@ public class GoogleOptionsPanel extends OptionsPanel {
     private final JTextField credentials_file_box = new JTextField();
     private final JTextField token_dir_box = new JTextField();
 
+    private final JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
+			100, 1));
 
     /**
      * Instantiates a new miscellaneous options panel.
@@ -64,16 +69,22 @@ public class GoogleOptionsPanel extends OptionsPanel {
 
         this.add(enable_sync_box,
                 GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+        
+        this.add(new JLabel(Resource.getResourceString("years_to_export")),
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+        GridBagConstraints spin_gbc = GridBagConstraintsFactory.create(1, 1);
+        spin_gbc.anchor = GridBagConstraints.WEST;
+		this.add(exportyears, spin_gbc );
 
         this.add(new JLabel("Calendar:"),
-                GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+                GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
         this.add(cal_box,
-                GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
+                GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
 
         this.add(new JLabel("Task List:"),
-                GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
+                GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
         this.add(task_list_box,
-                GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
+                GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH));
 
 
         JPanel filep = new JPanel();
@@ -123,7 +134,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
         filep.add(tb,
                 GridBagConstraintsFactory.create(2, 1, GridBagConstraints.NONE));
 
-        GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 3,
+        GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 4,
                 GridBagConstraints.BOTH, 1.0, 0.0);
         gbc1.gridwidth = 2;
         this.add(filep, gbc1);
@@ -139,6 +150,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
     @Override
     public void applyChanges() {
 
+		Prefs.putPref(PrefName.GCAL_EXPORTYEARS, exportyears.getValue());
 
         OptionsPanel.setBooleanPref(enable_sync_box, PrefName.GOOGLE_SYNC);
         Prefs.putPref(PrefName.GCAL_CAL_ID, cal_box.getText());
@@ -162,6 +174,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
         task_list_box.setText(Prefs.getPref(PrefName.GCAL_TASKLIST_ID));
         credentials_file_box.setText(Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
         token_dir_box.setText(Prefs.getPref(PrefName.GOOGLE_TOKEN_DIR));
+		exportyears.setValue(Prefs.getIntPref(PrefName.GCAL_EXPORTYEARS));
 
 
     }
