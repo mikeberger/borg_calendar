@@ -66,6 +66,10 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 	public void removeCal(String calendarId) {
 		calmap.remove(calendarId);
 	}
+	
+	public void removeCals() {
+		calmap.clear();
+	}
 
 	@Override
 	public List<CalendarEntity> getEntities(Date d) {

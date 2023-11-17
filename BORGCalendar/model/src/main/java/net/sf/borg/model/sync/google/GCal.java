@@ -852,8 +852,8 @@ public class GCal {
 	
 	public void syncSubscribed(Date after) throws Exception {
 		
+		SubscribedCalendars.getReference().removeCals();
 		for( String id : subscribed ) {
-			SubscribedCalendars.getReference().removeCal(id);
 			
 			logBoth("SYNC: Start Incoming Sync of Subscribed Calendar: " + id);
 
