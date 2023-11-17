@@ -54,6 +54,8 @@ public class GoogleOptionsPanel extends OptionsPanel {
     private final JTextField task_list_box = new JTextField();
     private final JTextField credentials_file_box = new JTextField();
     private final JTextField token_dir_box = new JTextField();
+    private final JTextField sub_box = new JTextField();
+
 
     private final JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
 			100, 1));
@@ -86,6 +88,10 @@ public class GoogleOptionsPanel extends OptionsPanel {
         this.add(task_list_box,
                 GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH));
 
+        this.add(new JLabel("Subscribed:"),
+                GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+        this.add(sub_box,
+                GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH));
 
         JPanel filep = new JPanel();
         filep.setLayout(new GridBagLayout());
@@ -134,7 +140,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
         filep.add(tb,
                 GridBagConstraintsFactory.create(2, 1, GridBagConstraints.NONE));
 
-        GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 4,
+        GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 5,
                 GridBagConstraints.BOTH, 1.0, 0.0);
         gbc1.gridwidth = 2;
         this.add(filep, gbc1);
@@ -157,6 +163,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
         Prefs.putPref(PrefName.GCAL_TASKLIST_ID, task_list_box.getText());
         Prefs.putPref(PrefName.GOOGLE_CRED_FILE, credentials_file_box.getText());
         Prefs.putPref(PrefName.GOOGLE_TOKEN_DIR, token_dir_box.getText());
+        Prefs.putPref(PrefName.GOOGLE_SUBSCRIBED, sub_box.getText());
 
         GCal.getReference().resetGoogleIds();
 
@@ -175,6 +182,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
         credentials_file_box.setText(Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
         token_dir_box.setText(Prefs.getPref(PrefName.GOOGLE_TOKEN_DIR));
 		exportyears.setValue(Prefs.getIntPref(PrefName.GCAL_EXPORTYEARS));
+        sub_box.setText(Prefs.getPref(PrefName.GOOGLE_SUBSCRIBED));
 
 
     }

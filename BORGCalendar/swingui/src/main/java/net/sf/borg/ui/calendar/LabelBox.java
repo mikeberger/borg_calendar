@@ -53,14 +53,17 @@ class LabelBox extends Box {
 			g2.setClip(clip);
 
 		int smfontHeight = g2.getFontMetrics().getHeight();
+		Theme t = Theme.getCurrentTheme();
 
 		if (isSelected == true) {
-			g2.setColor(Color.WHITE);
+			g2.setColor(new Color(t.getDefaultFg()));
 			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 		}
 
-		Theme t = Theme.getCurrentTheme();
-		g2.setColor(new Color(t.colorFromString(getTextColor())));
+		if (isSelected == true)
+			g2.setColor(new Color(t.getDefaultBg()));
+		else
+			g2.setColor(new Color(t.colorFromString(getTextColor())));
 
 		g2.drawString(getText(), bounds.x + 2, bounds.y + smfontHeight);
 		g2.setColor(Color.black);

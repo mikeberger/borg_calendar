@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -67,6 +69,7 @@ public class GCal {
 	private String taskList;
 	private Calendar service = null;
 	private Tasks tservice = null;
+	private Collection<String> subscribed = new ArrayList<String>();
 
 	public static boolean isSyncing() {
 		return Prefs.getBoolPref(PrefName.GOOGLE_SYNC);
@@ -182,19 +185,30 @@ public class GCal {
 		// needing to convert multiple events
 		// into one - a limitation of borg
 		processSyncMap();
+		
+		syncSubscribed(after);
 
 		log.info("SYNC: Done");
 	}
 
-	private void setIds() throws Exception {
+	public void setIds() throws Exception {
 
 		String calname = Prefs.getPref(PrefName.GCAL_CAL_ID);
 		String taskname = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
-
+		subscribed.clear();
+		
+		String subs = Prefs.getPref(PrefName.GOOGLE_SUBSCRIBED);
+		if( subs != null && !subs.isEmpty())
+		{
+			List<String> subList = Arrays.asList(subs.split(","));
+			subscribed.addAll(subList);
+		}
+		
+		
 		if (calendarId == null) {
 			CalendarList cals = service.calendarList().list().execute();
 			for (CalendarListEntry c : cals.getItems()) {
-				log.fine("Cal Entry: " + c.getSummary() + " : " + c.getId());
+				log.fine("***Cal Entry: " + c.getSummary() + " : " + c.getId() + "  " + c.getAccessRole());
 				if (calname.equals(c.getSummary())) {
 					calendarId = c.getId();
 					break;
@@ -821,11 +835,62 @@ public class GCal {
 		return 0;
 
 	}
+	
+	public com.google.api.services.calendar.model.Calendar getCalendar(String id) throws IOException {
+		return service.calendars().get(id).execute();
+	}
+	
+	public CalendarListEntry getCalendarListEntry(String id) throws IOException {
+		return service.calendarList().get(id).execute();
+	}
 
 	// log to both logfile and SYNC popup
 	private void logBoth(String s) {
 		log.info(s);
 		ModalMessageServer.getReference().sendLogMessage(s);
 	}
+	
+	public void syncSubscribed(Date after) throws Exception {
+		
+		for( String id : subscribed ) {
+			SubscribedCalendars.getReference().removeCal(id);
+			
+			logBoth("SYNC: Start Incoming Sync of Subscribed Calendar: " + id);
+
+			String pageToken = "";
+
+			DateTime a = new DateTime(after);
+
+			while (true) {
+				Events events = service.events().list(id).setMaxResults(1000).setPageToken(pageToken)
+						.setSingleEvents(false).execute();
+				List<Event> items = events.getItems();
+
+				log.info("SYNC: " + a);
+
+				logBoth("SYNC: found " + items.size() + " Event Calendars on server");
+
+				for (Event event : items) {
+					
+					Appointment newap = EntityGCalAdapter.toBorg(event);
+					if (newap == null)
+						return;
+
+					SubscribedCalendars.getReference().addEvent(newap, calendarId);
+
+				}
+
+				if (events.getNextPageToken() == null)
+					break;
+
+				pageToken = events.getNextPageToken();
+
+			}
+		}
+		
+		SubscribedCalendars.getReference().refreshListeners();
+	}
+	
+	
 
 }
