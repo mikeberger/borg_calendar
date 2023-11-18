@@ -65,6 +65,7 @@ public class Theme {
 	// deleted.
 	// giving the default theme a name is easier than having it empty.
 	private final static String DEFAULT_THEME_NAME = "BORG";
+	private final static String DEFAULT_DARK_THEME_NAME = "BORG_DARK";
 
 	// theme cache
 	private static Map<String, Theme> themes = null;
@@ -244,9 +245,8 @@ public class Theme {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
 
-		// if no themes exist in the database, then create the default one and
-		// persist it
-		if (themes.isEmpty()) {
+		// if no default themes exist in the database, then create them
+		if (themes.get(DEFAULT_THEME_NAME) == null) {
 			Theme t = new Theme();
 			t.setName(DEFAULT_THEME_NAME);
 			themes.put(t.getName(), t);
@@ -256,6 +256,39 @@ public class Theme {
 				Errmsg.getErrorHandler().errmsg(e);
 			}
 			Prefs.putPref(CURRENT_THEME, DEFAULT_THEME_NAME);
+			
+		}
+		if (themes.get(DEFAULT_DARK_THEME_NAME) == null) {
+			Theme t = new Theme();
+			t.birthdayTextColor = -13395457;
+			t.defaultBg = -12632257;
+			t.defaultFg = -3355444;
+			t.halfdayBg = -13421824;
+			t.holidayBg = -13421773;
+			t.holidayTextColor = -10066432;
+			t.reminderBg = -16777216;
+			t.stripeBg = -13421773;
+			t.taskTextColor = -16711681;
+			t.textColor1 = -52429;
+			t.textColor2 = -16724788;
+			t.textColor3 = -10027162;
+			t.textColor4 = -3355444;
+			t.textColor5 = -6710887;
+			t.todayBg = -16751002;
+			t.vacationBg = -16764160;
+			t.weekdayBg = -12632257;
+			t.weekendBg = -12632257;
+			t.trayIconBg = -13421773;
+			t.trayIconFg = -3355444;
+			
+			t.setName(DEFAULT_DARK_THEME_NAME);
+			themes.put(t.getName(), t);
+			try {
+				t.save();
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+			
 		}
 
 	}
