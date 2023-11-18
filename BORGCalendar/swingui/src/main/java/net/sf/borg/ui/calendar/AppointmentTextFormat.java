@@ -48,7 +48,7 @@ public class AppointmentTextFormat {
 	 *            date is used to identify an instance of a repeating appt
 	 * @return the formatted appt string to display
 	 */
-	static public String format(Appointment appt, Date date) {
+	static public String format(Appointment appt, Date date, boolean force_full_text) {
 
 		if (appt.getText() == null) {
 			return "";
@@ -77,7 +77,7 @@ public class AppointmentTextFormat {
 			// if the text is empty - skip it - should never be
 			String xx = appt.getText();
 			String trunc = Prefs.getPref(PrefName.TRUNCAPPT);
-			if (trunc.equals("true")) {
+			if (!force_full_text && trunc.equals("true")) {
 				// !!!!! only show first line of appointment text !!!!!!
 				int ii = xx.indexOf('\n');
 				if (ii != -1) {
@@ -105,4 +105,9 @@ public class AppointmentTextFormat {
 
 		return theFormattedText;
 	}
+	
+	static public String format(Appointment appt, Date date) {
+		return format(appt,date,false);
+	}
+
 }

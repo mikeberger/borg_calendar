@@ -35,6 +35,7 @@ public class LabelEntity implements CalendarEntity {
 	private String color;
 	private Date date;
 	private String Text;
+	private String tooltipText;
 
 	
 	/* (non-Javadoc)
@@ -69,6 +70,11 @@ public class LabelEntity implements CalendarEntity {
 	@Override
 	public boolean isPrivate() {
 		return false;
+	}
+
+	public String getTooltipText() {
+		// TODO Auto-generated method stub
+		return tooltipText;
 	}
 	
 	

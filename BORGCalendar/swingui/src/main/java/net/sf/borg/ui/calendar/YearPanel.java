@@ -331,6 +331,7 @@ public class YearPanel extends DockableView implements Printable,
 										l.setColor(entity.getColor());
 										l.setDate(entity.getDate());
 										l.setText(entity.getText());
+										l.setTooltipText(entity.getText());
 
 										// add the item NoteBox to the container
 										if (addNoteBox(cal.getTime(), l,

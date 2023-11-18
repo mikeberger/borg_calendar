@@ -96,7 +96,7 @@ class LabelBox extends Box {
 
 	@Override
 	public String getToolTipText() {
-		return getText();
+		return entity.getTooltipText();
 	}
 
 }

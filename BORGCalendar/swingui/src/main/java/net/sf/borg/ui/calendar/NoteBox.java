@@ -65,6 +65,7 @@ public class NoteBox extends Box implements Box.Draggable {
 	private String todoMarker = null; // textual todo marker
 
 	private String noteText = null; // the text of this note box
+	private String tooltipText = null; 
 
 	/**
 	 * constructor
@@ -113,6 +114,11 @@ public class NoteBox extends Box implements Box.Draggable {
 			noteText = AppointmentTextFormat.format((Appointment) ap, d);
 		else
 			noteText = ap.getText();
+		
+		if (ap instanceof Appointment)
+			tooltipText = AppointmentTextFormat.format((Appointment) ap, d, true);
+		else
+			tooltipText = ap.getText();
 
 	}
 
@@ -567,6 +573,6 @@ public class NoteBox extends Box implements Box.Draggable {
 
 	@Override
 	public String getToolTipText() {
-		return getText();
+		return tooltipText;
 	}
 }

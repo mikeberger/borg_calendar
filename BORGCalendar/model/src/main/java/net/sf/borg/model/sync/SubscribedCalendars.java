@@ -42,7 +42,8 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 	public void addEvent(Appointment ap, String calendarId) {
 
 		LabelEntity e = new LabelEntity();
-		e.setText(formatText(ap));
+		e.setText(formatText(ap, false));
+		e.setTooltipText(formatText(ap, true));
 		e.setColor(Theme.HOLIDAYCOLOR);
 		e.setDate(ap.getDate());
 
@@ -154,7 +155,7 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 		super.refreshListeners();
 	}
 
-	public String formatText(Appointment appt) {
+	public String formatText(Appointment appt, boolean force_full_text) {
 
 		if (appt.getText() == null) {
 			return "";
@@ -177,7 +178,7 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 		// if the text is empty - skip it - should never be
 		String xx = appt.getText();
 		String trunc = Prefs.getPref(PrefName.TRUNCAPPT);
-		if (trunc.equals("true")) {
+		if (!force_full_text && trunc.equals("true")) {
 			// !!!!! only show first line of appointment text !!!!!!
 			int ii = xx.indexOf('\n');
 			if (ii != -1) {
