@@ -27,6 +27,7 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
+import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
@@ -108,6 +109,8 @@ public class YearPanel extends DockableView implements Printable,
 
 			// react to appointment mode changes
 			AppointmentModel.getReference().addListener(this);
+			SubscribedCalendars.getReference().addListener(this);
+
 
 			goTo(new GregorianCalendar());
 		}

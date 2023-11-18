@@ -50,6 +50,7 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.SyncableEntity;
+import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.model.sync.SyncEvent;
 import net.sf.borg.model.sync.SyncLog;
 
@@ -197,19 +198,27 @@ public class GCal {
 		String taskname = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
 		subscribed.clear();
 		
+		CalendarList cals = service.calendarList().list().execute();
+		log.fine(cals.toPrettyString());
+		
 		String subs = Prefs.getPref(PrefName.GOOGLE_SUBSCRIBED);
 		if( subs != null && !subs.isEmpty())
 		{
 			List<String> subList = Arrays.asList(subs.split(","));
-			subscribed.addAll(subList);
+			for( String s : subList) {
+				for (CalendarListEntry c : cals.getItems()) {
+					if (s.equals(c.getSummary()) || s.equals(c.getId())) {
+						subscribed.add(c.getId());
+						break;
+					}
+				}
+			}
 		}
 		
 		
 		if (calendarId == null) {
-			CalendarList cals = service.calendarList().list().execute();
 			for (CalendarListEntry c : cals.getItems()) {
-				log.fine("***Cal Entry: " + c.getSummary() + " : " + c.getId() + "  " + c.getAccessRole());
-				if (calname.equals(c.getSummary())) {
+				if (calname.equals(c.getSummary()) || calname.equals(c.getId())) {
 					calendarId = c.getId();
 					break;
 				}
@@ -871,10 +880,10 @@ public class GCal {
 				logBoth("SYNC: found " + items.size() + " Event Calendars on server");
 
 				for (Event event : items) {
-					
+										
 					Appointment newap = EntityGCalAdapter.toBorg(event);
 					if (newap == null)
-						return;
+						continue;
 
 					SubscribedCalendars.getReference().addEvent(newap, calendarId);
 
@@ -888,7 +897,7 @@ public class GCal {
 			}
 		}
 		
-		SubscribedCalendars.getReference().refreshListeners();
+		SubscribedCalendars.getReference().refresh();
 	}
 	
 	

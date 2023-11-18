@@ -24,6 +24,7 @@ import net.sf.borg.model.*;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
@@ -118,6 +119,7 @@ public class WeekPanel extends DockableView implements Printable,
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
 			AddressModel.getReference().addListener(this);
+			SubscribedCalendars.getReference().addListener(this);
 
 			goTo(new GregorianCalendar());
 

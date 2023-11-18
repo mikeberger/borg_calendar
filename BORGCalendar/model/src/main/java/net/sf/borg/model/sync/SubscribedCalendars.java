@@ -1,4 +1,4 @@
-package net.sf.borg.model.sync.google;
+package net.sf.borg.model.sync;
 
 import java.io.InputStream;
 import java.io.Writer;
@@ -46,27 +46,72 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 		e.setColor(Theme.HOLIDAYCOLOR);
 		e.setDate(ap.getDate());
 
-		HashMap<Integer, Collection<LabelEntity>> cal = calmap.get(calendarId);
-		if (cal == null) {
-			cal = new HashMap<Integer, Collection<LabelEntity>>();
-			calmap.put(calendarId, cal);
-		}
-		int dkey = DateUtil.dayOfEpoch(ap.getDate());
-
-		Collection<LabelEntity> day = cal.get(dkey);
-		if (day == null) {
-			day = new ArrayList<LabelEntity>();
-			cal.put(dkey, day);
+		HashMap<Integer, Collection<LabelEntity>> daymap = calmap.get(calendarId);
+		if (daymap == null) {
+			daymap = new HashMap<Integer, Collection<LabelEntity>>();
+			calmap.put(calendarId, daymap);
 		}
 
-		day.add(e);
+		if (!Repeat.isRepeating(ap)) {
+
+			int dkey = DateUtil.dayOfEpoch(ap.getDate());
+
+			Collection<LabelEntity> day = daymap.get(dkey);
+			if (day == null) {
+				day = new ArrayList<LabelEntity>();
+				daymap.put(dkey, day);
+			}
+
+			day.add(e);
+
+		} else {
+
+			GregorianCalendar cal = new GregorianCalendar();
+			int curyr = cal.get(Calendar.YEAR);
+
+			// repeats
+			cal.setTime(ap.getDate());
+
+			Repeat repeat = new Repeat(cal, ap.getFrequency());
+
+			int tm = Repeat.calculateTimes(ap);
+
+			int apptYear = cal.get(Calendar.YEAR);
+
+			// ok, plod through the repeats now
+			for (int i = 0; i < tm; i++) {
+				Calendar current = repeat.current();
+				if (current == null) {
+					repeat.next();
+					continue;
+				}
+
+				// get the day key for the repeat
+				int rkey = DateUtil.dayOfEpoch(current.getTime());
+
+				int cyear = current.get(Calendar.YEAR);
+
+				// limit the repeats to 10 years
+				if (cyear > curyr + 10 && cyear > apptYear + 10)
+					break;
+
+				Collection<LabelEntity> day = daymap.get(rkey);
+				if (day == null) {
+					day = new ArrayList<LabelEntity>();
+					daymap.put(rkey, day);
+				}
+				day.add(e);
+
+				repeat.next();
+			}
+		}
 
 	}
 
 	public void removeCal(String calendarId) {
 		calmap.remove(calendarId);
 	}
-	
+
 	public void removeCals() {
 		calmap.clear();
 	}
@@ -105,9 +150,8 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 		return null;
 	}
 
-	public void refreshListeners() {
-		this.refreshListeners();
-		AppointmentModel.getReference().refresh();
+	public void refresh() {
+		super.refreshListeners();
 	}
 
 	public String formatText(Appointment appt) {
