@@ -43,17 +43,17 @@ public class EntityGCalAdapter {
 		ap.setTodo(true);
 		ap.setUntimed("Y");
 		String d = t.getDue();
-		if( d == null ) return null;
+		if (d == null)
+			return null;
 		DateTime dt = new DateTime(d);
 		ap.setDate(new Date(dt.getValue() - tzOffset(dt.getValue())));
 
-		
 		// look for aCalendar+ recurrence rule
-		if( t.getNotes() != null ) {
+		if (t.getNotes() != null) {
 			int idx1 = t.getNotes().indexOf('[');
 			int idx2 = t.getNotes().indexOf(']');
-			if( idx1 != -1 && idx2 != -1) {
-				String rrule = t.getNotes().substring(idx1+1, idx2);
+			if (idx1 != -1 && idx2 != -1) {
+				String rrule = t.getNotes().substring(idx1 + 1, idx2);
 				Recur recur;
 				try {
 					recur = new Recur(rrule);
@@ -63,7 +63,7 @@ public class EntityGCalAdapter {
 				}
 			}
 		}
-		
+
 		return ap;
 
 	}
@@ -230,6 +230,25 @@ public class EntityGCalAdapter {
 
 				}
 			}
+		else {
+			// check if non-repeating event spans multiple days. if so, convert to repeating daily
+			if( ap.getDuration() > 24*60*60*1000 )
+			{
+				// timed appt > 1 day
+				ap.setFrequency(net.sf.borg.model.Repeat.DAILY);
+				ap.setRepeatFlag(true);
+				ap.setTimes(Math.floorDiv(ap.getDuration(),24*60*60*1000)+1);
+
+			}
+			else if( ap.getDuration() == 0 && event.getStart().getDate() != null){
+				int secs = (int) ((event.getEnd().getDate().getValue() - event.getStart().getDate().getValue())/1000);
+				if( secs >= 24*60*60) {
+					ap.setFrequency(net.sf.borg.model.Repeat.DAILY);
+					ap.setRepeatFlag(true);
+					ap.setTimes(Math.floorDiv(secs,24*60*60));
+				}
+			}
+		}
 
 		return ap;
 	}
@@ -421,7 +440,6 @@ public class EntityGCalAdapter {
 		if (TaskModel.isClosed(t))
 			return null;
 
-
 		Task task = new Task();
 		task.setKind("tasks#task");
 		task.setTitle(t.getText());
@@ -449,24 +467,23 @@ public class EntityGCalAdapter {
 		if (uidval == null || uidval.isEmpty()) {
 			uidval = t.getKey() + "@BORGT-" + t.getCreateTime().getTime();
 		}
-		
+
 		StringBuffer sb = new StringBuffer();
-		if( t.getDescription() != null) {
+		if (t.getDescription() != null) {
 			sb.append("\n" + t.getDescription() + "\n");
 		}
-		if( t.getResolution() != null) {
+		if (t.getResolution() != null) {
 			sb.append("\n" + t.getResolution() + "\n");
 		}
-		for( Subtask subtask : TaskModel.getReference().getSubTasks(t.getKey()))
-		{
-			if( subtask.getCloseDate() == null ) {
+		for (Subtask subtask : TaskModel.getReference().getSubTasks(t.getKey())) {
+			if (subtask.getCloseDate() == null) {
 				sb.append("\n" + subtask.getText());
-				if( subtask.getDueDate() != null)
+				if (subtask.getDueDate() != null)
 					sb.append("  " + subtask.getDueDate());
 				sb.append("\n");
 			}
 		}
-		
+
 		sb.append("\n" + " UID:" + uidval);
 
 		String notes = sb.toString();
