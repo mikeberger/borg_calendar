@@ -5,6 +5,7 @@ import net.sf.borg.common.*;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.model.sync.SyncLog;
 import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.model.sync.ical.CalDav;
@@ -374,6 +375,27 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
             }
         });
         gcalmenu.add(gcalow);
+        
+        JMenuItem gcalToggle = new JMenuItem("Toggle Subscribed");
+        gcalToggle.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    if (!GCal.isSyncing()) {
+                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    
+                    SubscribedCalendars.getReference().setShow(!SubscribedCalendars.getReference().isShowing());
+
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
+                }
+            }
+        });
+        gcalmenu.add(gcalToggle);
         m.add(gcalmenu);
 
 

@@ -38,7 +38,17 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 	}
 
 	private HashMap<String, HashMap<Integer, Collection<LabelEntity>>> calmap = new HashMap<String, HashMap<Integer, Collection<LabelEntity>>>();
-
+	private boolean show = true; // show/hide subscribed events
+	
+	public void setShow(boolean b) {
+		show = b;
+		refresh();
+	}
+	
+	public boolean isShowing() {
+		return show;
+	}
+	
 	public void addEvent(Appointment ap, String calendarId) {
 
 		LabelEntity e = new LabelEntity();
@@ -119,7 +129,11 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 
 	@Override
 	public List<CalendarEntity> getEntities(Date d) {
+				
 		ArrayList<CalendarEntity> l = new ArrayList<CalendarEntity>();
+		
+		if( !show ) return l;
+		
 		for (HashMap<Integer, Collection<LabelEntity>> cal : calmap.values()) {
 			Collection<LabelEntity> c = cal.get(DateUtil.dayOfEpoch(d));
 			if (c != null)
