@@ -18,12 +18,14 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CalendarEntityProvider;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Repeat;
+import net.sf.borg.model.SearchCriteria;
+import net.sf.borg.model.Searchable;
 import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
 
-public class SubscribedCalendars extends Model implements CalendarEntityProvider {
+public class SubscribedCalendars extends Model implements CalendarEntityProvider, Searchable<LabelEntity> {
 
 	/** The singleton */
 	static private final SubscribedCalendars self_ = new SubscribedCalendars();
@@ -51,11 +53,7 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 	
 	public void addEvent(Appointment ap, String calendarId) {
 
-		LabelEntity e = new LabelEntity();
-		e.setText(formatText(ap, false));
-		e.setTooltipText(formatText(ap, true));
-		e.setColor(Theme.HOLIDAYCOLOR);
-		e.setDate(ap.getDate());
+		
 
 		HashMap<Integer, Collection<LabelEntity>> daymap = calmap.get(calendarId);
 		if (daymap == null) {
@@ -72,6 +70,12 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 				day = new ArrayList<LabelEntity>();
 				daymap.put(dkey, day);
 			}
+			
+			LabelEntity e = new LabelEntity();
+			e.setText(formatText(ap, false));
+			e.setTooltipText(formatText(ap, true));
+			e.setColor(Theme.HOLIDAYCOLOR);
+			e.setDate(ap.getDate());
 
 			day.add(e);
 
@@ -111,6 +115,13 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 					day = new ArrayList<LabelEntity>();
 					daymap.put(rkey, day);
 				}
+				
+				LabelEntity e = new LabelEntity();
+				e.setText(formatText(ap, false));
+				e.setTooltipText(formatText(ap, true));
+				e.setColor(Theme.HOLIDAYCOLOR);
+				e.setDate(current.getTime());
+				
 				day.add(e);
 
 				repeat.next();
@@ -210,5 +221,42 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 		}
 
 		return theFormattedText;
+	}
+
+	@Override
+	public Collection<LabelEntity> search(SearchCriteria criteria) {
+		Collection<LabelEntity> ret = new ArrayList<LabelEntity>();
+		for( HashMap<Integer, Collection<LabelEntity>> cal : calmap.values() ) {
+			for( Collection<LabelEntity> labels : cal.values()) {
+				for( LabelEntity label : labels ) {
+					
+					// filter by repeat
+					if ( criteria.isTodo() || criteria.isVacation() || criteria.isHoliday() || criteria.hasLinks())
+						continue;				
+				
+					
+					if (!criteria.search(label.getTooltipText()))
+						continue;
+					
+					// filter by start date
+					if (criteria.getStartDate() != null) {
+						if (label.getDate().before(criteria.getStartDate()))
+							continue;
+					}
+
+					// filter by end date
+					if (criteria.getEndDate() != null) {
+						if (label.getDate().after(criteria.getEndDate()))
+							continue;
+					}
+
+					ret.add(label);
+
+				}
+			}
+		}
+		
+		
+		return ret;
 	}
 }

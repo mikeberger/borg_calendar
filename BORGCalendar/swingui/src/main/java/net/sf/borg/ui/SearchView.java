@@ -19,6 +19,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.*;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.*;
+import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddressView;
@@ -244,6 +245,8 @@ public class SearchView extends DockableView implements Module {
                     for (int i = 0; i < rows.length; i++) {
                         Integer key = (Integer) tm.getValueAt(rows[i], 3);
                         Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
+                        if( cl == LabelEntity.class)
+                        	continue;
                         try {
                             KeyedEntity<?> ent = (KeyedEntity<?>) cl.getDeclaredConstructor().newInstance();
                             ent.setKey(key.intValue());
@@ -310,6 +313,8 @@ public class SearchView extends DockableView implements Module {
                     for (int i = 0; i < rows.length; i++) {
                         Integer key = (Integer) tm.getValueAt(rows[i], 3);
                         Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
+                        if( cl == LabelEntity.class)
+                        	continue;
                         try {
                             KeyedEntity<?> ent = (KeyedEntity<?>) cl.getDeclaredConstructor().newInstance();
                             ent.setKey(key.intValue());
@@ -842,6 +847,25 @@ public class SearchView extends DockableView implements Module {
                     return;
                 }
 
+            }
+            
+            Collection<LabelEntity> labels = SubscribedCalendars.getReference().search(criteria);
+            for( LabelEntity label : labels ) {
+            	Object[] ro = new Object[6];
+
+                try {
+                    ro[0] = label.getText().replace('\n', ' ');
+                    ro[1] = "Subscribed Event";
+                    ro[2] = label.getDate();
+                    ro[3] = 0;
+                    ro[4] = LabelEntity.class;
+                    ro[5] = label.getColor();
+                    tm.addRow(ro);
+                    tm.tableChanged(new TableModelEvent(tm));
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
+                    return;
+                }
             }
         }
 
