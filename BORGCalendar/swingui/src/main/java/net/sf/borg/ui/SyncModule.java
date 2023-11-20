@@ -1,11 +1,36 @@
 package net.sf.borg.ui;
 
+import java.awt.Component;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import net.fortuna.ical4j.vcard.VCard;
-import net.sf.borg.common.*;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.ModalMessageServer;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.model.sync.SyncLog;
 import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.model.sync.ical.CalDav;
@@ -17,17 +42,6 @@ import net.sf.borg.ui.options.GoogleOptionsPanel;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.FileDrop;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.logging.Logger;
 
 public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
@@ -375,27 +389,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
             }
         });
         gcalmenu.add(gcalow);
-        
-        JMenuItem gcalToggle = new JMenuItem("Toggle Subscribed");
-        gcalToggle.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                try {
-                    if (!GCal.isSyncing()) {
-                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    
-                    SubscribedCalendars.getReference().setShow(!SubscribedCalendars.getReference().isShowing());
-
-                } catch (Exception e) {
-                    Errmsg.getErrorHandler().errmsg(e);
-                }
-            }
-        });
-        gcalmenu.add(gcalToggle);
+      
         m.add(gcalmenu);
 
 

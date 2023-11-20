@@ -60,9 +60,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 	private final JCheckBox miltime;
 	private final JCheckBox mondaycb;
-	private final JCheckBox privbox;
-
-	private final JCheckBox pubbox;
 
 	private JCheckBox truncbox = null;
 	private final JComboBox<String> wkendhr;
@@ -74,8 +71,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	 */
 	public AppearanceOptionsPanel() {
 
-		privbox = new JCheckBox();
-		pubbox = new JCheckBox();
+		
 		lnfBox = new JComboBox<String>();
 		themeBox = new JComboBox<String>();
 		holiday1 = new JCheckBox();
@@ -90,14 +86,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		this.setLayout(new java.awt.GridBagLayout());
 
 		this.setName(Resource.getResourceString("appearance"));
-		ResourceHelper.setText(privbox, "Show_Private_Appointments");
-		this.add(privbox,
-				GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
-
-		ResourceHelper.setText(pubbox, "Show_Public_Appointments");
-		this.add(pubbox,
-				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
-
+		
 		JLabel jLabel4 = new JLabel();
 		ResourceHelper.setText(jLabel4, "Look_and_Feel:");
 		jLabel4.setLabelFor(lnfBox);
@@ -223,8 +212,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	@Override
 	public void applyChanges() {
 
-		OptionsPanel.setBooleanPref(pubbox, PrefName.SHOWPUBLIC);
-		OptionsPanel.setBooleanPref(privbox, PrefName.SHOWPRIVATE);
+	
 		OptionsPanel.setBooleanPref(holiday1, PrefName.SHOWUSHOLIDAYS);
 		OptionsPanel.setBooleanPref(canadabox, PrefName.SHOWCANHOLIDAYS);
 		OptionsPanel.setBooleanPref(doyBox, PrefName.DAYOFYEAR);
@@ -296,8 +284,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	 */
 	@Override
 	public void loadOptions() {
-		OptionsPanel.setCheckBox(pubbox, PrefName.SHOWPUBLIC);
-		OptionsPanel.setCheckBox(privbox, PrefName.SHOWPRIVATE);
+		
 		OptionsPanel.setCheckBox(holiday1, PrefName.SHOWUSHOLIDAYS);
 		OptionsPanel.setCheckBox(canadabox, PrefName.SHOWCANHOLIDAYS);
 		OptionsPanel.setCheckBox(doyBox, PrefName.DAYOFYEAR);

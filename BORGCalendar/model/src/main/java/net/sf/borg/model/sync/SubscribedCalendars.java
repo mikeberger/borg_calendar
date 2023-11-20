@@ -225,7 +225,11 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 
 	@Override
 	public Collection<LabelEntity> search(SearchCriteria criteria) {
+		
 		Collection<LabelEntity> ret = new ArrayList<LabelEntity>();
+		if( !show ) return ret;
+
+		
 		for( HashMap<Integer, Collection<LabelEntity>> cal : calmap.values() ) {
 			for( Collection<LabelEntity> labels : cal.values()) {
 				for( LabelEntity label : labels ) {

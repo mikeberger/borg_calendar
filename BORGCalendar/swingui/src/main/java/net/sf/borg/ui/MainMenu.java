@@ -19,10 +19,12 @@
 package net.sf.borg.ui;
 
 import net.sf.borg.common.*;
+import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.EmailReminder;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ScrolledDialog;
@@ -45,6 +47,7 @@ class MainMenu {
 	private final JMenu actionMenu = new JMenu();
 	private final JMenu helpmenu = new JMenu();
 	private final JMenu optionsMenu = new JMenu();
+	private final JMenu viewMenu = new JMenu();
 	private JMenu pluginMenu = null;
 	private final JMenuBar menuBar = new JMenuBar();
 
@@ -175,6 +178,53 @@ class MainMenu {
 
 		menuBar.add(optionsMenu);
 
+		ResourceHelper.setText(viewMenu, "View");
+		
+		JCheckBoxMenuItem privateMI = new JCheckBoxMenuItem();
+		privateMI.setText(Resource.getResourceString("Show_Private_Appointments"));
+		privateMI.putClientProperty("CheckBoxMenuItem.doNotCloseOnMouseClick", true);
+		privateMI.setSelected(Prefs.getBoolPref(PrefName.SHOWPRIVATE));
+		privateMI.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Prefs.putPref(PrefName.SHOWPRIVATE, privateMI.isSelected() ? "true" : "false");
+				AppointmentModel.getReference().refresh();
+			}
+		});
+		viewMenu.add(privateMI);
+		
+		JCheckBoxMenuItem subCalMI = new JCheckBoxMenuItem();
+		subCalMI.setText(Resource.getResourceString("subscribed_cals"));
+		subCalMI.putClientProperty("CheckBoxMenuItem.doNotCloseOnMouseClick", true);
+		subCalMI.setSelected(true);
+		subCalMI.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SubscribedCalendars.getReference().setShow(subCalMI.isSelected());
+
+			}
+		});
+		viewMenu.add(subCalMI);
+		
+		JCheckBoxMenuItem futureTodoMI = new JCheckBoxMenuItem();
+		futureTodoMI.setText(Resource.getResourceString("future_todo_rpts"));
+		futureTodoMI.putClientProperty("CheckBoxMenuItem.doNotCloseOnMouseClick", true);
+		futureTodoMI.setSelected(!Prefs.getBoolPref(PrefName.TODO_ONLY_SHOW_CURRENT));
+		futureTodoMI.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Prefs.putPref(PrefName.TODO_ONLY_SHOW_CURRENT, futureTodoMI.isSelected() ? "false" : "true");
+				AppointmentModel.getReference().refresh();
+			}
+		});
+		viewMenu.add(futureTodoMI);
+		
+		
+		menuBar.add(viewMenu);
+
 		/*
 		 * category menu
 		 */
@@ -285,7 +335,6 @@ class MainMenu {
 		helpmenu.insertSeparator(helpmenu.getItemCount() - 1);
 
 		menuBar.add(helpmenu);
-
 
 	}
 
@@ -494,8 +543,8 @@ class MainMenu {
 		int ret = JOptionPane.showConfirmDialog(null,
 				net.sf.borg.common.Resource.getResourceString("overwrite_warning") + fname + " ?", "confirm_overwrite",
 				JOptionPane.OK_CANCEL_OPTION);
-        return ret == JOptionPane.OK_OPTION;
-    }
+		return ret == JOptionPane.OK_OPTION;
+	}
 
 	/**
 	 * get the menu bar
