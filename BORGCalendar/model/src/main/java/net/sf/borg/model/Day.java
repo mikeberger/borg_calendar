@@ -129,12 +129,12 @@ public class Day {
 	 */
 	private static void addToDay(Day day, Collection<Integer> l) throws Exception {
 
-		boolean pub = false;
+		boolean pub = true;
 		boolean priv = false;
-		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-		if (sp.equals("true"))
-			pub = true;
-		sp = Prefs.getPref(PrefName.SHOWPRIVATE);
+		//String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
+		//if (sp.equals("true"))
+			//pub = true;
+		String sp = Prefs.getPref(PrefName.SHOWPRIVATE);
 		if (sp.equals("true"))
 			priv = true;
 

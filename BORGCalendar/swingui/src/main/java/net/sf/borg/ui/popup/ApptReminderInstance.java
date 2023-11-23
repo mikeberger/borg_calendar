@@ -299,7 +299,7 @@ public class ApptReminderInstance extends ReminderInstance {
 
 		// check if we should show it based on public/private
 		// flags
-		boolean showpub = Prefs.getBoolPref(PrefName.SHOWPUBLIC);
+		boolean showpub = true;//Prefs.getBoolPref(PrefName.SHOWPUBLIC);
 
 		boolean showpriv = Prefs.getBoolPref(PrefName.SHOWPRIVATE);
 

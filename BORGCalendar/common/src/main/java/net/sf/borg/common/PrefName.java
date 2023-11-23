@@ -131,7 +131,7 @@ public class PrefName {
 	static public PrefName COLORPRINT = new PrefName("colorprint", "false");
 
 	/** show public appointments */
-	static public PrefName SHOWPUBLIC = new PrefName("showpublic", "true");
+	//static public PrefName SHOWPUBLIC = new PrefName("showpublic", "true");
 
 	/** show private appointments */
 	static public PrefName SHOWPRIVATE = new PrefName("showprivate", "false");

@@ -612,7 +612,7 @@ public class AppointmentListView extends DockableView implements
 			tm.tableChanged(new TableModelEvent(tm));
 
 			String priv = Prefs.getPref(PrefName.SHOWPRIVATE);
-			String pub = Prefs.getPref(PrefName.SHOWPUBLIC);
+			//String pub = Prefs.getPref(PrefName.SHOWPUBLIC);
 
 			List<Integer> alist_ = AppointmentModel.getReference().getAppts(
 					cal_.getTime());
@@ -625,8 +625,8 @@ public class AppointmentListView extends DockableView implements
 
 					if (ap.isPrivate() && !priv.equals("true"))
 						continue;
-					if (!ap.isPrivate() && !pub.equals("true"))
-						continue;
+					//if (!ap.isPrivate() && !pub.equals("true"))
+					//	continue;
 
 					Object[] ro = new Object[3];
 					
