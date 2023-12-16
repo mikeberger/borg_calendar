@@ -186,7 +186,7 @@ public class GCal {
 		// needing to convert multiple events
 		// into one - a limitation of borg
 		processSyncMap();
-		
+
 		syncSubscribed(after);
 
 		log.info("SYNC: Done");
@@ -197,15 +197,14 @@ public class GCal {
 		String calname = Prefs.getPref(PrefName.GCAL_CAL_ID);
 		String taskname = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
 		subscribed.clear();
-		
+
 		CalendarList cals = service.calendarList().list().execute();
 		log.fine(cals.toPrettyString());
-		
+
 		String subs = Prefs.getPref(PrefName.GOOGLE_SUBSCRIBED);
-		if( subs != null && !subs.isEmpty())
-		{
+		if (subs != null && !subs.isEmpty()) {
 			List<String> subList = Arrays.asList(subs.split(","));
-			for( String s : subList) {
+			for (String s : subList) {
 				for (CalendarListEntry c : cals.getItems()) {
 					if (s.equals(c.getSummary()) || s.equals(c.getId())) {
 						subscribed.add(c.getId());
@@ -214,8 +213,7 @@ public class GCal {
 				}
 			}
 		}
-		
-		
+
 		if (calendarId == null) {
 			for (CalendarListEntry c : cals.getItems()) {
 				if (calname.equals(c.getSummary()) || calname.equals(c.getId())) {
@@ -380,9 +378,7 @@ public class GCal {
 									addTask(t);
 								} else
 									updateTask(t);
-							}
-							else
-							{
+							} else {
 								String id = EntityGCalAdapter.getIdFromTaskJSON(se.getUrl());
 								if (id != null)
 									removeTask(id);
@@ -401,7 +397,7 @@ public class GCal {
 					}
 
 				}
-				
+
 				else if (se.getObjectType() == SyncableEntity.ObjectType.SUBTASK) {
 
 					if (se.getAction().equals(Model.ChangeEvent.ChangeAction.ADD)) {
@@ -433,9 +429,7 @@ public class GCal {
 									addTask(t);
 								} else
 									updateTask(t);
-							}
-							else
-							{
+							} else {
 								String id = EntityGCalAdapter.getIdFromTaskJSON(se.getUrl());
 								if (id != null)
 									removeTask(id);
@@ -472,19 +466,20 @@ public class GCal {
 
 	private void removeTask(String id) throws IOException {
 		log.fine("removeTask:" + id);
-        try {
-            tservice.tasks().delete(taskList, id).execute();
-        } catch (IOException e) {
-            if (e instanceof GoogleJsonResponseException ge) {
-                if (ge.getDetails() != null && ge.getDetails().getCode() == 404) {
-                    // could not find task to delete in google - may have removed due date and then deleted later
-                    logBoth("Task not found in google - ignoring:\n" + e.getMessage());
-                } else
-                    throw e;
+		try {
+			tservice.tasks().delete(taskList, id).execute();
+		} catch (IOException e) {
+			if (e instanceof GoogleJsonResponseException ge) {
+				if (ge.getDetails() != null && ge.getDetails().getCode() == 404) {
+					// could not find task to delete in google - may have removed due date and then
+					// deleted later
+					logBoth("Task not found in google - ignoring:\n" + e.getMessage());
+				} else
+					throw e;
 
-            } else
-                throw e;
-        }
+			} else
+				throw e;
+		}
 	}
 
 	private void addTask(Task t) throws IOException {
@@ -721,7 +716,7 @@ public class GCal {
 		if (idx != -1) {
 			// match to BORG appt
 			String uid = notes.substring(idx + 4);
-			if (uid.contains("BORGT") ) {
+			if (uid.contains("BORGT")) {
 				// this is where a newly created task gets the URL updated
 				net.sf.borg.model.entity.Task bt = TaskModel.getReference().getTaskByUid(uid);
 				if (bt != null && bt.getUrl() == null) {
@@ -736,8 +731,7 @@ public class GCal {
 					return 1;
 				}
 				return 0;
-			}
-			else if (uid.contains("BORGS") ) {
+			} else if (uid.contains("BORGS")) {
 				// this is where a newly created task gets the URL updated
 				net.sf.borg.model.entity.Subtask bt = TaskModel.getReference().getSubTaskByUid(uid);
 				if (bt != null && bt.getUrl() == null) {
@@ -753,7 +747,7 @@ public class GCal {
 				}
 				return 0;
 			}
-			
+
 			serverUids.add(uid);
 			Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 			if (ap == null) {
@@ -801,8 +795,24 @@ public class GCal {
 				logBoth("TODO time changed on google for " + ap.getText());
 
 				// if incoming date is greater than BORG date, then just do_todo
-				if (ap.isRepeatFlag() && taskDate.getTime() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should
-																								// be exact though?
+				if (ap.isRepeatFlag() && taskDate.getTime() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should be exact though?
+
+					// try to calculate next todo, assuming aCalendar+ was used - which advances the
+					// due date
+					// loop through future todo times and see if we find a match
+					for (Date nextTodo = AppointmentModel.getReference().next_todo(ap,
+							null); nextTodo != null; nextTodo = AppointmentModel.getReference().next_todo(ap, nextTodo)) {
+
+						if( DateUtil.dayOfEpoch(nextTodo) == DateUtil.dayOfEpoch(taskDate)) {
+							// set next todo to incoming task's due date
+							ap.setNextTodo(nextTodo);
+							AppointmentModel.getReference().saveAppt(ap);
+							return 1;
+						}
+					}
+
+					// for whatever reason, the google task's due date is not a value next todo date, so just advance the todo
+					// one time and alert the user to check
 					logBoth("-----------------------------------------------------");
 					logBoth("CHECK: time advanced for repeating todo - do_todo - please verify");
 					logBoth("-----------------------------------------------------");
@@ -830,7 +840,7 @@ public class GCal {
 		} else {
 			// google created task - add new appt
 			Appointment ap = EntityGCalAdapter.toBorg(task);
-			if( ap == null ) {
+			if (ap == null) {
 				log.info("Could not convert task: " + task);
 				return 0;
 			}
@@ -844,11 +854,11 @@ public class GCal {
 		return 0;
 
 	}
-	
+
 	public com.google.api.services.calendar.model.Calendar getCalendar(String id) throws IOException {
 		return service.calendars().get(id).execute();
 	}
-	
+
 	public CalendarListEntry getCalendarListEntry(String id) throws IOException {
 		return service.calendarList().get(id).execute();
 	}
@@ -858,12 +868,12 @@ public class GCal {
 		log.info(s);
 		ModalMessageServer.getReference().sendLogMessage(s);
 	}
-	
+
 	public void syncSubscribed(Date after) throws Exception {
-		
+
 		SubscribedCalendars.getReference().removeCals();
-		for( String id : subscribed ) {
-			
+		for (String id : subscribed) {
+
 			logBoth("SYNC: Start Incoming Sync of Subscribed Calendar: " + id);
 
 			String pageToken = "";
@@ -880,7 +890,7 @@ public class GCal {
 				logBoth("SYNC: found " + items.size() + " Event Calendars on server");
 
 				for (Event event : items) {
-										
+
 					Appointment newap = EntityGCalAdapter.toBorg(event);
 					if (newap == null)
 						continue;
@@ -896,10 +906,8 @@ public class GCal {
 
 			}
 		}
-		
+
 		SubscribedCalendars.getReference().refresh();
 	}
-	
-	
 
 }
