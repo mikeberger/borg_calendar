@@ -263,16 +263,13 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		if (lnfChange) {
 			try {
-			@SuppressWarnings("deprecation")
-			LookAndFeel l = (LookAndFeel) Class.forName(newlnf).newInstance();
-			UIManager.setLookAndFeel(l);
+			UIManager.setLookAndFeel(newlnf);
 			FlatLaf.updateUI();
 			}
 			catch( Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 			}
-			//Errmsg.getErrorHandler().notice(
-			//		Resource.getResourceString("lfrestart"));
+			
 		}
 
 	}
@@ -337,18 +334,15 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 			lnfs.add(name);
 		}
 
-		// search for other well known ones and add if they are in the classpath
+		
+		// add the included jgoodies look and feels
 		String[] looks = { "com.jgoodies.looks.plastic.PlasticLookAndFeel",
 				"com.jgoodies.looks.windows.WindowsLookAndFeel",
 				"com.jgoodies.looks.plastic.PlasticXPLookAndFeel",
 				"com.jgoodies.looks.plastic.Plastic3DLookAndFeel",
-				"com.incors.plaf.kunststoff.KunststoffLookAndFeel",
-				"de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel",
-				"net.infonode.gui.laf.InfoNodeLookAndFeel",
-				"com.lipstikLF.LipstikLookAndFeel",
-				"org.fife.plaf.Office2003.Office2003LookAndFeel",
 				"com.formdev.flatlaf.FlatLightLaf",
-				"com.formdev.flatlaf.FlatDarkLaf"};
+				"com.formdev.flatlaf.FlatDarkLaf"
+				};
 
 		for (String look : looks) {
 			try {
