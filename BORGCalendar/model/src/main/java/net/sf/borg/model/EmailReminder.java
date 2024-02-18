@@ -31,6 +31,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.SendJavaMail;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 
 import javax.crypto.Cipher;
@@ -185,12 +186,25 @@ public class EmailReminder {
 		// load any task tracker items for the email
 		Collection<Task> tasks = TaskModel.getReference().get_tasks(
 				cal.getTime());
-		if (l != null && tasks != null) {
+		if (tasks != null) {
 
 			for (Task task : tasks) {
 				// add each task to the email - and remove newlines
 				tx.append("Task[" + task.getKey() + "] ");
 				tx.append(task.getSummary());
+				tx.append("\n");
+			}
+		}
+		
+		Collection<Subtask> subtasks = TaskModel.getReference().get_subtasks(
+				cal.getTime());
+		if (subtasks != null) {
+
+			for (Subtask subtask : subtasks) {
+				
+				// add each task to the email - and remove newlines
+				tx.append("Subtask[" + subtask.getKey() + "] ");
+				tx.append(subtask.getDescription());
 				tx.append("\n");
 			}
 		}
@@ -238,6 +252,56 @@ public class EmailReminder {
 			
 		
 		}
+		
+		tasks = TaskModel.getReference().get_tasks();
+		if (tasks != null) {
+
+			for (Task task : tasks) {
+				
+				if( TaskModel.isClosed(task))
+					continue;
+				
+				Date d = task.getDueDate();
+				if( d != null ) {
+					Calendar tdcal = new GregorianCalendar();
+					tdcal.setTime(d);
+					tdcal.set(Calendar.SECOND, 59);
+					tdcal.set(Calendar.MINUTE, 59);
+					tdcal.set(Calendar.HOUR_OF_DAY, 23);
+					
+					if( tdcal.before(cal)) {
+						tdbuf.append("Task[" + task.getKey() + "] ");
+						tdbuf.append(task.getSummary());
+						tdbuf.append("\n");
+					}
+				}
+				
+			}
+		}
+		
+		subtasks = TaskModel.getReference().getSubTasks();
+		if (subtasks != null) {
+
+			for (Subtask subtask : subtasks) {
+				
+				Date d = subtask.getDueDate();
+				if( d != null && subtask.getCloseDate() == null) {
+					Calendar tdcal = new GregorianCalendar();
+					tdcal.setTime(d);
+					tdcal.set(Calendar.SECOND, 59);
+					tdcal.set(Calendar.MINUTE, 59);
+					tdcal.set(Calendar.HOUR_OF_DAY, 23);
+					
+					if( tdcal.before(cal)) {
+						tdbuf.append("Subtask[" + subtask.getKey() + "] ");
+						tdbuf.append(subtask.getDescription());
+						tdbuf.append("\n");
+					}
+				}
+				
+			}
+		}
+		
 		
 		if( !tdbuf.toString().equals(""))
 		{
