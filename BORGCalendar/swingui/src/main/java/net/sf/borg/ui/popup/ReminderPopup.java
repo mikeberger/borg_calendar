@@ -20,6 +20,18 @@
 
 package net.sf.borg.ui.popup;
 
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.text.DateFormat;
+import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.WindowConstants;
+
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -27,14 +39,8 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Theme;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.text.DateFormat;
-import java.util.Date;
 
 /**
  * Popop window for a single Reminder
@@ -260,11 +266,11 @@ class ReminderPopup extends View {
 		ReminderSound.playReminderSound(Prefs
 				.getPref(PrefName.BEEPINGREMINDERS));
 		
-		if (Prefs.getBoolPref(PrefName.TASKBAR_REMINDERS)) {
-			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(reminderInstance.getInstanceTime());
-			tx += " " + reminderInstance.getText();
-			DorkTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"),tx);
-		}
+//		if (Prefs.getBoolPref(PrefName.TASKBAR_REMINDERS)) {
+//			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(reminderInstance.getInstanceTime());
+//			tx += " " + reminderInstance.getText();
+//			DorkTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"),tx);
+//		}
 
 	}
 

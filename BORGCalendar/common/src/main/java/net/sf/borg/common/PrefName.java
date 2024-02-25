@@ -191,7 +191,7 @@ public class PrefName {
 	/** days before a birthday to show birthday reminders */
 	static public PrefName BIRTHDAYREMINDERDAYS = new PrefName("bd_reminder_days", Integer.valueOf(7));
 	
-	static public PrefName TASKBAR_REMINDERS = new PrefName("taskbar_reminders", "false");
+	//static public PrefName TASKBAR_REMINDERS = new PrefName("taskbar_reminders", "false");
 
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");
 	public static PrefName DAILYEMAILENABLED = new PrefName("daily_email_enabled", "true");;

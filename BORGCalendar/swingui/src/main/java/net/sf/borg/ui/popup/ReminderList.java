@@ -19,24 +19,33 @@
  */
 package net.sf.borg.ui.popup;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.TableSorter;
-
-import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ReminderList is a UI to show the list of reminders managed by the
@@ -367,10 +376,10 @@ public class ReminderList extends View {
 			tm.addRow(row);
 			tm.tableChanged(new TableModelEvent(tm));
 			
-			if( !silent && Prefs.getBoolPref(PrefName.TASKBAR_REMINDERS)) {
-				for( String s : notifiers)
-					DorkTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"), s);
-			}
+//			if( !silent && Prefs.getBoolPref(PrefName.TASKBAR_REMINDERS)) {
+//				for( String s : notifiers)
+//					DorkTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"), s);
+//			}
 
 		}
 

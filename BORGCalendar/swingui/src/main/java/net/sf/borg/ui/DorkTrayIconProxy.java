@@ -38,7 +38,9 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
+import dorkbox.systemTray.Menu;
 import dorkbox.systemTray.MenuItem;
+import dorkbox.systemTray.Separator;
 import dorkbox.systemTray.SystemTray;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -71,7 +73,6 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 
 	/* flag to indicate is a tray icon was started */
 	private static boolean trayIconStarted = false;
-
 
 	/**
 	 * Checks for presence of the tray icon.
@@ -107,6 +108,8 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 
 	}
 
+	private static Menu actionMenu;
+
 	/**
 	 * initalize the system tray
 	 *
@@ -120,10 +123,9 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 		}
 
 		systemTray.setImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/borg16.jpg")));
-		//systemTray.setStatus("Not Running");
 
-		addAction(Resource.getResourceString("Open_Calendar"), new OpenListener());
-		addAction(Resource.getResourceString("Show_Pops"), new ActionListener() {
+		systemTray.getMenu().add(new MenuItem(Resource.getResourceString("Open_Calendar"), new OpenListener()));
+		systemTray.getMenu().add(new MenuItem(Resource.getResourceString("Show_Pops"), new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -132,9 +134,9 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 					rm.showAll();
 			}
 
-		});
+		}));
 
-		addAction(Resource.getResourceString("Hide_Pops"), new ActionListener() {
+		systemTray.getMenu().add(new MenuItem(Resource.getResourceString("Hide_Pops"), new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -143,34 +145,41 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 					rm.hideAll();
 			}
 
-		});
+		}));
 
-		addAction(Resource.getResourceString("Options"), new ActionListener() {
+		actionMenu = systemTray.getMenu().add(new Menu(Resource.getResourceString("Open")));
+
+		systemTray.getMenu().add(new MenuItem(Resource.getResourceString("Options"), new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				OptionsView.getReference().setVisible(true);
 			}
-		});
+		}));
 
-		addAction(Resource.getResourceString("About"), new ActionListener() {
+		systemTray.getMenu().add(new Separator());
+
+		systemTray.getMenu().add(new MenuItem(Resource.getResourceString("About"), new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainMenu.AboutMIActionPerformed();
 			}
-		});
-		
-		addAction(Resource.getResourceString("Exit"), new ActionListener() {
+		}));
+
+		systemTray.getMenu().add(new Separator());
+
+		systemTray.getMenu().add(new MenuItem(Resource.getResourceString("Exit"), new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				UIControl.shutDownUI();
 			}
-		});
-		
+		}));
+
 		iconSize = systemTray.getTrayImageSize();
-		
+		log.info("Icon Size = " + iconSize);
+
 		updateImage();
 
 		Prefs.addListener(this);
@@ -189,6 +198,10 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 	 * depending on user preference.
 	 */
 	public void updateImage() {
+
+		if (!trayIconStarted)
+			return;
+
 		Image image = null;
 		if (Prefs.getBoolPref(PrefName.SYSTRAYDATE)) {
 
@@ -215,11 +228,8 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 			g.dispose();
 
 			image = bimage;
-			
-			SystemTray.get().setTooltip("BORG - "
-			+ DateFormat.getDateInstance(DateFormat.MEDIUM).format(
-					new Date()));
 
+			SystemTray.get().setTooltip("BORG - " + DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date()));
 
 		} else {
 			image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/borg16.jpg"));
@@ -232,6 +242,8 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 
 	/** start a timer that updates the date icon */
 	private void startRefreshTimer() {
+		if (!trayIconStarted)
+			return;
 
 		Timer updatetimer = new Timer("SysTrayTimer");
 		updatetimer.schedule(new TimerTask() {
@@ -254,17 +266,24 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 	 * @param text   the text for the menu item
 	 * @param action the action listener for the menu item
 	 */
+
 	static public void addAction(String text, ActionListener action) {
 
-		SystemTray systemTray = SystemTray.get();
-		systemTray.getMenu().add(new MenuItem(text, action));
+		if (!trayIconStarted)
+			return;
+
+		actionMenu.add(new MenuItem(text, action));
 	}
 
-	private void sendNotification(String title, String text) {
-		//trayIcon.displayMessage(title, text, MessageType.INFO);
-	}
+	//private void sendNotification(String title, String text) {
+		// trayIcon.displayMessage(title, text, MessageType.INFO);
+	//}
 
 	static public void displayNotification(String title, String text) {
+		
+		// not supported by this type of tray icon
+		
+		
 //		SwingUtilities.invokeLater(new Runnable() {
 //			@Override
 //			public void run() {
