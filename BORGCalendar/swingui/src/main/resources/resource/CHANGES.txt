@@ -1,10 +1,17 @@
 BORG 1.10.04
 ------------
-Taskbar notifications for reminders
+Change Taskbar implementation to fix Linux Mint (and possibly other OS) taskbar issues
+add View menu to quickly show/hide Private appts, subscribed calendars, and future todo repeats
+Add ability to subscribe to additional google calendars (read-only)
+Fix Shutdown Issue (was Backup issue) #184
 Subtask table readability changes
 Turn on FK validation for SQLite
-Improved sync of tasks to google
+Improved sync of tasks to google (and other misc google improvements)
+show full appt text in tooltips
+add past due tasks to reminder email
+Fix problem when changing look and feel - #193
 Misc fixes
+Security updates for 3pp libs
 
 
 BORG 1.10.03
