@@ -32,7 +32,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
-import net.sf.borg.ui.SunTrayIconProxy;
+import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.util.*;
 
 import javax.swing.*;
@@ -758,7 +758,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 						par.setView(ViewType.MEMO);
 					}
 				});
-		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+		DorkTrayIconProxy.addAction(getModuleName(), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.MEMO);

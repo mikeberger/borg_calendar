@@ -27,7 +27,7 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Theme;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.SunTrayIconProxy;
+import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -263,7 +263,7 @@ class ReminderPopup extends View {
 		if (Prefs.getBoolPref(PrefName.TASKBAR_REMINDERS)) {
 			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(reminderInstance.getInstanceTime());
 			tx += " " + reminderInstance.getText();
-			SunTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"),tx);
+			DorkTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"),tx);
 		}
 
 	}

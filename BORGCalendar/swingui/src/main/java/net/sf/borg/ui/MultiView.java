@@ -156,7 +156,7 @@ public class MultiView extends View {
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
 			@Override
 			public final void actionPerformed(ActionEvent e) {
-				if (SunTrayIconProxy.hasTrayIcon())
+				if (DorkTrayIconProxy.hasTrayIcon())
 					closeMainwindow();
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
@@ -304,7 +304,7 @@ public class MultiView extends View {
 	 * entirely
 	 */
 	private void closeMainwindow() {
-		if (!SunTrayIconProxy.hasTrayIcon() && this == mainView) {
+		if (!DorkTrayIconProxy.hasTrayIcon() && this == mainView) {
 			UIControl.shutDownUI();
 		} else {
 			this.dispose();

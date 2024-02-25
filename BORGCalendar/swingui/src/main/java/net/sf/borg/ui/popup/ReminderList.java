@@ -25,7 +25,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.SunTrayIconProxy;
+import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.TableSorter;
@@ -369,7 +369,7 @@ public class ReminderList extends View {
 			
 			if( !silent && Prefs.getBoolPref(PrefName.TASKBAR_REMINDERS)) {
 				for( String s : notifiers)
-					SunTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"), s);
+					DorkTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"), s);
 			}
 
 		}

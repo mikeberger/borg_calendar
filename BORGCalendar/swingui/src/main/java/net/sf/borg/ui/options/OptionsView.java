@@ -26,7 +26,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.SunTrayIconProxy;
+import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -184,8 +184,8 @@ public class OptionsView extends View {
         // options changes
         Prefs.notifyListeners();
 
-        if (SunTrayIconProxy.hasTrayIcon())
-            SunTrayIconProxy.getReference().updateImage();
+        if (DorkTrayIconProxy.hasTrayIcon())
+            DorkTrayIconProxy.getReference().updateImage();
 
     }
 

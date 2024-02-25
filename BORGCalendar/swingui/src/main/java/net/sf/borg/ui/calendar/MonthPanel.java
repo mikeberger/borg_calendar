@@ -60,7 +60,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.SunTrayIconProxy;
+import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -655,7 +655,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 				par.setView(ViewType.MONTH);
 			}
 		});
-		SunTrayIconProxy.addAction(getModuleName(), 
+		DorkTrayIconProxy.addAction(getModuleName(), 
 		new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {

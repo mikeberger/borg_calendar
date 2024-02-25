@@ -127,7 +127,7 @@ public class UIControl {
 	private static void completeUIInitialization() {
 
 		// tray icon
-		SunTrayIconProxy.startTrayIcon();
+		DorkTrayIconProxy.startTrayIcon();
 
 		// create reminder manager
 		if (Prefs.getBoolPref(PrefName.REMINDERLIST))
@@ -162,7 +162,7 @@ public class UIControl {
 
 		// allow start to system tray if option set and there is a system tray
 		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART)
-				&& SunTrayIconProxy.hasTrayIcon();
+				&& DorkTrayIconProxy.hasTrayIcon();
 
 		// make the main window visible
 		if (!bgStart) {

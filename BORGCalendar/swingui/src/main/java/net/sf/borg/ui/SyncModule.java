@@ -1,11 +1,7 @@
 package net.sf.borg.ui;
 
 import java.awt.Component;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
 import java.awt.Toolkit;
-import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -22,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import dorkbox.systemTray.SystemTray;
 import net.fortuna.ical4j.vcard.VCard;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.ModalMessageServer;
@@ -84,15 +81,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
         }
     };
     private JButton syncToolbarButton = null;
-    private TrayIcon trayIcon;
 
     public SyncModule() {
-        try {
-            trayIcon = new TrayIcon(
-                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
-        } catch (Exception e) {
-            log.warning(e.getMessage());
-        }
+       
     }
 
     public static JMenu getIcalMenu() {
@@ -593,12 +584,8 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                 new javax.swing.ImageIcon(SyncModule.class.getResource("/resource/Refresh16.gif")),
                 Resource.getResourceString("Sync"), syncButtonListener);
 
-        if (trayIcon != null)
-            trayIcon.setToolTip("BORG " + Resource.getResourceString("Sync"));
-        PopupMenu menu = new PopupMenu();
-        MenuItem item = new MenuItem();
-        item.setLabel(Resource.getResourceString("Sync"));
-        item.addActionListener(new ActionListener() {
+        SystemTray.get("sync").setTooltip("BORG " + Resource.getResourceString("Sync"));
+        SystemTray.get("sync").getMenu().add(new dorkbox.systemTray.MenuItem(Resource.getResourceString("Sync"),new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 try {
@@ -615,11 +602,8 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                     Errmsg.getErrorHandler().errmsg(e);
                 }
             }
-        });
-        menu.add(item);
-        if (trayIcon != null)
-            trayIcon.setPopupMenu(menu);
-
+        }));
+       
         try {
             updateSyncButton();
             showTrayIcon();
@@ -660,13 +644,14 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
     private void showTrayIcon() {
 
-        if (SunTrayIconProxy.hasTrayIcon()) {
+        if (DorkTrayIconProxy.hasTrayIcon()) {
 
             try {
                 if (!(CalDav.isSyncing() || GCal.isSyncing()) || SyncLog.getReference().getAll().isEmpty()) {
-                    SystemTray.getSystemTray().remove(trayIcon);
+                    SystemTray.get("sync").setEnabled(false);
                 } else {
-                    SystemTray.getSystemTray().add(trayIcon);
+                    SystemTray.get("sync").setEnabled(true);
+                    SystemTray.get("sync").setImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
                 }
             } catch (Exception e) {
                 // ignore

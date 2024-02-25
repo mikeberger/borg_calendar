@@ -29,7 +29,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.SunTrayIconProxy;
+import net.sf.borg.ui.DorkTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 import javax.swing.*;
@@ -723,7 +723,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 						par.setView(ViewType.DAY);
 					}
 				});
-		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+		DorkTrayIconProxy.addAction(getModuleName(), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.DAY);
