@@ -142,6 +142,11 @@ public class Prefs {
 			prefs.put(pn.getName(), (String) val);
 		}
 	}
+	
+	public static void delPref(PrefName pn) {
+		Preferences prefs = getPrefNode();
+		prefs.remove(pn.getName());
+	}
 
 	/**
 	 * Get the java.util.prefs.Preferences node where borg stores preferences.

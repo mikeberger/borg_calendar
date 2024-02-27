@@ -172,8 +172,8 @@ public class CardDav {
 		log.info("SYNC: connect to " + url);
 
 		CardDavStore store = new CardDavStore("-", url, createPathResolver());
-
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), CalDav.gep().toCharArray()))
+		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout());
+		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD)).toCharArray()))
 			return store;
 
 		return null;

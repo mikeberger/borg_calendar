@@ -203,7 +203,6 @@ public class PrefName {
 	static public PrefName EMAILTIME = new PrefName("email_time", Integer.valueOf(0));
 	static public PrefName EMAILUSER = new PrefName("email_user", "");
 	static public PrefName EMAILPASS = new PrefName("email_pass", "");
-	static public PrefName EMAILPASS2 = new PrefName("email_pass2", "");
 	static public PrefName EMAILPORT = new PrefName("email_port", "25");
 	static public PrefName ENABLETLS = new PrefName("enable_tls", "false");
 
@@ -256,9 +255,6 @@ public class PrefName {
 	/** keystore location */
 	static public PrefName KEYSTORE = new PrefName("key_store", "");
 
-	/** encryption key alias in the keystore */
-	static public PrefName KEYALIAS = new PrefName("key_alias", "borg_key");
-
 	/** cached password time to live in seconds */
 	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", Integer.valueOf(300));
 
@@ -297,7 +293,6 @@ public class PrefName {
 	public static PrefName CALDAV_PRINCIPAL_PATH = new PrefName("caldav-principal-path", "dav.php/principals");
 	public static PrefName CALDAV_USER = new PrefName("caldav-user", "");
 	public static PrefName CALDAV_PASSWORD = new PrefName("caldav-password", "");
-	public static PrefName CALDAV_PASSWORD2 = new PrefName("caldav-password2", "");
 
 	public static PrefName CALDAV_CAL = new PrefName("caldav-cal", "default");
 	public static PrefName CARDDAV_BOOK = new PrefName("carddav_book", "default");

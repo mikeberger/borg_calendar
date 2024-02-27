@@ -292,6 +292,8 @@ public class Borg implements SocketServer.SocketHandler {
 			AddressModel.getReference();
 			TaskModel.getReference();
 			LinkModel.getReference();
+			
+			PwMigration.migratePasswords();
 
 			// start the UI thread
 			SwingUtilities.invokeLater(new Runnable() {

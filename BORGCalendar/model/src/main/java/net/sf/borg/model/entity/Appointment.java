@@ -18,18 +18,16 @@
  */
 package net.sf.borg.model.entity;
 
+import java.util.Date;
+import java.util.Vector;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-
-import java.util.Date;
-import java.util.Vector;
 
 /**
  * The Appointment Entity
@@ -124,10 +122,8 @@ public class Appointment extends KeyedEntity<Appointment> implements
 		if (!isEncrypted())
 			return;
 
-		EncryptionHelper helper = new EncryptionHelper(
-				Prefs.getPref(PrefName.KEYSTORE), password);
-		String clearText = helper.decrypt(this.getText(),
-				Prefs.getPref(PrefName.KEYALIAS));
+		EncryptionHelper helper = new EncryptionHelper(password);
+		String clearText = helper.decrypt(this.getText());
 		this.setText(clearText);
 		this.setEncrypted(false);
 	}
@@ -137,10 +133,8 @@ public class Appointment extends KeyedEntity<Appointment> implements
 		if (isEncrypted())
 			return;
 
-		EncryptionHelper helper = new EncryptionHelper(
-				Prefs.getPref(PrefName.KEYSTORE), password);
-		String cipherText = helper.encrypt(this.getText(),
-				Prefs.getPref(PrefName.KEYALIAS));
+		EncryptionHelper helper = new EncryptionHelper( password);
+		String cipherText = helper.encrypt(this.getText());
 		this.setText(cipherText);
 		this.setEncrypted(true);
 

@@ -18,16 +18,14 @@
  */
 package net.sf.borg.model.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-
-import java.io.Serializable;
-import java.util.Date;
 
 
 
@@ -69,8 +67,8 @@ public class Memo implements EncryptableEntity, Serializable {
 			return;
 		
 		/* decrypt the memo text field */
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String clearText = helper.decrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS));
+		EncryptionHelper helper = new EncryptionHelper( password);
+		String clearText = helper.decrypt(this.getMemoText());
 		this.setMemoText(clearText);
 		this.setEncrypted(false);
 	}
@@ -81,8 +79,8 @@ public class Memo implements EncryptableEntity, Serializable {
 			return;
 		
 		/* encrypt the memo text field */
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String cipherText = helper.encrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS));
+		EncryptionHelper helper = new EncryptionHelper( password);
+		String cipherText = helper.encrypt(this.getMemoText());
 		this.setMemoText(cipherText);
 		this.setEncrypted(true);
 		

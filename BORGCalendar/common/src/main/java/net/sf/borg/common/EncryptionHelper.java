@@ -16,6 +16,8 @@ import java.util.Base64;
  * 
  */
 public class EncryptionHelper {
+	
+    static final String borg_key_alias = "borg_key";
 
 	/* the cached keystore object */
 	private final KeyStore keyStore;
@@ -37,7 +39,13 @@ public class EncryptionHelper {
 		store.store(fos, password.toCharArray());
 		fos.close();
 	}
+	
+	static public void createDefaultStore(String location, String password) throws Exception {
+		createStore(location, password);
+		generateKey(location,password,borg_key_alias);
+	}
 
+	
 	/**
 	 * generate a new encryption key in the key store. the key store password will
 	 * be used as the key password.
@@ -66,6 +74,10 @@ public class EncryptionHelper {
 
 	}
 
+	public EncryptionHelper(String keyStorePassword) throws Exception {
+		this(Prefs.getPref(PrefName.KEYSTORE), keyStorePassword);
+	}
+	
 	/**
 	 * constructor - loads a KeyStore from a file
 	 * @param keyStoreLocation - key store location
@@ -76,6 +88,7 @@ public class EncryptionHelper {
 			throws Exception {
 		
 		this.password = keyStorePassword;
+		
 		
 		if( keyStoreLocation == null || keyStoreLocation.equals(""))
 			throw new Warning(Resource.getResourceString("Key_Store_Not_Set"));
@@ -90,6 +103,10 @@ public class EncryptionHelper {
 		this.keyStore.load(fis, this.password
 				.toCharArray());
 		fis.close();
+	}
+	
+	public String encrypt(String clearText) throws Exception {
+		return encrypt(clearText,borg_key_alias);
 	}
 
 	/**
@@ -123,6 +140,10 @@ public class EncryptionHelper {
 		byte[] ba = baos.toByteArray();
 		return new String(Base64.getEncoder().encode(ba));
 
+	}
+	
+	public String decrypt(String clearText) throws Exception {
+		return decrypt(clearText,borg_key_alias);
 	}
 
 	/**
@@ -198,4 +219,6 @@ public class EncryptionHelper {
 
 	}
 
+	
+	
 }

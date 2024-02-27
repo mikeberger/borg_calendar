@@ -1,5 +1,17 @@
 package net.sf.borg.model.sync.ical;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.logging.Logger;
+
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
+
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
@@ -12,9 +24,15 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
-import net.fortuna.ical4j.model.property.*;
+import net.fortuna.ical4j.model.property.Completed;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Status;
+import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.ModalMessageServer;
+import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
@@ -23,24 +41,15 @@ import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.OptionModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.entity.*;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Option;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.sync.SyncEvent;
 import net.sf.borg.model.sync.SyncLog;
 import net.sf.borg.model.sync.google.GCal;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.*;
-import java.util.logging.Logger;
 
 public class CalDav {
 
@@ -129,7 +138,9 @@ public class CalDav {
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url, createPathResolver());
 
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), gep().toCharArray()))
+		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout());
+
+		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD)).toCharArray()))
 			return store;
 
 		return null;
@@ -175,31 +186,7 @@ public class CalDav {
 
 	}
 
-	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(PrefName.CALDAV_PASSWORD2);
-		String p2 = Prefs.getPref(PrefName.CALDAV_PASSWORD);
-		if ("".equals(p2))
-			return p2;
-
-		if ("".equals(p1)) {
-			sep(p2); // transition case
-			return p2;
-		}
-
-		byte[] ba = Base64.getDecoder().decode(p1);
-		SecretKey key = new SecretKeySpec(ba, "AES");
-		Cipher dec = Cipher.getInstance("AES");
-		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = Base64.getDecoder().decode(p2);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStream os = new CipherOutputStream(baos, dec);
-		os.write(decba);
-		os.close();
-
-		return baos.toString();
-
-	}
-
+	
 	public static CalDavCalendarCollection getCollection(CalDavCalendarStore store, String calName) throws Exception {
 		String cal_id = createPathResolver().getUserPath(Prefs.getPref(PrefName.CALDAV_USER)) + "/" + calName;
 		return store.getCollection(cal_id);
@@ -394,30 +381,7 @@ public class CalDav {
 			collection.removeCalendar(se.getUid());
 	}
 
-	public static void sep(String s) throws Exception {
-		if ("".equals(s)) {
-			Prefs.putPref(PrefName.CALDAV_PASSWORD, s);
-			return;
-		}
-		String p1 = Prefs.getPref(PrefName.CALDAV_PASSWORD2);
-		if ("".equals(p1)) {
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-			SecretKey key = keyGen.generateKey();
-			p1 = new String(Base64.getEncoder().encode(key.getEncoded()));
-			Prefs.putPref(PrefName.CALDAV_PASSWORD2, p1);
-		}
-
-		byte[] ba = Base64.getDecoder().decode(p1);
-		SecretKey key = new SecretKeySpec(ba, "AES");
-		Cipher enc = Cipher.getInstance("AES");
-		enc.init(Cipher.ENCRYPT_MODE, key);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStream os = new CipherOutputStream(baos, enc);
-		os.write(s.getBytes());
-		os.close();
-		ba = baos.toByteArray();
-		Prefs.putPref(PrefName.CALDAV_PASSWORD, new String(Base64.getEncoder().encode(ba)));
-	}
+	
 
 	/**
 	 * check remote server to see if sync needed - must not be run on Event thread
