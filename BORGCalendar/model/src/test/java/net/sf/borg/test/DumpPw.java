@@ -28,7 +28,7 @@ public class DumpPw {
 		System.out.println("EMPASS = " + Prefs.getPref(PrefName.EMAILPASS));
 		System.out.println("CALPASS = " + Prefs.getPref(PrefName.CALDAV_PASSWORD));
 		
-		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout());
+		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout("test"));
 		System.out.println("Clear EM Pass = " + helper.decrypt(Prefs.getPref(PrefName.EMAILPASS)));
 		System.out.println("Clear CAL Pass = " + helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD)));
 		

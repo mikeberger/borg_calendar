@@ -160,9 +160,13 @@ class EmailOptionsPanel extends OptionsPanel {
 			try {
 				String pw = new String(smpw.getPassword());
 				if (pw != null && !pw.isEmpty()) {
-					EncryptionHelper helper = new EncryptionHelper(
-							PasswordHelper.getReference().getPasswordWithoutTimeout());
-					Prefs.putPref(PrefName.EMAILPASS, helper.encrypt(pw));
+
+					String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt EMail Password");
+					if (kpw != null) {
+						EncryptionHelper helper = new EncryptionHelper(kpw);
+						Prefs.putPref(PrefName.EMAILPASS, helper.encrypt(pw));
+						smpw.setText("");
+					}
 				}
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);

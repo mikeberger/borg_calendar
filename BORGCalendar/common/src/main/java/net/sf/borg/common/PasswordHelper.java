@@ -55,31 +55,31 @@ public class PasswordHelper {
 	 * @return the password
 	 * @throws Exception
 	 */
-	public String getPasswordWithTimeout() throws Exception {
+	public String getPasswordWithTimeout(String reason) throws Exception {
 		// always check current value of password expiration time in prefs in case it
 		// has changed
 		int pw_ttl = Prefs.getIntPref(PrefName.PASSWORD_TTL);
 		Date expirationDate = new Date();
 		expirationDate.setTime(creationDate.getTime() + 1000 * pw_ttl);
 		if (password == null || expirationDate.before(new Date())) {
-			promptForPassword();
+			promptForPassword(reason);
 		}
 
 		return password;
 	}
 
-	public String getPasswordWithoutTimeout() throws Exception {
+	public String getPasswordWithoutTimeout(String reason) throws Exception {
 
 		if (password == null) {
-			promptForPassword();
+			promptForPassword(reason);
 		}
 
 		return password;
 	}
 
-	private void promptForPassword() throws Exception {
+	private void promptForPassword(String reason) throws Exception {
 		// prompt for a new password
-		JLabel label = new JLabel(Resource.getResourceString("EnterPasswordToDecrypt"));
+		JLabel label = new JLabel(Resource.getResourceString("Password_Prompt") + " " + reason);
 		JPasswordField jpf = new JPasswordField();
 		int result = JOptionPane.showConfirmDialog(null, new Object[] { label, jpf },
 				Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);

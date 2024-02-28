@@ -138,9 +138,14 @@ public class CalDav {
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url, createPathResolver());
 
-		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout());
+		String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Caldav Password");
+		if( kpw == null) return null;
 
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD)).toCharArray()))
+		EncryptionHelper helper = new EncryptionHelper( kpw);
+
+		String pw = helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD));
+		if( pw == null) return null;
+		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), pw.toCharArray()))
 			return store;
 
 		return null;

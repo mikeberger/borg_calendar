@@ -34,7 +34,7 @@ public class PwMigration {
 
 				// encrypt from new key and store
 				EncryptionHelper helper = new EncryptionHelper(
-						PasswordHelper.getReference().getPasswordWithoutTimeout());
+						PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt Email Password"));
 				Prefs.putPref(PrefName.EMAILPASS, helper.encrypt(pw));
 
 				// delete old pref key
@@ -48,7 +48,7 @@ public class PwMigration {
 
 				// encrypt from new key and store
 				EncryptionHelper helper = new EncryptionHelper(
-						PasswordHelper.getReference().getPasswordWithoutTimeout());
+						PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt Caldav Password"));
 				Prefs.putPref(PrefName.CALDAV_PASSWORD, helper.encrypt(pw));
 
 				// delete old pref key

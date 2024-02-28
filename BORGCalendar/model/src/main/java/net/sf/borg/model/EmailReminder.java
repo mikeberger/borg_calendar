@@ -316,22 +316,30 @@ public class EmailReminder {
 			while (stk.hasMoreTokens()) {
 				String a = stk.nextToken();
 				String f;
-				if( from == null || from.isEmpty())
+				if (from == null || from.isEmpty())
 					f = a.trim();
-				else 
-					f= from;
+				else
+					f = from;
 				if (!a.equals("")) {
-					EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout());
+					
+					String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Email Password");
+					if( kpw == null ) {
+						log.info("Skipping Email - no password");
+						return;
+					}
+					EncryptionHelper helper = new EncryptionHelper(kpw);
 
-					SendJavaMail.sendMail(host, stx,
-							Resource.getResourceString("Reminder_Notice"),
-							f, a.trim(),
-							Prefs.getPref(PrefName.EMAILUSER), helper.decrypt(Prefs.getPref(PrefName.EMAILPASS)));
+					String pw = helper.decrypt(Prefs.getPref(PrefName.EMAILPASS));
+					if (pw == null) {
+						log.info("Skipping Email - no password");
+					} else {
+
+						SendJavaMail.sendMail(host, stx, Resource.getResourceString("Reminder_Notice"), f, a.trim(),
+								Prefs.getPref(PrefName.EMAILUSER), pw);
+					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			log.info("Skipping email");
 		}
 		// record that we sent email today

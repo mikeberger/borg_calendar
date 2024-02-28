@@ -103,7 +103,7 @@ public class ExportImport {
 				f = addr;
 			else
 				f = from;
-			EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout());
+			EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Email Password"));
 
 			SendJavaMail.sendMailWithAttachments(host,
 					Resource.getResourceString("borg_backup"),

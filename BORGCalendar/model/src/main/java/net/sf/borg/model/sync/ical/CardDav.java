@@ -172,7 +172,7 @@ public class CardDav {
 		log.info("SYNC: connect to " + url);
 
 		CardDavStore store = new CardDavStore("-", url, createPathResolver());
-		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout());
+		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve CardDav Password"));
 		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD)).toCharArray()))
 			return store;
 

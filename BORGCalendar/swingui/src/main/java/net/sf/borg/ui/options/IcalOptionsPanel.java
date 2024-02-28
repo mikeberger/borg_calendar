@@ -141,10 +141,14 @@ public class IcalOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.CARDDAV_USER_PATH, carddavPath.getText());
 		try {
 			String pw = new String(caldavPassword.getPassword());
+
 			if (pw != null && !pw.isEmpty()) {
-				EncryptionHelper helper = new EncryptionHelper(
-						PasswordHelper.getReference().getPasswordWithoutTimeout());
-				Prefs.putPref(PrefName.CALDAV_PASSWORD, helper.encrypt(pw));
+				String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt CalDav Password");
+				if (kpw != null) {
+					EncryptionHelper helper = new EncryptionHelper(kpw);
+					Prefs.putPref(PrefName.CALDAV_PASSWORD, helper.encrypt(pw));
+					caldavPassword.setText("");
+				}
 			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
