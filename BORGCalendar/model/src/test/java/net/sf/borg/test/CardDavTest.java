@@ -1,22 +1,19 @@
 package net.sf.borg.test;
 
-import net.fortuna.ical4j.connector.dav.CardDavCollection;
-import net.fortuna.ical4j.connector.dav.CardDavStore;
-import net.fortuna.ical4j.vcard.VCard;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.sync.ical.AddressVcardAdapter;
-import net.sf.borg.model.sync.ical.CardDav;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import net.fortuna.ical4j.vcard.VCard;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.sync.ical.AddressVcardAdapter;
+import net.sf.borg.model.sync.ical.CardDav;
 
 public class CardDavTest {
 
@@ -34,18 +31,7 @@ public class CardDavTest {
 
     }
 
-    //@Test
-    public void testCardDav() throws Exception {
-        CardDavStore store = CardDav.connect("password");
-
-        CardDavCollection col = CardDav.getCollection(store, Prefs.getPref(PrefName.CARDDAV_BOOK));
-        System.out.println(col.getId());
-
-        for (VCard vc : col.getComponents()) {
-            /*Address addr = */
-            AddressVcardAdapter.fromVcard(vc);
-        }
-    }
+  
 
     @Test
     public void testImport() throws Exception {

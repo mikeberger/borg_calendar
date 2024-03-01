@@ -112,7 +112,7 @@ class MainMenu {
 					}
 					
 					String pass = PasswordHelper.getReference().decryptText( Prefs.getPref(PrefName.EMAILPASS), "Unlock Email Password", false);
-
+					if( pass == null ) return;
 					class MailThread extends Thread {
 						private String passwd;
 						public MailThread(String pass) {

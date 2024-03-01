@@ -289,13 +289,13 @@ public class PrefName {
 	public static PrefName CALDAV_SERVER = new PrefName("caldav-server", "");
 	public static PrefName CALDAV_PATH = new PrefName("caldav-path", "/baikal/html");
 	public static PrefName CALDAV_USER_PATH = new PrefName("caldav-user-path", "dav.php/calendars");
-	public static PrefName CARDDAV_USER_PATH = new PrefName("carddav-user-path", "dav.php/addressbooks");
+	//public static PrefName CARDDAV_USER_PATH = new PrefName("carddav-user-path", "dav.php/addressbooks");
 	public static PrefName CALDAV_PRINCIPAL_PATH = new PrefName("caldav-principal-path", "dav.php/principals");
 	public static PrefName CALDAV_USER = new PrefName("caldav-user", "");
 	public static PrefName CALDAV_PASSWORD = new PrefName("caldav-password", "");
 
 	public static PrefName CALDAV_CAL = new PrefName("caldav-cal", "default");
-	public static PrefName CARDDAV_BOOK = new PrefName("carddav_book", "default");
+	//public static PrefName CARDDAV_BOOK = new PrefName("carddav_book", "default");
 	public static PrefName CALDAV_USE_SSL = new PrefName("caldav-use-ssl", "false");
 	public static PrefName CALDAV_ALLOW_SELF_SIGNED_CERT = new PrefName("caldav-self-signed", "false");
 

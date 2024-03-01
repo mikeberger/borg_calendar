@@ -48,7 +48,7 @@ import net.sf.borg.model.entity.Task;
  */
 
 public class EmailReminder {
-	
+
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
@@ -60,30 +60,53 @@ public class EmailReminder {
 	 * @return true, if is strike
 	 */
 	private static boolean isStrike(CalendarEntity appt, Date date) {
-        return (appt.getColor() != null && appt.getColor().equals("strike"))
-                || (appt.isTodo() && !(appt.getNextTodo() == null || !appt
-                .getNextTodo().after(date)));
-    }
+		return (appt.getColor() != null && appt.getColor().equals("strike"))
+				|| (appt.isTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(date)));
+	}
 
-	static public void sendDailyEmailReminder(Calendar emailday, String passwd)
-			throws Exception {
+	static public boolean needToSendDailyEmail() {
+		// check if the email feature has been enabled
+		String email = Prefs.getPref(PrefName.EMAILENABLED);
+		if (email.equals("false"))
+			return false;
+
+		// get the SMTP host and address
+		String host = Prefs.getPref(PrefName.EMAILSERVER);
+		String addr = Prefs.getPref(PrefName.EMAILADDR);
+
+		if (host.equals("") || addr.equals(""))
+			return false;
+
+		Calendar cal = new GregorianCalendar();
+
+		int doy = -1;
+
+		// get the last day that email was sent
+		int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
+
+		// if email was already sent today - don't send again
+		doy = cal.get(Calendar.DAY_OF_YEAR);
+		if (doy == lastday)
+			return false;
+
+		return true;
+
+	}
+
+	static public void sendDailyEmailReminder(Calendar emailday, String passwd) throws Exception {
 		sendDailyEmailReminder(emailday, false, passwd);
 	}
 
 	/**
 	 * Send daily email reminder.
 	 * 
-	 * @param emailday
-	 *            the emailday
-	 *            
-	 * @param forceResend
-	 *    		resend the daily email, even if it was already sent
+	 * @param emailday    the emailday
 	 * 
-	 * @throws Exception
-	 *             the exception
+	 * @param forceResend resend the daily email, even if it was already sent
+	 * 
+	 * @throws Exception the exception
 	 */
-	static public void sendDailyEmailReminder(Calendar emailday, boolean forceResend, String passwd)
-			throws Exception {
+	static public void sendDailyEmailReminder(Calendar emailday, boolean forceResend, String passwd) throws Exception {
 
 		// check if the email feature has been enabled
 		String email = Prefs.getPref(PrefName.EMAILENABLED);
@@ -122,13 +145,11 @@ public class EmailReminder {
 		}
 
 		// tx is the contents of the email
-		String ap_tx = "Appointments for "
-				+ DateFormat.getDateInstance().format(cal.getTime()) + ":\n";
+		String ap_tx = "Appointments for " + DateFormat.getDateInstance().format(cal.getTime()) + ":\n";
 		StringBuffer tx = new StringBuffer();
 
 		// get the list of appts for the requested day
-		Collection<Integer> l = AppointmentModel.getReference().getAppts(
-				cal.getTime());
+		Collection<Integer> l = AppointmentModel.getReference().getAppts(cal.getTime());
 		if (l != null) {
 
 			Appointment appt;
@@ -138,17 +159,16 @@ public class EmailReminder {
 
 				try {
 					// read the appointment from the calendar model
-					appt = AppointmentModel.getReference().getAppt(
-							ik.intValue());
+					appt = AppointmentModel.getReference().getAppt(ik.intValue());
 
 					// get the appt flags to see if the appointment is private
 					// if so, don't include it in the email
 					if (appt.isPrivate())
 						continue;
-					
+
 					// skip strike through items
-					if( isStrike(appt, cal.getTime()))
-						continue;				
+					if (isStrike(appt, cal.getTime()))
+						continue;
 
 					if (!AppointmentModel.isNote(appt)) {
 						// add the appointment time to the email if it is not a
@@ -181,8 +201,7 @@ public class EmailReminder {
 		}
 
 		// load any task tracker items for the email
-		Collection<Task> tasks = TaskModel.getReference().get_tasks(
-				cal.getTime());
+		Collection<Task> tasks = TaskModel.getReference().get_tasks(cal.getTime());
 		if (tasks != null) {
 
 			for (Task task : tasks) {
@@ -192,37 +211,35 @@ public class EmailReminder {
 				tx.append("\n");
 			}
 		}
-		
-		Collection<Subtask> subtasks = TaskModel.getReference().get_subtasks(
-				cal.getTime());
+
+		Collection<Subtask> subtasks = TaskModel.getReference().get_subtasks(cal.getTime());
 		if (subtasks != null) {
 
 			for (Subtask subtask : subtasks) {
-				
+
 				// add each task to the email - and remove newlines
 				tx.append("Subtask[" + subtask.getKey() + "] ");
 				tx.append(subtask.getDescription());
 				tx.append("\n");
 			}
 		}
-		
+
 		// add any outstanding todos
 		Collection<Appointment> todos = AppointmentModel.getReference().get_todos();
 		StringBuffer tdbuf = new StringBuffer();
-		for( Appointment todo : todos ) {
+		for (Appointment todo : todos) {
 			Date nt = todo.getNextTodo();
 			if (nt == null) {
 				nt = todo.getDate();
 			}
-			
+
 			Calendar tdcal = new GregorianCalendar();
 			tdcal.setTime(nt);
 			tdcal.set(Calendar.SECOND, 59);
 			tdcal.set(Calendar.MINUTE, 59);
 			tdcal.set(Calendar.HOUR_OF_DAY, 23);
-			
-			if( tdcal.before(cal))
-			{
+
+			if (tdcal.before(cal)) {
 				if (!AppointmentModel.isNote(todo)) {
 					// add the appointment time to the email if it is not a
 					// note
@@ -246,62 +263,59 @@ public class EmailReminder {
 				}
 				tdbuf.append("\n");
 			}
-			
-		
+
 		}
-		
+
 		tasks = TaskModel.getReference().get_tasks();
 		if (tasks != null) {
 
 			for (Task task : tasks) {
-				
-				if( TaskModel.isClosed(task))
+
+				if (TaskModel.isClosed(task))
 					continue;
-				
+
 				Date d = task.getDueDate();
-				if( d != null ) {
+				if (d != null) {
 					Calendar tdcal = new GregorianCalendar();
 					tdcal.setTime(d);
 					tdcal.set(Calendar.SECOND, 59);
 					tdcal.set(Calendar.MINUTE, 59);
 					tdcal.set(Calendar.HOUR_OF_DAY, 23);
-					
-					if( tdcal.before(cal)) {
+
+					if (tdcal.before(cal)) {
 						tdbuf.append("Task[" + task.getKey() + "] ");
 						tdbuf.append(task.getSummary());
 						tdbuf.append("\n");
 					}
 				}
-				
+
 			}
 		}
-		
+
 		subtasks = TaskModel.getReference().getSubTasks();
 		if (subtasks != null) {
 
 			for (Subtask subtask : subtasks) {
-				
+
 				Date d = subtask.getDueDate();
-				if( d != null && subtask.getCloseDate() == null) {
+				if (d != null && subtask.getCloseDate() == null) {
 					Calendar tdcal = new GregorianCalendar();
 					tdcal.setTime(d);
 					tdcal.set(Calendar.SECOND, 59);
 					tdcal.set(Calendar.MINUTE, 59);
 					tdcal.set(Calendar.HOUR_OF_DAY, 23);
-					
-					if( tdcal.before(cal)) {
+
+					if (tdcal.before(cal)) {
 						tdbuf.append("Subtask[" + subtask.getKey() + "] ");
 						tdbuf.append(subtask.getDescription());
 						tdbuf.append("\n");
 					}
 				}
-				
+
 			}
 		}
-		
-		
-		if( !tdbuf.toString().equals(""))
-		{
+
+		if (!tdbuf.toString().equals("")) {
 			tx.append("\n\n");
 			tx.append(Resource.getResourceString("OverDue"));
 			tx.append("\n" + tdbuf);
@@ -319,10 +333,10 @@ public class EmailReminder {
 				else
 					f = from;
 				if (!a.equals("")) {
-					
+
 					SendJavaMail.sendMail(host, stx, Resource.getResourceString("Reminder_Notice"), f, a.trim(),
-								Prefs.getPref(PrefName.EMAILUSER), passwd);
-					
+							Prefs.getPref(PrefName.EMAILUSER), passwd);
+
 				}
 			}
 		} else {
@@ -334,8 +348,5 @@ public class EmailReminder {
 
 		return;
 	}
-
-
-	
 
 }

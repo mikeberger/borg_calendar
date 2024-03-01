@@ -318,7 +318,9 @@ public class Borg implements SocketServer.SocketHandler {
 					public void run() {
 
 						try {
-							if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED) && Prefs.getBoolPref(PrefName.EMAILENABLED)) {
+							if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED)
+									&& Prefs.getBoolPref(PrefName.EMAILENABLED)
+									&& EmailReminder.needToSendDailyEmail()) {
 								String passwd = PasswordHelper.getReference()
 										.decryptText(Prefs.getPref(PrefName.EMAILPASS), "Unlock Email Password", false);
 								if (passwd != null) {
@@ -347,8 +349,8 @@ public class Borg implements SocketServer.SocketHandler {
 				public void run() {
 					try {
 						if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED) && Prefs.getBoolPref(PrefName.EMAILENABLED)) {
-							String passwd = PasswordHelper.getReference()
-									.decryptText(Prefs.getPref(PrefName.EMAILPASS), "Unlock Email Password", false);
+							String passwd = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.EMAILPASS),
+									"Unlock Email Password", false);
 							if (passwd != null) {
 								EmailReminder.sendDailyEmailReminder(null, passwd);
 							} else {

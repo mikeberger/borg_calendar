@@ -53,11 +53,11 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private final JTextField caldavPath = new JTextField();
 	private final JTextField caldavPrincipalPath = new JTextField();
 	private final JTextField caldavUserPath = new JTextField();
-	private final JTextField carddavPath = new JTextField();
+	//private final JTextField carddavPath = new JTextField();
 	private final JTextField caldavUser = new JTextField();
 	private final JPasswordField caldavPassword = new JPasswordField();
 	private final JTextField caldavCal = new JTextField();
-	private final JTextField addrBook = new JTextField();
+	//private final JTextField addrBook = new JTextField();
 
 	private final JCheckBox caldavSSL = new JCheckBox();
 	private final JCheckBox caldavSelfSigned = new JCheckBox();
@@ -98,9 +98,9 @@ public class IcalOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 		calpanel.add(caldavCal, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
 
-		calpanel.add(new JLabel(Resource.getResourceString("Address_Book")),
-				GridBagConstraintsFactory.create(2, 2, GridBagConstraints.BOTH));
-		calpanel.add(addrBook, GridBagConstraintsFactory.create(3, 2, GridBagConstraints.BOTH, 1.0, 0.0));
+		//calpanel.add(new JLabel(Resource.getResourceString("Address_Book")),
+		//		GridBagConstraintsFactory.create(2, 2, GridBagConstraints.BOTH));
+		//calpanel.add(addrBook, GridBagConstraintsFactory.create(3, 2, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_PrincipalPath")),
 				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
@@ -110,9 +110,9 @@ public class IcalOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(2, 3, GridBagConstraints.BOTH));
 		calpanel.add(caldavUserPath, GridBagConstraintsFactory.create(3, 3, GridBagConstraints.BOTH, 1.0, 0.0));
 
-		calpanel.add(new JLabel(Resource.getResourceString("CARDDAV_UserPath")),
-				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
-		calpanel.add(carddavPath, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
+		//calpanel.add(new JLabel(Resource.getResourceString("CARDDAV_UserPath")),
+		//		GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		//calpanel.add(carddavPath, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		caldavSSL.setText(Resource.getResourceString("use_ssl"));
 		caldavSelfSigned.setText(Resource.getResourceString("allow_self_signed"));
@@ -138,7 +138,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.CALDAV_PATH, caldavPath.getText());
 		Prefs.putPref(PrefName.CALDAV_PRINCIPAL_PATH, caldavPrincipalPath.getText());
 		Prefs.putPref(PrefName.CALDAV_USER_PATH, caldavUserPath.getText());
-		Prefs.putPref(PrefName.CARDDAV_USER_PATH, carddavPath.getText());
+		//Prefs.putPref(PrefName.CARDDAV_USER_PATH, carddavPath.getText());
 		try {
 			String pw = new String(caldavPassword.getPassword());
 
@@ -155,7 +155,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		}
 
 		Prefs.putPref(PrefName.CALDAV_CAL, caldavCal.getText());
-		Prefs.putPref(PrefName.CARDDAV_BOOK, addrBook.getText());
+		//Prefs.putPref(PrefName.CARDDAV_BOOK, addrBook.getText());
 		OptionsPanel.setBooleanPref(caldavSSL, PrefName.CALDAV_USE_SSL);
 		OptionsPanel.setBooleanPref(caldavSelfSigned, PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT);
 
@@ -170,12 +170,12 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		caldavUser.setText(Prefs.getPref(PrefName.CALDAV_USER));
 		caldavCal.setText(Prefs.getPref(PrefName.CALDAV_CAL));
-		addrBook.setText(Prefs.getPref(PrefName.CARDDAV_BOOK));
+		//addrBook.setText(Prefs.getPref(PrefName.CARDDAV_BOOK));
 		caldavServer.setText(Prefs.getPref(PrefName.CALDAV_SERVER));
 		caldavPath.setText(Prefs.getPref(PrefName.CALDAV_PATH));
 		caldavPrincipalPath.setText(Prefs.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
 		caldavUserPath.setText(Prefs.getPref(PrefName.CALDAV_USER_PATH));
-		carddavPath.setText(Prefs.getPref(PrefName.CARDDAV_USER_PATH));
+		//carddavPath.setText(Prefs.getPref(PrefName.CARDDAV_USER_PATH));
 		caldavSSL.setSelected(Prefs.getBoolPref(PrefName.CALDAV_USE_SSL));
 		caldavSelfSigned.setSelected(Prefs.getBoolPref(PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT));
 

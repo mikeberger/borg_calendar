@@ -279,6 +279,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		});
 
 		vcardmenu.add(impvc);
+		/*
 
 		JMenuItem imcarddav = new JMenuItem();
 		imcarddav.setText(Resource.getResourceString("ImportCarddav"));
@@ -303,7 +304,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		});
 
-		vcardmenu.add(imcarddav);
+		vcardmenu.add(imcarddav);*/
 
 		JMenuItem expvc = new JMenuItem();
 		expvc.setText(Resource.getResourceString("exportToFile"));
