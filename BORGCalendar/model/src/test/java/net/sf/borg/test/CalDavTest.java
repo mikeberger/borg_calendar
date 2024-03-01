@@ -22,7 +22,7 @@ public class CalDavTest {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 		
-		CalDavCalendarStore store = CalDav.connect();
+		CalDavCalendarStore store = CalDav.connect("password");
 		
 		log.info("SYNC: Start Incoming Sync");
 

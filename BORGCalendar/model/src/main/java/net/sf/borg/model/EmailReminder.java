@@ -34,8 +34,6 @@ import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -67,9 +65,9 @@ public class EmailReminder {
                 .getNextTodo().after(date)));
     }
 
-	static public void sendDailyEmailReminder(Calendar emailday)
+	static public void sendDailyEmailReminder(Calendar emailday, String passwd)
 			throws Exception {
-		sendDailyEmailReminder(emailday, false);
+		sendDailyEmailReminder(emailday, false, passwd);
 	}
 
 	/**
@@ -84,7 +82,7 @@ public class EmailReminder {
 	 * @throws Exception
 	 *             the exception
 	 */
-	static public void sendDailyEmailReminder(Calendar emailday, boolean forceResend)
+	static public void sendDailyEmailReminder(Calendar emailday, boolean forceResend, String passwd)
 			throws Exception {
 
 		// check if the email feature has been enabled
@@ -322,21 +320,9 @@ public class EmailReminder {
 					f = from;
 				if (!a.equals("")) {
 					
-					String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Email Password");
-					if( kpw == null ) {
-						log.info("Skipping Email - no password");
-						return;
-					}
-					EncryptionHelper helper = new EncryptionHelper(kpw);
-
-					String pw = helper.decrypt(Prefs.getPref(PrefName.EMAILPASS));
-					if (pw == null) {
-						log.info("Skipping Email - no password");
-					} else {
-
-						SendJavaMail.sendMail(host, stx, Resource.getResourceString("Reminder_Notice"), f, a.trim(),
-								Prefs.getPref(PrefName.EMAILUSER), pw);
-					}
+					SendJavaMail.sendMail(host, stx, Resource.getResourceString("Reminder_Notice"), f, a.trim(),
+								Prefs.getPref(PrefName.EMAILUSER), passwd);
+					
 				}
 			}
 		} else {

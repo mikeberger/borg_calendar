@@ -1,9 +1,8 @@
 package net.sf.borg.test;
 
-import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.ui.util.PasswordHelper;
 
 public class DumpPw {
 
@@ -28,9 +27,8 @@ public class DumpPw {
 		System.out.println("EMPASS = " + Prefs.getPref(PrefName.EMAILPASS));
 		System.out.println("CALPASS = " + Prefs.getPref(PrefName.CALDAV_PASSWORD));
 		
-		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout("test"));
-		System.out.println("Clear EM Pass = " + helper.decrypt(Prefs.getPref(PrefName.EMAILPASS)));
-		System.out.println("Clear CAL Pass = " + helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD)));
+		System.out.println("Clear EM Pass = " + PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.EMAILPASS), "test", false));
+		System.out.println("Clear CAL Pass = " + PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "test", false));
 		
 
 	}

@@ -1,18 +1,5 @@
 package net.sf.borg.model.sync.ical;
 
-import net.fortuna.ical4j.connector.dav.CardDavCollection;
-import net.fortuna.ical4j.connector.dav.CardDavStore;
-import net.fortuna.ical4j.connector.dav.PathResolver;
-import net.fortuna.ical4j.connector.dav.PathResolver.GenericPathResolver;
-import net.fortuna.ical4j.util.CompatibilityHints;
-import net.fortuna.ical4j.vcard.VCard;
-import net.fortuna.ical4j.vcard.VCardBuilder;
-import net.sf.borg.common.*;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.entity.Address;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,6 +8,25 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
+
+import net.fortuna.ical4j.connector.dav.CardDavCollection;
+import net.fortuna.ical4j.connector.dav.CardDavStore;
+import net.fortuna.ical4j.connector.dav.PathResolver;
+import net.fortuna.ical4j.connector.dav.PathResolver.GenericPathResolver;
+import net.fortuna.ical4j.util.CompatibilityHints;
+import net.fortuna.ical4j.vcard.VCard;
+import net.fortuna.ical4j.vcard.VCardBuilder;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.IOHelper;
+import net.sf.borg.common.ModalMessageServer;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Warning;
+import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.entity.Address;
 
 public class CardDav {
 	
@@ -64,13 +70,13 @@ public class CardDav {
 		return importVcardFromInputStream(is);
 	}
 
-	static public List<VCard> importVcardFromCarddav() throws Exception {
+	static public List<VCard> importVcardFromCarddav(String pass) throws Exception {
 
 		setHints();
 
 		List<VCard> list = new ArrayList<VCard>();
 
-		CardDavStore store = CardDav.connect();
+		CardDavStore store = CardDav.connect(pass);
 		CardDavCollection col = CardDav.getCollection(store, Prefs.getPref(PrefName.CARDDAV_BOOK));
 
 		for (VCard vc : col.getComponents()) {
@@ -139,7 +145,7 @@ public class CardDav {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static CardDavStore connect() throws Exception {
+	public static CardDavStore connect(String password) throws Exception {
 
 		if (!CalDav.isSyncing())
 			return null;
@@ -172,8 +178,7 @@ public class CardDav {
 		log.info("SYNC: connect to " + url);
 
 		CardDavStore store = new CardDavStore("-", url, createPathResolver());
-		EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve CardDav Password"));
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD)).toCharArray()))
+		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), password.toCharArray()))
 			return store;
 
 		return null;

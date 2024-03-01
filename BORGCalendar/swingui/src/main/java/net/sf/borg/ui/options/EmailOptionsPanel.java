@@ -33,13 +33,13 @@ import javax.swing.SpinnerDateModel;
 
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PasswordHelper;
 
 /**
  * provides the UI for Email Options.
@@ -161,7 +161,7 @@ class EmailOptionsPanel extends OptionsPanel {
 				String pw = new String(smpw.getPassword());
 				if (pw != null && !pw.isEmpty()) {
 
-					String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt EMail Password");
+					String kpw = PasswordHelper.getReference().getEncryptionKeyWithoutTimeout("Encrypt EMail Password");
 					if (kpw != null) {
 						EncryptionHelper helper = new EncryptionHelper(kpw);
 						Prefs.putPref(PrefName.EMAILPASS, helper.encrypt(pw));

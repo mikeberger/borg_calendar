@@ -25,6 +25,8 @@ import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
+import net.sf.borg.ui.util.PasswordHelper;
+import net.sf.borg.ui.util.PwMigration;
 import net.sf.borg.ui.util.ScrolledDialog;
 import net.sf.borg.ui.util.UIErrorHandler;
 
@@ -292,7 +294,7 @@ public class Borg implements SocketServer.SocketHandler {
 			AddressModel.getReference();
 			TaskModel.getReference();
 			LinkModel.getReference();
-			
+
 			PwMigration.migratePasswords();
 
 			// start the UI thread
@@ -310,20 +312,30 @@ public class Borg implements SocketServer.SocketHandler {
 			int mailtime = emailmins - curmins;
 			if (mailtime < 0) {
 				// we are past mailtime - send it now
-				try {
-					if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED))
-						EmailReminder.sendDailyEmailReminder(null);
-					else
-						log.info("Skipping Daily Email");
-				} catch (Exception e) {
-					final Exception fe = e;
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							Errmsg.getErrorHandler().errmsg(fe);
+
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+
+						try {
+							if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED) && Prefs.getBoolPref(PrefName.EMAILENABLED)) {
+								String passwd = PasswordHelper.getReference()
+										.decryptText(Prefs.getPref(PrefName.EMAILPASS), "Unlock Email Password", false);
+								if (passwd != null) {
+									EmailReminder.sendDailyEmailReminder(null, passwd);
+								} else {
+									log.info("Skipping Daily Email");
+								}
+							} else {
+								log.info("Skipping Daily Email");
+							}
+						} catch (Exception e) {
+							Errmsg.getErrorHandler().errmsg(e);
 						}
-					});
-				}
+
+					}
+				});
+
 				// set timer for next mailtime
 				mailtime += 24 * 60; // 24 hours from now
 			}
@@ -334,18 +346,19 @@ public class Borg implements SocketServer.SocketHandler {
 				@Override
 				public void run() {
 					try {
-						if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED))
-							EmailReminder.sendDailyEmailReminder(null);
-						else
-							log.info("Skipping Daily Email");
-					} catch (Exception e) {
-						final Exception fe = e;
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								Errmsg.getErrorHandler().errmsg(fe);
+						if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED) && Prefs.getBoolPref(PrefName.EMAILENABLED)) {
+							String passwd = PasswordHelper.getReference()
+									.decryptText(Prefs.getPref(PrefName.EMAILPASS), "Unlock Email Password", false);
+							if (passwd != null) {
+								EmailReminder.sendDailyEmailReminder(null, passwd);
+							} else {
+								log.info("Skipping Daily Email");
 							}
-						});
+						} else {
+							log.info("Skipping Daily Email");
+						}
+					} catch (Exception e) {
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 				}
 			}, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);

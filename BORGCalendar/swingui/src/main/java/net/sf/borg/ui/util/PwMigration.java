@@ -1,4 +1,4 @@
-package net.sf.borg.common;
+package net.sf.borg.ui.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -9,6 +9,11 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import net.sf.borg.common.EncryptionHelper;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+
 // one time password migration for old email and caldav passwords
 public class PwMigration {
 
@@ -16,58 +21,68 @@ public class PwMigration {
 	private static final PrefName EMAILPASS2 = new PrefName("email_pass2", "");
 	private static final PrefName CALDAV_PASSWORD2 = new PrefName("caldav-password2", "");
 
-	static public void migratePasswords() throws Exception {
+	static public void migratePasswords() {
 
 		boolean done = Prefs.getBoolPref(PWMIGRATED);
 		if (done)
 			return;
 
 		String keystore = Prefs.getPref(PrefName.KEYSTORE);
-		
-		// if there is a keystore, then migrate the email and caldav passwords
-		if (keystore != null && !keystore.isEmpty()) {
 
-			String emailKey = Prefs.getPref(EMAILPASS2);
-			if (emailKey != null && !emailKey.isEmpty()) {
-				// decrypt existing pw
-				String pw = emailgep();
+		try {
 
-				// encrypt from new key and store
-				EncryptionHelper helper = new EncryptionHelper(
-						PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt Email Password"));
-				Prefs.putPref(PrefName.EMAILPASS, helper.encrypt(pw));
+			// if there is a keystore, then migrate the email and caldav passwords
+			if (keystore != null && !keystore.isEmpty()) {
 
-				// delete old pref key
-				Prefs.delPref(EMAILPASS2);
-			}
+				String emailKey = Prefs.getPref(EMAILPASS2);
+				if (emailKey != null && !emailKey.isEmpty()) {
+					// decrypt existing pw
+					String pw = emailgep();
 
-			String caldavKey = Prefs.getPref(CALDAV_PASSWORD2);
-			if (caldavKey != null && !caldavKey.isEmpty()) {
-				// decrypt existing pw
-				String pw = caldavgep();
+					// encrypt from new key and store
+					EncryptionHelper helper = new EncryptionHelper(
+							PasswordHelper.getReference().getEncryptionKeyWithoutTimeout("Migrate Email Password"));
+					Prefs.putPref(PrefName.EMAILPASS, helper.encrypt(pw));
 
-				// encrypt from new key and store
-				EncryptionHelper helper = new EncryptionHelper(
-						PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt Caldav Password"));
-				Prefs.putPref(PrefName.CALDAV_PASSWORD, helper.encrypt(pw));
+					// delete old pref key
+					Prefs.delPref(EMAILPASS2);
+				}
 
-				// delete old pref key
+				String caldavKey = Prefs.getPref(CALDAV_PASSWORD2);
+				if (caldavKey != null && !caldavKey.isEmpty()) {
+					// decrypt existing pw
+					String pw = caldavgep();
+
+					// encrypt from new key and store
+					EncryptionHelper helper = new EncryptionHelper(
+							PasswordHelper.getReference().getEncryptionKeyWithoutTimeout("Migrate Caldav Password"));
+					Prefs.putPref(PrefName.CALDAV_PASSWORD, helper.encrypt(pw));
+
+					// delete old pref key
+					Prefs.delPref(CALDAV_PASSWORD2);
+				}
+			} else {
+				// there is no keystore - just delete the old pws. user will have to recreate
+				Prefs.delPref(PrefName.CALDAV_PASSWORD);
 				Prefs.delPref(CALDAV_PASSWORD2);
+				Prefs.delPref(PrefName.EMAILPASS);
+				Prefs.delPref(EMAILPASS2);
+
 			}
-		}
-		else {
-			// there is no keystore - just delete the old pws. user will have to recreate
+
+
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().notice("Password Migration Failed. Please manually reset Caldav and/or Email passwords.");
 			Prefs.delPref(PrefName.CALDAV_PASSWORD);
 			Prefs.delPref(CALDAV_PASSWORD2);
 			Prefs.delPref(PrefName.EMAILPASS);
 			Prefs.delPref(EMAILPASS2);
-
 		}
 		
+		
 		Prefs.putPref(PWMIGRATED, "true");
-		
-		
-		
+
+
 	}
 
 	// legacy code to get the caldav password

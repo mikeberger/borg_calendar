@@ -36,7 +36,7 @@ public class CardDavTest {
 
     //@Test
     public void testCardDav() throws Exception {
-        CardDavStore store = CardDav.connect();
+        CardDavStore store = CardDav.connect("password");
 
         CardDavCollection col = CardDav.getCollection(store, Prefs.getPref(PrefName.CARDDAV_BOOK));
         System.out.println(col.getId());

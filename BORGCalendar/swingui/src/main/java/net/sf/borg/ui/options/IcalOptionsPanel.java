@@ -34,12 +34,12 @@ import javax.swing.border.TitledBorder;
 
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PasswordHelper;
 
 public class IcalOptionsPanel extends OptionsPanel {
 
@@ -143,7 +143,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 			String pw = new String(caldavPassword.getPassword());
 
 			if (pw != null && !pw.isEmpty()) {
-				String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Encrypt CalDav Password");
+				String kpw = PasswordHelper.getReference().getEncryptionKeyWithoutTimeout("Encrypt CalDav Password");
 				if (kpw != null) {
 					EncryptionHelper helper = new EncryptionHelper(kpw);
 					Prefs.putPref(PrefName.CALDAV_PASSWORD, helper.encrypt(pw));

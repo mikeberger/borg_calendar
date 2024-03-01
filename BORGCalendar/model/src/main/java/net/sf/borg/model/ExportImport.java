@@ -19,18 +19,16 @@
  */
 package net.sf.borg.model;
 
-import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PasswordHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.SendJavaMail;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -46,11 +44,9 @@ public class ExportImport {
 	 * 
 	 * @param dir
 	 *            the directory to create the zip file in
-	 * @param backup_email
-	 *            - send email containing the backup
 	 * @throws Exception
 	 */
-	public static void exportToZip(String dir, boolean backup_email)
+	public static void exportToZip(String dir)
 			throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String uniq = sdf.format(new Date());
@@ -85,33 +81,7 @@ public class ExportImport {
 
 		out.close();
 
-		if (backup_email) {
-
-			if (Prefs.getBoolPref(PrefName.EMAILENABLED) == false)
-				return;
-
-			// get the SMTP host and address
-			String host = Prefs.getPref(PrefName.EMAILSERVER);
-			String addr = Prefs.getPref(PrefName.EMAILADDR);
-			String from = Prefs.getPref(PrefName.EMAILFROM);
-
-			StringTokenizer stk = new StringTokenizer(addr, ",;");
-			if (stk.hasMoreTokens())
-				addr = stk.nextToken();
-			String f;
-			if (from == null || from.isEmpty())
-				f = addr;
-			else
-				f = from;
-			EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Email Password"));
-
-			SendJavaMail.sendMailWithAttachments(host,
-					Resource.getResourceString("borg_backup"),
-					Resource.getResourceString("borg_backup"), f, addr,
-					Prefs.getPref(PrefName.EMAILUSER), helper.decrypt(Prefs.getPref(PrefName.EMAILPASS)),
-					new String[] { backupFilename });
-
-		}
+		
 	}
 
 	/**

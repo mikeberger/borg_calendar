@@ -39,6 +39,7 @@ import net.sf.borg.ui.options.GoogleOptionsPanel;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.FileDrop;
+import net.sf.borg.ui.util.PasswordHelper;
 
 public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
@@ -52,7 +53,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 				if (GCal.isSyncing()) {
 					runGcalSync(false, false);
 				} else if (CalDav.isSyncing()) {
-					runBackgroundSync(Synctype.FULL);
+					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
+					if( pass != null )
+						runBackgroundSync(Synctype.FULL, pass);
 				} else {
 					JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
 							JOptionPane.ERROR_MESSAGE);
@@ -72,8 +75,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-
-				runBackgroundSync(Synctype.FULL);
+				String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
+				if( pass != null )
+					runBackgroundSync(Synctype.FULL, pass);
 
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
@@ -113,7 +117,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					runBackgroundSync(Synctype.ONEWAY);
+					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
+					if( pass != null )
+						runBackgroundSync(Synctype.ONEWAY, pass);
 
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
@@ -140,7 +146,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 							JOptionPane.WARNING_MESSAGE);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
-					runBackgroundSync(Synctype.OVERWRITE);
+					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
+					if( pass != null )
+						runBackgroundSync(Synctype.OVERWRITE, pass);
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -281,7 +289,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 				try {
 
-					List<VCard> vcards = CardDav.importVcardFromCarddav();
+					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock CardDav Password", false);
+					if( pass == null ) return;
+					List<VCard> vcards = CardDav.importVcardFromCarddav(pass);
 					String warning = CardDav.importVCard(vcards);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
@@ -420,7 +430,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 	/**
 	 * run a sync command in a background thread while a modal message is presented
 	 */
-	static private void runBackgroundSync(Synctype type) {
+	static private void runBackgroundSync(Synctype type, String pass) {
 
 		final Synctype ty = type;
 		class SyncWorker extends SwingWorker<Void, Object> {
@@ -431,11 +441,11 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 					// modally lock borg
 					ModalMessageServer.getReference().sendMessage("lock:" + Resource.getResourceString("syncing"));
 					if (ty == Synctype.FULL)
-						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
+						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false, pass);
 					else if (ty == Synctype.ONEWAY)
-						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true);
+						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true, pass);
 					else if (ty == Synctype.OVERWRITE)
-						CalDav.export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+						CalDav.export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), pass);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -590,7 +600,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 								if (GCal.isSyncing()) {
 									runGcalSync(false, false);
 								} else if (CalDav.isSyncing()) {
-									runBackgroundSync(Synctype.FULL);
+									String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
+									if( pass != null )
+										runBackgroundSync(Synctype.FULL, pass);
 								} else {
 									JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"),
 											null, JOptionPane.ERROR_MESSAGE);

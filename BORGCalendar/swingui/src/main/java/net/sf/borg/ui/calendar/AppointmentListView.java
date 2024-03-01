@@ -69,6 +69,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.MyDateChooser;
+import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -384,9 +385,11 @@ public class AppointmentListView extends DockableView implements
 								java.awt.event.ActionEvent evt) {
 							class MailThread extends Thread {
 								private final Calendar cal;
+								private final String passwd;
 
-								public MailThread(Calendar c) {
+								public MailThread(Calendar c, String pass) {
 									cal = c;
+									this.passwd = pass;
 									this.setName("Reminder Mail Thread");
 								}
 
@@ -395,7 +398,7 @@ public class AppointmentListView extends DockableView implements
 
 									try {
 										EmailReminder
-												.sendDailyEmailReminder(cal);
+												.sendDailyEmailReminder(cal, passwd);
 									} catch (Exception e) {
 										final Exception fe = e;
 										SwingUtilities
@@ -408,8 +411,13 @@ public class AppointmentListView extends DockableView implements
 									}
 								}
 							}
-
-							new MailThread(cal_).start();
+							try {
+								String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.EMAILPASS), "Unlock Email Password", false);
+								new MailThread(cal_, pass).start();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 
 						}
 					});

@@ -19,7 +19,6 @@
 package net.sf.borg.ui.memo;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -423,7 +422,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 				try {
 					Memo m = MemoModel.getReference().getMemo(
 							getSelectedMemoName());
-					String pw = PasswordHelper.getReference().getPasswordWithTimeout("Decrypt Memo");
+					String pw = PasswordHelper.getReference().getEncryptionKeyWithTimeout("Decrypt Memo");
 					if (pw == null)
 						return;
 					m.decrypt(pw);
@@ -588,7 +587,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			m.setMemoText(memoText.getPlainText());
 			m.setEncrypted(false);
 			if (encryptBox.isSelected()) {
-				String pw = PasswordHelper.getReference().getPasswordWithTimeout("Encrypt Memo");
+				String pw = PasswordHelper.getReference().getEncryptionKeyWithTimeout("Encrypt Memo");
 				if (pw == null)
 					return;
 				m.encrypt(pw);

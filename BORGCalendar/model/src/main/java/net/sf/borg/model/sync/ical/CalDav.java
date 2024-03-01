@@ -30,9 +30,7 @@ import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.ModalMessageServer;
-import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
@@ -104,7 +102,7 @@ public class CalDav {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static CalDavCalendarStore connect() throws Exception {
+	public static CalDavCalendarStore connect(String password) throws Exception {
 
 		if (!isSyncing())
 			return null;
@@ -138,20 +136,14 @@ public class CalDav {
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url, createPathResolver());
 
-		String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Caldav Password");
-		if( kpw == null) return null;
 
-		EncryptionHelper helper = new EncryptionHelper( kpw);
-
-		String pw = helper.decrypt(Prefs.getPref(PrefName.CALDAV_PASSWORD));
-		if( pw == null) return null;
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), pw.toCharArray()))
+		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), password.toCharArray()))
 			return store;
 
 		return null;
 	}
 
-	static public synchronized void export(Integer years) throws Exception {
+	static public synchronized void export(Integer years, String password) throws Exception {
 
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
@@ -168,7 +160,7 @@ public class CalDav {
 
 		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
 
-		CalDavCalendarStore store = connect();
+		CalDavCalendarStore store = connect(password);
 		if (store == null)
 			throw new Exception("Failed to connect to CalDav Store");
 
@@ -393,8 +385,8 @@ public class CalDav {
 	 *
 	 * @throws Exception
 	 */
-	static public synchronized boolean checkRemoteSync() throws Exception {
-		CalDavCalendarStore store = connect();
+	static public synchronized boolean checkRemoteSync(String password) throws Exception {
+		CalDavCalendarStore store = connect(password);
 		if (store == null)
 			throw new Exception("Failed to connect to CalDav Store");
 
@@ -439,7 +431,7 @@ public class CalDav {
 
 	}
 
-	static public synchronized void sync(Integer years, boolean outward_only) throws Exception {
+	static public synchronized void sync(Integer years, boolean outward_only, String password) throws Exception {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
@@ -447,7 +439,7 @@ public class CalDav {
 		
 		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", "net.fortuna.ical4j.util.MapTimeZoneCache");
 
-		CalDavCalendarStore store = connect();
+		CalDavCalendarStore store = connect(password);
 		if (store == null)
 			throw new Exception("Failed to connect to CalDav Store");
 

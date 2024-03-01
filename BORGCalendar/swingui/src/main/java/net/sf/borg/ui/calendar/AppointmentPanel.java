@@ -246,7 +246,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
      * @throws Exception
      */
     private static void encryptAppt(Appointment appt) throws Exception {
-        String pw = PasswordHelper.getReference().getPasswordWithTimeout("Encrypt Appointment");
+        String pw = PasswordHelper.getReference().getEncryptionKeyWithTimeout("Encrypt Appointment");
         if (pw == null)
             throw new Exception("Cannot encrypt appointment without keystore password");
         appt.encrypt(pw);
@@ -750,7 +750,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
                     Appointment appt = AppointmentModel.getReference().getAppt(currentlyShownAppointmentKey);
                     if (appt == null)
                         return;
-                    String pw = PasswordHelper.getReference().getPasswordWithTimeout("Decrypt Appointment");
+                    String pw = PasswordHelper.getReference().getEncryptionKeyWithTimeout("Decrypt Appointment");
                     if (pw == null)
                         return;
                     appt.decrypt(pw);

@@ -297,7 +297,7 @@ public class UIControl {
 			if (do_backup == true) {
 				try {
 					final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
-					ExportImport.exportToZip(backupdir, false);
+					ExportImport.exportToZip(backupdir);
 					log.info("Export to ZIP Complete");
 				} catch (Exception e) {
 					e.printStackTrace();

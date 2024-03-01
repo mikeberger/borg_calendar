@@ -18,7 +18,34 @@
  */
 package net.sf.borg.ui;
 
-import net.sf.borg.common.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.util.Properties;
+
+import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.IOHelper;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.EmailReminder;
 import net.sf.borg.model.ExportImport;
@@ -27,16 +54,8 @@ import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.options.OptionsView;
+import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.ScrolledDialog;
-
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
-import java.util.Properties;
 
 /**
  * The borg main menu bar
@@ -91,16 +110,21 @@ class MainMenu {
 						Errmsg.getErrorHandler().notice(Resource.getResourceString("emailNotEnabled"));
 						return;
 					}
+					
+					String pass = PasswordHelper.getReference().decryptText( Prefs.getPref(PrefName.EMAILPASS), "Unlock Email Password", false);
 
 					class MailThread extends Thread {
-						public MailThread() {
+						private String passwd;
+						public MailThread(String pass) {
+							this.passwd = pass;
 							this.setName("Reminder Mail Thread");
 						}
 
 						@Override
 						public void run() {
 							try {
-								EmailReminder.sendDailyEmailReminder(null, true);
+								
+								EmailReminder.sendDailyEmailReminder(null, true, passwd);
 							} catch (Exception e) {
 								final Exception fe = e;
 								SwingUtilities.invokeLater(new Runnable() {
@@ -113,7 +137,7 @@ class MainMenu {
 						}
 					}
 
-					new MailThread().start();
+					new MailThread(pass).start();
 
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
@@ -510,7 +534,7 @@ class MainMenu {
 		}
 
 		try {
-			ExportImport.exportToZip(s, false);
+			ExportImport.exportToZip(s);
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
