@@ -25,6 +25,17 @@
 
 package net.sf.borg.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.StringTokenizer;
+import java.util.logging.Logger;
+
+import net.sf.borg.common.EncryptionHelper;
+import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -33,18 +44,6 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * this class handles the daily email reminder
@@ -317,21 +316,30 @@ public class EmailReminder {
 			while (stk.hasMoreTokens()) {
 				String a = stk.nextToken();
 				String f;
-				if( from == null || from.isEmpty())
+				if (from == null || from.isEmpty())
 					f = a.trim();
-				else 
-					f= from;
+				else
+					f = from;
 				if (!a.equals("")) {
 					
-					SendJavaMail.sendMail(host, stx,
-							Resource.getResourceString("Reminder_Notice"),
-							f, a.trim(),
-							Prefs.getPref(PrefName.EMAILUSER), gep());
+					String kpw = PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Email Password");
+					if( kpw == null ) {
+						log.info("Skipping Email - no password");
+						return;
+					}
+					EncryptionHelper helper = new EncryptionHelper(kpw);
+
+					String pw = helper.decrypt(Prefs.getPref(PrefName.EMAILPASS));
+					if (pw == null) {
+						log.info("Skipping Email - no password");
+					} else {
+
+						SendJavaMail.sendMail(host, stx, Resource.getResourceString("Reminder_Notice"), f, a.trim(),
+								Prefs.getPref(PrefName.EMAILUSER), pw);
+					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			log.info("Skipping email");
 		}
 		// record that we sent email today
@@ -341,59 +349,7 @@ public class EmailReminder {
 		return;
 	}
 
-	// intentionally undocumented - not foolproof. unrelated to memo and appt
-	// encryption, which is fully secure
-	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
-		String p2 = Prefs.getPref(PrefName.EMAILPASS);
-		if ("".equals(p2))
-			return p2;
 
-		if ("".equals(p1)) {
-			sep(p2); // transition case
-			return p2;
-		}
-
-		byte[] ba = Base64.getDecoder().decode(p1);
-		SecretKey key = new SecretKeySpec(ba, "AES");
-		Cipher dec = Cipher.getInstance("AES");
-		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = Base64.getDecoder().decode(p2);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStream os = new CipherOutputStream(baos, dec);
-		os.write(decba);
-		os.close();
-
-		return baos.toString();
-
-	}
-
-	// intentionally undocumented - not foolproof. unrelated to memo and appt
-	// encryption, which is
-	// fully secure
-	public static void sep(String s) throws Exception {
-		if ("".equals(s)) {
-			Prefs.putPref(PrefName.EMAILPASS, s);
-			return;
-		}
-		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
-		if ("".equals(p1)) {
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-			SecretKey key = keyGen.generateKey();
-			p1 = new String(Base64.getEncoder().encode(key.getEncoded()));
-			Prefs.putPref(PrefName.EMAILPASS2, p1);
-		}
-
-		byte[] ba = Base64.getDecoder().decode(p1);
-		SecretKey key = new SecretKeySpec(ba, "AES");
-		Cipher enc = Cipher.getInstance("AES");
-		enc.init(Cipher.ENCRYPT_MODE, key);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStream os = new CipherOutputStream(baos, enc);
-		os.write(s.getBytes());
-		os.close();
-		ba = baos.toByteArray();
-		Prefs.putPref(PrefName.EMAILPASS, new String(Base64.getEncoder().encode(ba)));
-	}
+	
 
 }

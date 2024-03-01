@@ -19,14 +19,29 @@
  */
 package net.sf.borg.ui.options;
 
-import net.sf.borg.common.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.io.File;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+
+import net.sf.borg.common.EncryptionHelper;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
 
 /**
  * Provides the UI for editing Encryption options
@@ -104,11 +119,8 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 					}
 
 					try {
-						EncryptionHelper.createStore(file.getAbsolutePath(),
-								new String(jpf.getPassword()));
-						EncryptionHelper.generateKey(file.getAbsolutePath(),
-								new String(jpf.getPassword()), Prefs
-										.getPref(PrefName.KEYALIAS));
+						EncryptionHelper.createDefaultStore(file.getAbsolutePath(),
+								new String(jpf.getPassword()));						
 					} catch (Exception e) {
 						Errmsg.getErrorHandler().errmsg(e);
 					}
@@ -167,5 +179,8 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 	public String getPanelName() {
 		return Resource.getResourceString("Encryption");
 	}
+	
+
+
 
 }

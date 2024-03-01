@@ -19,6 +19,8 @@
  */
 package net.sf.borg.model;
 
+import net.sf.borg.common.EncryptionHelper;
+import net.sf.borg.common.PasswordHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -101,10 +103,12 @@ public class ExportImport {
 				f = addr;
 			else
 				f = from;
+			EncryptionHelper helper = new EncryptionHelper( PasswordHelper.getReference().getPasswordWithoutTimeout("Retrieve Email Password"));
+
 			SendJavaMail.sendMailWithAttachments(host,
 					Resource.getResourceString("borg_backup"),
 					Resource.getResourceString("borg_backup"), f, addr,
-					Prefs.getPref(PrefName.EMAILUSER), EmailReminder.gep(),
+					Prefs.getPref(PrefName.EMAILUSER), helper.decrypt(Prefs.getPref(PrefName.EMAILPASS)),
 					new String[] { backupFilename });
 
 		}

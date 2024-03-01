@@ -17,12 +17,7 @@ This file is part of BORG.
  
 Copyright 2009 by Mike Berger
  */
-package net.sf.borg.ui.util;
-
-import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
+package net.sf.borg.common;
 
 import javax.swing.*;
 import java.util.Date;
@@ -54,44 +49,55 @@ public class PasswordHelper {
 	}
 
 	/**
-	 * returns the cached password or prompts the user to enter one if none
-	 * exists or the current one is expired
+	 * returns the cached password or prompts the user to enter one if none exists
+	 * or the current one is expired
 	 * 
 	 * @return the password
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public String getPassword() throws Exception {
-		// always check current value of password expiration time in prefs in case it has changed
+	public String getPasswordWithTimeout(String reason) throws Exception {
+		// always check current value of password expiration time in prefs in case it
+		// has changed
 		int pw_ttl = Prefs.getIntPref(PrefName.PASSWORD_TTL);
 		Date expirationDate = new Date();
-		expirationDate.setTime(creationDate.getTime() + 1000*pw_ttl);
+		expirationDate.setTime(creationDate.getTime() + 1000 * pw_ttl);
 		if (password == null || expirationDate.before(new Date())) {
-			// prompt for a new password
-			JLabel label = new JLabel(Resource
-					.getResourceString("EnterPasswordToDecrypt"));
-			JPasswordField jpf = new JPasswordField();
-			int result = JOptionPane.showConfirmDialog(null, new Object[] {
-					label, jpf }, Resource.getResourceString("Password"),
-					JOptionPane.OK_CANCEL_OPTION);
-			if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
-				password = null;
-			} else {
-				password = new String(jpf.getPassword());
-				
-				// validate
-				try {
-					new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-					
-					// set expiration
-					creationDate = new Date();
-				} catch (Exception e) {
-					password = null;
-					throw e;
-				}
-			}
-			
+			promptForPassword(reason);
 		}
 
 		return password;
+	}
+
+	public String getPasswordWithoutTimeout(String reason) throws Exception {
+
+		if (password == null) {
+			promptForPassword(reason);
+		}
+
+		return password;
+	}
+
+	private void promptForPassword(String reason) throws Exception {
+		// prompt for a new password
+		JLabel label = new JLabel(Resource.getResourceString("Password_Prompt") + " " + reason);
+		JPasswordField jpf = new JPasswordField();
+		int result = JOptionPane.showConfirmDialog(null, new Object[] { label, jpf },
+				Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);
+		if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
+			password = null;
+		} else {
+			password = new String(jpf.getPassword());
+
+			// validate
+			try {
+				new EncryptionHelper(password);
+
+				// set expiration
+				creationDate = new Date();
+			} catch (Exception e) {
+				password = null;
+				throw e;
+			}
+		}
 	}
 }
