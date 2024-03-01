@@ -160,7 +160,7 @@ public class Day {
 				
 				// only show current todo
 				if( Prefs.getBoolPref(PrefName.TODO_ONLY_SHOW_CURRENT) ) {
-					if( appt.isTodo() && appt.getNextTodo() != null && DateUtil.dayOfEpoch(day.cal.getTime()) != DateUtil.dayOfEpoch(appt.getNextTodo())) {
+					if( appt.isTodo() && appt.getNextTodo() != null && DateUtil.dayOfEpoch(day.cal.getTime()) > DateUtil.dayOfEpoch(appt.getNextTodo())) {
 						continue;
 					}
 					if( appt.isTodo() && appt.getNextTodo() == null && Repeat.isRepeating(appt) && DateUtil.dayOfEpoch(day.cal.getTime()) != DateUtil.dayOfEpoch(appt.getDate())) {

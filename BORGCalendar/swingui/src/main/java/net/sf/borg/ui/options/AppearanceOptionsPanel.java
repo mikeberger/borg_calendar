@@ -49,7 +49,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	private final JCheckBox prioritySortBox;
 
 	private JCheckBox doyBox = null;
-	private final JCheckBox hide_strike_box = new JCheckBox();
 
 	private final JCheckBox holiday1;
 	private final JCheckBox iso8601Box = new JCheckBox();
@@ -171,9 +170,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		this.add(localebox, GridBagConstraintsFactory.create(1, 12,
 				GridBagConstraints.BOTH));
 
-		hide_strike_box.setText(Resource.getResourceString("hide_strike"));
-		this.add(hide_strike_box,
-				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+	
 
 		ResourceHelper.setText(iso8601Box, "ISO_week_number");
 		this.add(iso8601Box, GridBagConstraintsFactory.create(0, 9,
@@ -191,7 +188,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		truncbox = new JCheckBox();
 		ResourceHelper.setText(truncbox, "truncate_appts");
 		this.add(truncbox,
-				GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 
 		lnfBox.addActionListener(new ActionListener() {
 
@@ -220,8 +217,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(miltime, PrefName.MILTIME);
 		OptionsPanel.setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		OptionsPanel.setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
-		OptionsPanel
-				.setBooleanPref(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
+		
 
 		// first day of week - either monday or sunday
 		if (mondaycb.isSelected()) {
@@ -290,7 +286,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		OptionsPanel.setCheckBox(truncbox, PrefName.TRUNCAPPT);
 		OptionsPanel.setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
-		OptionsPanel.setCheckBox(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
 
 		// monday first day of week option
 		int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);

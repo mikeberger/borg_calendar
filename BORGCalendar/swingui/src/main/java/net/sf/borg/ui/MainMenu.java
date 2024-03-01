@@ -222,6 +222,20 @@ class MainMenu {
 		});
 		viewMenu.add(futureTodoMI);
 		
+		JCheckBoxMenuItem strikeMI = new JCheckBoxMenuItem();
+		strikeMI.setText(Resource.getResourceString("hide_strike"));
+		strikeMI.putClientProperty("CheckBoxMenuItem.doNotCloseOnMouseClick", true);
+		strikeMI.setSelected(!Prefs.getBoolPref(PrefName.HIDESTRIKETHROUGH));
+		strikeMI.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Prefs.putPref(PrefName.HIDESTRIKETHROUGH, strikeMI.isSelected() ? "false" : "true");
+				AppointmentModel.getReference().refresh();
+			}
+		});
+		viewMenu.add(strikeMI);
+		
 		
 		menuBar.add(viewMenu);
 
