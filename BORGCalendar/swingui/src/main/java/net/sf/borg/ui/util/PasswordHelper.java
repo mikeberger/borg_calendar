@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import net.sf.borg.common.EncryptionHelper;
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -36,9 +37,8 @@ import net.sf.borg.common.Resource;
  * the password for a given amount of time
  */
 public class PasswordHelper {
-	
-	static private final Logger log = Logger.getLogger("net.sf.borg");
 
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/* the singleton */
 	private static PasswordHelper singleton = null;
@@ -88,45 +88,50 @@ public class PasswordHelper {
 
 		return keyStorePassword;
 	}
-	
-	public String decryptText(String text, String reason, boolean timeout ) throws Exception {
+
+	public String decryptText(String text, String reason, boolean timeout) throws Exception {
 		String kpw = null;
-		if( timeout )
+		if (timeout)
 			kpw = PasswordHelper.getReference().getEncryptionKeyWithTimeout(reason);
 		else
 			kpw = PasswordHelper.getReference().getEncryptionKeyWithoutTimeout(reason);
 
-		if( kpw == null ) {
+		if (kpw == null) {
 			log.info("Cannot unlock encrytion key for: " + reason);
 			return null;
 		}
-		
+
 		EncryptionHelper helper = new EncryptionHelper(kpw);
 
-		return( helper.decrypt(text));
-		
+		return (helper.decrypt(text));
+
 	}
 
 	private void promptForKeyStorePassword(String reason) throws Exception {
-		// prompt for a new password
-		JLabel label = new JLabel(Resource.getResourceString("Password_Prompt") + " " + reason);
-		JPasswordField jpf = new JPasswordField();
-		int result = JOptionPane.showConfirmDialog(null, new Object[] { label, jpf },
-				Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);
-		if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
-			keyStorePassword = null;
-		} else {
-			keyStorePassword = new String(jpf.getPassword());
 
-			// validate
-			try {
-				new EncryptionHelper(keyStorePassword);
-
-				// set expiration
-				creationDate = new Date();
-			} catch (Exception e) {
+		while (true) {
+			// prompt for a new password
+			JLabel label = new JLabel(Resource.getResourceString("Password_Prompt") + " " + reason);
+			JPasswordField jpf = new JPasswordField();
+			int result = JOptionPane.showConfirmDialog(null, new Object[] { label, jpf },
+					Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);
+			if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
 				keyStorePassword = null;
-				throw e;
+				return;
+			} else {
+				keyStorePassword = new String(jpf.getPassword());
+
+				// validate
+				try {
+					new EncryptionHelper(keyStorePassword);
+
+					// set expiration
+					creationDate = new Date();
+					return;
+				} catch (Exception e) {
+					keyStorePassword = null;
+					Errmsg.getErrorHandler().errmsg(e);
+				}
 			}
 		}
 	}
