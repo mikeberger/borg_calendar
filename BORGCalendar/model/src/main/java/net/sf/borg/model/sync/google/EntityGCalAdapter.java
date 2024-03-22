@@ -141,7 +141,7 @@ public class EntityGCalAdapter {
 			if (props.containsKey("color"))
 				ap.setColor(props.get("color"));
 			if (props.containsKey("category"))
-				ap.setColor(props.get("category"));
+				ap.setCategory(props.get("category"));
 		}
 
 		if (event.getRecurrence() != null && !event.getRecurrence().isEmpty())
