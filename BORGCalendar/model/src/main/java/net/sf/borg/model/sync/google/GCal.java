@@ -286,32 +286,81 @@ public class GCal {
 									// check if task exists in google already
 									if (t.getEtag() == null) {
 										// suspicious case - provide warning
-										ModalMessageServer.getReference().sendLogMessage("*** WARNING ***");
-										ModalMessageServer.getReference().sendLogMessage(
-												"Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
-										ModalMessageServer.getReference().sendLogMessage(ap.toString());
+										logBoth("*** WARNING ***");
+										logBoth("Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
+										logBoth(ap.toString());
 										addTask(t);
-									} else
-										updateTask(t);
+									} else {
+
+										// check if non-todo changing to todo
+										String kind = EntityGCalAdapter.getKindFromJSON(se.getUrl());
+										if (kind != null && kind.contains("event")) {
+											logBoth("*** WARNING ***");
+											logBoth("Event changed to Todo - removing from google calendar and adding to google tasks");
+											logBoth(ap.toString());
+											// need to delete event from google calendar and add new task
+											String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
+											if (id == null)
+												id = se.getUid();
+											Event comp = getEvent(id);
+
+											if (comp != null) {
+												log.info("SYNC: removeEvent: " + comp);
+												try {
+													removeEvent(comp.getId());
+												} catch (IOException e) {
+													ModalMessageServer.getReference().sendLogMessage(
+															"SYNC ERROR for: " + se + ":" + e.getMessage());
+													log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
+												}
+											}
+											// null out url (google json) so that this will updated with the new task json
+											ap.setUrl(null);
+											AppointmentModel.getReference().saveAppt(ap);
+											t = EntityGCalAdapter.toGCalTask(ap);
+											addTask(t);
+
+										} else {
+											updateTask(t);
+										}
+									}
 								}
-							} else {
+							} else { // non-todo being changed
 								String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
-								if (id == null)
-									id = se.getUid();
-								Event comp = getEvent(id);
+								String kind = EntityGCalAdapter.getKindFromJSON(se.getUrl());
 
-								if (comp == null) {
-									Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
-									if (ve1 != null)
-										addEvent(ve1);
+								Event ev = EntityGCalAdapter.toGCalEvent(ap);
 
-								} else // TODO - what if both sides updated
-								{
+								if (kind != null && kind.contains("task")) {
+									// task changing to event
+									// delete task and then add new event
+									logBoth("*** WARNING ***");
+									logBoth("Todo changed to Event - removing from google tasks and adding to google calendar");
+									logBoth(ap.toString());
+									String tid = EntityGCalAdapter.getIdFromTaskJSON(se.getUrl());
+									if (tid != null)
+										removeTask(tid);
 
-									Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
-									if (ve1 != null)
-										updateEvent(ve1);
+									// null out url (google json) so that this will updated with the new event json
+									ap.setUrl(null);
+									AppointmentModel.getReference().saveAppt(ap);
+									ev = EntityGCalAdapter.toGCalEvent(ap);
+									addEvent(ev);
+								} else {
 
+									if (id == null)
+										id = se.getUid();
+									Event comp = getEvent(id);
+
+									if (comp == null) {
+										if (ev != null)
+											addEvent(ev);
+
+									} else {
+										if (ev != null)
+											updateEvent(ev);
+
+									}
 								}
 							}
 						}
@@ -795,15 +844,17 @@ public class GCal {
 				logBoth("TODO time changed on google for " + ap.getText());
 
 				// if incoming date is greater than BORG date, then just do_todo
-				if (ap.isRepeatFlag() && taskDate.getTime() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should be exact though?
+				if (ap.isRepeatFlag() && taskDate.getTime() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should
+																								// be exact though?
 
 					// try to calculate next todo, assuming aCalendar+ was used - which advances the
 					// due date
 					// loop through future todo times and see if we find a match
 					for (Date nextTodo = AppointmentModel.getReference().next_todo(ap,
-							null); nextTodo != null; nextTodo = AppointmentModel.getReference().next_todo(ap, nextTodo)) {
+							null); nextTodo != null; nextTodo = AppointmentModel.getReference().next_todo(ap,
+									nextTodo)) {
 
-						if( DateUtil.dayOfEpoch(nextTodo) == DateUtil.dayOfEpoch(taskDate)) {
+						if (DateUtil.dayOfEpoch(nextTodo) == DateUtil.dayOfEpoch(taskDate)) {
 							// set next todo to incoming task's due date
 							ap.setNextTodo(nextTodo);
 							AppointmentModel.getReference().saveAppt(ap);
@@ -811,7 +862,8 @@ public class GCal {
 						}
 					}
 
-					// for whatever reason, the google task's due date is not a value next todo date, so just advance the todo
+					// for whatever reason, the google task's due date is not a value next todo
+					// date, so just advance the todo
 					// one time and alert the user to check
 					logBoth("-----------------------------------------------------");
 					logBoth("CHECK: time advanced for repeating todo - do_todo - please verify");

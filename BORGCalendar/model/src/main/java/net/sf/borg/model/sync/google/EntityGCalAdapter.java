@@ -269,6 +269,21 @@ public class EntityGCalAdapter {
 		return e.getId();
 
 	}
+	public static String getKindFromJSON(String json) {
+
+		if (json == null)
+			return null;
+		GsonFactory f = new GsonFactory();
+		Event e = null;
+		try {
+			e = f.fromString(json, Event.class);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+		return e.getKind();
+
+	}
 
 	public static String getIdFromTaskJSON(String json) {
 
