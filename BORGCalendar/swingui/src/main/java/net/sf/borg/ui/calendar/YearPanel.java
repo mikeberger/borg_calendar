@@ -19,24 +19,14 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui.calendar;
 
-import net.sf.borg.common.*;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.Day;
-import net.sf.borg.model.Model;
-import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.Theme;
-import net.sf.borg.model.entity.CalendarEntity;
-import net.sf.borg.model.entity.LabelEntity;
-import net.sf.borg.model.sync.SubscribedCalendars;
-import net.sf.borg.ui.DockableView;
-import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.MultiView.CalendarModule;
-import net.sf.borg.ui.MultiView.ViewType;
-import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
@@ -48,6 +38,28 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.PrintHelper;
+import net.sf.borg.common.Resource;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Day;
+import net.sf.borg.model.Model;
+import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.Theme;
+import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.sync.SubscribedCalendars;
+import net.sf.borg.ui.DockableView;
+import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.CalendarModule;
+import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
  * YearPanel is the Year UI. It shows all days of the year and allows navigation
@@ -186,8 +198,7 @@ public class YearPanel extends DockableView implements Printable,
 			int calright = monthwidth + colwidth * 37;
 			int calbot = gridtop + 12 * rowheight;
 
-			// do not allow anything to be dragged
-			setDragBounds(0, 0, 0, 0);
+			setDragBounds(gridtop, calbot, monthwidth, calright);
 
 			// do not allow anything to be resized
 			setResizeBounds(0, 0);
@@ -324,17 +335,8 @@ public class YearPanel extends DockableView implements Printable,
 									for (CalendarEntity entity : dayInfo
 											.getItems()) {
 
-										// convert appt to label so the user can
-										// drag/drop or edit - it's just too
-										// small
-										LabelEntity l = new LabelEntity();
-										l.setColor(entity.getColor());
-										l.setDate(entity.getDate());
-										l.setText(entity.getText());
-										l.setTooltipText(entity.getText());
-
 										// add the item NoteBox to the container
-										if (addNoteBox(cal.getTime(), l,
+										if (addNoteBox(cal.getTime(), entity,
 												new Rectangle(colleft + 2,
 														notey, colwidth - 4,
 														smfontHeight),
@@ -431,11 +433,11 @@ public class YearPanel extends DockableView implements Printable,
 
 			int col = (int) x / colwidth;
 			int row = ((int) y - gridtop) / rowheight;
-			GregorianCalendar cal = new GregorianCalendar(year_, row + 1, 1);
+			GregorianCalendar cal = new GregorianCalendar(year_, row, 1);
 			cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 			int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
 			cal.add(Calendar.DATE, -1 * fdow);
-			cal.add(Calendar.DATE, row * 7 + col);
+			cal.add(Calendar.DATE,  col - 1);
 			return cal.getTime();
 		}
 
