@@ -233,7 +233,7 @@ public class Borg implements SocketServer.SocketHandler {
 		String country = Prefs.getPref(PrefName.COUNTRY);
 		String language = Prefs.getPref(PrefName.LANGUAGE);
 		if (!language.equals("")) {
-			Locale.setDefault(new Locale(language, country));
+			Locale.setDefault(Locale.of(language, country));
 		}
 
 		// JDBC is only choice for now. In the future, set this based on DBType
