@@ -271,8 +271,8 @@ public class Borg implements SocketServer.SocketHandler {
 					borgdir.mkdir();
 				}
 				if (borgdir.isDirectory() && borgdir.canWrite()) {
-					Prefs.putPref(PrefName.H2DIR, borgdir.getAbsolutePath());
-					Prefs.putPref(PrefName.DBTYPE, "h2");
+					Prefs.putPref(PrefName.SQLITEDIR, borgdir.getAbsolutePath());
+					Prefs.putPref(PrefName.DBTYPE, "sqlite");
 					dbdir = DBHelper.getController().buildURL();
 				} else {
 					JOptionPane.showMessageDialog(null, Resource.getResourceString("selectdb"),

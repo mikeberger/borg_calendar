@@ -104,6 +104,8 @@ public class PrefName {
 
 	/** h2 database directory */
 	static public PrefName H2DIR = new PrefName("h2dir", "not-set");
+	
+	static public PrefName SQLITEDIR = new PrefName("sqlitedir", "not-set");
 
 	// misc
 	/** show a stack trace button on error dialogs */
@@ -298,6 +300,7 @@ public class PrefName {
 	//public static PrefName CARDDAV_BOOK = new PrefName("carddav_book", "default");
 	public static PrefName CALDAV_USE_SSL = new PrefName("caldav-use-ssl", "false");
 	public static PrefName CALDAV_ALLOW_SELF_SIGNED_CERT = new PrefName("caldav-self-signed", "false");
+
 
 	public static final PrefName GOOGLE_SYNC = new PrefName("google_sync", "false");
 	public static final PrefName GCAL_CAL_ID = new PrefName("google_cal_id", "");
