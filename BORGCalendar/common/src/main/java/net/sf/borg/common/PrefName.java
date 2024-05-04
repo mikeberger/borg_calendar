@@ -89,13 +89,6 @@ public class PrefName {
 	/** database type. */
 	static public PrefName DBTYPE = new PrefName("dbtype", "h2");
 
-	// legacy Mysql related prefs - deprecated
-	static public PrefName DBHOST = new PrefName("dbhost", "localhost");
-	static public PrefName DBPORT = new PrefName("dbport", "3306");
-	static public PrefName DBNAME = new PrefName("dbname", "borg");
-	static public PrefName DBUSER = new PrefName("dbuser", "borg");
-	static public PrefName DBPASS = new PrefName("dbpass", "borg");
-
 	/** jdbc url - for generic jdbc only, not hsql or mysql */
 	static public PrefName JDBCURL = new PrefName("jdbcurl", "");
 

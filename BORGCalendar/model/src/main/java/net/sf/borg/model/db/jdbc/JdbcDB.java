@@ -389,7 +389,7 @@ final class JdbcDB {
     }
 
     /**
-     * Builds the db url from the user's settings. Supports HSQL, MYSQL, generic
+     * Builds the db url from the user's settings. Supports HSQL, SQLITE, generic
      * JDBC
      *
      * @return the jdbc url
@@ -418,18 +418,8 @@ final class JdbcDB {
                     + "/borg_sqlite.db";
         } else if (dbtype.equals("jdbc")) {
             dbdir = Prefs.getPref(PrefName.JDBCURL);
-        } else {
-            // build a mysql URL
-            dbdir = "jdbc:mysql://" + Prefs.getPref(PrefName.DBHOST) + ":"
-                    + Prefs.getPref(PrefName.DBPORT) + "/"
-                    + Prefs.getPref(PrefName.DBNAME) + "?user="
-                    + Prefs.getPref(PrefName.DBUSER) + "&password="
-                    + Prefs.getPref(PrefName.DBPASS) + "&autoReconnect=true";
-            log.info("converting MYSQL prefs to Generic JDBC");
-            Prefs.putPref(PrefName.JDBCURL, dbdir);
-            Prefs.putPref(PrefName.DBTYPE, "jdbc");
-        }
-
+        } 
+        
         log.info("DB URL is: " + dbdir);
         return (dbdir);
     }
