@@ -20,21 +20,30 @@
 
 package net.sf.borg.ui.options;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.DorkTrayIconProxy;
+import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * UI for editing BORG options
@@ -184,8 +193,8 @@ public class OptionsView extends View {
         // options changes
         Prefs.notifyListeners();
 
-        if (DorkTrayIconProxy.hasTrayIcon())
-            DorkTrayIconProxy.getReference().updateImage();
+        if (TrayIconProxy.hasTrayIcon())
+            TrayIconProxy.getReference().updateImage();
 
     }
 

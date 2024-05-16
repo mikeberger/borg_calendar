@@ -19,6 +19,33 @@
  */
 package net.sf.borg.ui.checklist;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CheckListModel;
@@ -28,20 +55,12 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
-import net.sf.borg.ui.DorkTrayIconProxy;
-import net.sf.borg.ui.util.*;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collection;
-import java.util.Iterator;
+import net.sf.borg.ui.TrayIconProxy;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.InputDialog;
+import net.sf.borg.ui.util.PopupMenuHelper;
+import net.sf.borg.ui.util.TablePrinter;
+import net.sf.borg.ui.util.TableSorter;
 
 /**
  * UI for editing checkLists. It has a table that shows all checkLists by name
@@ -609,7 +628,7 @@ public class CheckListPanel extends DockableView implements
 						par.setView(ViewType.CHECKLIST);
 					}
 				});
-		DorkTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+		TrayIconProxy.addAction(getModuleName(), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.CHECKLIST);

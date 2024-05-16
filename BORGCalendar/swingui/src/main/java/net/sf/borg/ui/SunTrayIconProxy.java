@@ -18,26 +18,41 @@
  */
 package net.sf.borg.ui;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.Theme;
-import net.sf.borg.ui.options.OptionsView;
-import net.sf.borg.ui.popup.ReminderManager;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.TrayIcon.MessageType;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Menu;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.RenderingHints;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Timer;
-import java.util.*;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
+import net.sf.borg.model.Theme;
+import net.sf.borg.ui.TrayIconProxy.TrayIconProxyI;
+import net.sf.borg.ui.options.OptionsView;
+import net.sf.borg.ui.popup.ReminderManager;
+
 /** communicates with the new java built-in system tray APIs */
-public class SunTrayIconProxy implements Prefs.Listener {
+public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 
 	// action that opens the main view
 	static private class OpenListener implements ActionListener {
@@ -49,54 +64,12 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-	private static int iconSize = 16;
+	private int iconSize = 16;
 
-	// the singleton
-	static private SunTrayIconProxy singleton = null;
 
-	public static SunTrayIconProxy getReference() {
-		return singleton;
-	}
+	 private final Menu actionMenu = new Menu();
 
-	/* flag to indicate is a tray icon was started */
-	private static boolean trayIconStarted = false;
-
-	static private final Menu actionMenu = new Menu();
-
-	/**
-	 * Checks for presence of the tray icon.
-	 * 
-	 * @return true, if the tray icon started up successfully, false otherwise
-	 */
-	public static boolean hasTrayIcon() {
-		return trayIconStarted;
-	}
-
-	static public void startTrayIcon() {
-		// start the system tray icon - or at least attempt to
-		// it doesn't run on all OSs and all WMs
-		trayIconStarted = true;
-		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
-		if (!usetray.equals("true")) {
-			trayIconStarted = false;
-		} else {
-			try {
-				singleton = new SunTrayIconProxy();
-				singleton.init();
-			} catch (UnsatisfiedLinkError le) {
-				le.printStackTrace();
-				trayIconStarted = false;
-			} catch (NoClassDefFoundError ncf) {
-				ncf.printStackTrace();
-				trayIconStarted = false;
-			} catch (Exception e) {
-				e.printStackTrace();
-				trayIconStarted = false;
-			}
-		}
-
-	}
-
+	
 	/** the TrayIcon */
 	private TrayIcon trayIcon = null;
 
@@ -105,7 +78,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 	 *
 	 * @throws Exception
 	 */
-	private void init() throws Exception {
+	public void init() throws Exception {
 
 		if (!SystemTray.isSupported())
 			throw new Exception("Systray not supported");
@@ -297,7 +270,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 	 * @param action
 	 *            the action listener for the menu item
 	 */
-	static public void addAction(String text, ActionListener action) {
+	 public void addAction(String text, ActionListener action) {
 		MenuItem item = new MenuItem();
 		item.setLabel(text);
 		item.addActionListener(action);
@@ -305,17 +278,5 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		actionMenu.add(item);
 	}
 	
-	private void sendNotification(String title, String text) {
-		trayIcon.displayMessage(title, text, MessageType.INFO);
-	}
 	
-	static public void displayNotification(String title, String text) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				SunTrayIconProxy.getReference().sendNotification(title, text);
-			}
-		});
-	}
-
 }

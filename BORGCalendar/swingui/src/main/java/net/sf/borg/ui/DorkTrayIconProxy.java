@@ -46,11 +46,12 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Theme;
+import net.sf.borg.ui.TrayIconProxy.TrayIconProxyI;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.popup.ReminderManager;
 
 /** communicates with the new java built-in system tray APIs */
-public class DorkTrayIconProxy implements Prefs.Listener {
+public class DorkTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 
 	// action that opens the main view
 	static private class OpenListener implements ActionListener {
@@ -62,60 +63,16 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-	private static int iconSize = 16;
+	private int iconSize = 16;
 
-	// the singleton
-	static private DorkTrayIconProxy singleton = null;
-
-	public static DorkTrayIconProxy getReference() {
-		return singleton;
-	}
-
-	/* flag to indicate is a tray icon was started */
-	private static boolean trayIconStarted = false;
-
-	/**
-	 * Checks for presence of the tray icon.
-	 * 
-	 * @return true, if the tray icon started up successfully, false otherwise
-	 */
-	public static boolean hasTrayIcon() {
-		return trayIconStarted;
-	}
-
-	static public void startTrayIcon() {
-		// start the system tray icon - or at least attempt to
-		// it doesn't run on all OSs and all WMs
-		trayIconStarted = true;
-		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
-		if (!usetray.equals("true")) {
-			trayIconStarted = false;
-		} else {
-			try {
-				singleton = new DorkTrayIconProxy();
-				singleton.init();
-			} catch (UnsatisfiedLinkError le) {
-				le.printStackTrace();
-				trayIconStarted = false;
-			} catch (NoClassDefFoundError ncf) {
-				ncf.printStackTrace();
-				trayIconStarted = false;
-			} catch (Exception e) {
-				e.printStackTrace();
-				trayIconStarted = false;
-			}
-		}
-
-	}
-
-	private static Menu actionMenu;
+	private Menu actionMenu;
 
 	/**
 	 * initalize the system tray
 	 *
 	 * @throws Exception
 	 */
-	private void init() throws Exception {
+	public void init() throws Exception {
 
 		SystemTray systemTray = SystemTray.get();
 		if (systemTray == null) {
@@ -197,11 +154,10 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 	 * set the icon image to the current date or a fixed icon with a B on it
 	 * depending on user preference.
 	 */
+	@Override
 	public void updateImage() {
 
-		if (!trayIconStarted)
-			return;
-
+	
 		Image image = null;
 		if (Prefs.getBoolPref(PrefName.SYSTRAYDATE)) {
 
@@ -242,9 +198,7 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 
 	/** start a timer that updates the date icon */
 	private void startRefreshTimer() {
-		if (!trayIconStarted)
-			return;
-
+		
 		Timer updatetimer = new Timer("SysTrayTimer");
 		updatetimer.schedule(new TimerTask() {
 			@Override
@@ -267,29 +221,15 @@ public class DorkTrayIconProxy implements Prefs.Listener {
 	 * @param action the action listener for the menu item
 	 */
 
-	static public void addAction(String text, ActionListener action) {
+	@Override
+	public void addAction(String text, ActionListener action) {
 
-		if (!trayIconStarted)
-			return;
 
 		actionMenu.add(new MenuItem(text, action));
 	}
 
-	//private void sendNotification(String title, String text) {
-		// trayIcon.displayMessage(title, text, MessageType.INFO);
-	//}
 
-	static public void displayNotification(String title, String text) {
-		
-		// not supported by this type of tray icon
-		
-		
-//		SwingUtilities.invokeLater(new Runnable() {
-//			@Override
-//			public void run() {
-//				DorkTrayIconProxy.getReference().sendNotification(title, text);
-//			}
-//		});
-	}
+
+	
 
 }

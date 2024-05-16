@@ -19,22 +19,37 @@
  */
 package net.sf.borg.ui;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.ui.options.StartupViewsOptionsPanel;
-import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.border.BevelBorder;
+
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Resource;
+import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.ui.options.StartupViewsOptionsPanel;
+import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 /**
  * This is the main Borg UI class. It provides the the main borg tabbed window.
@@ -156,7 +171,7 @@ public class MultiView extends View {
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
 			@Override
 			public final void actionPerformed(ActionEvent e) {
-				if (DorkTrayIconProxy.hasTrayIcon())
+				if (TrayIconProxy.hasTrayIcon())
 					closeMainwindow();
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
@@ -304,7 +319,7 @@ public class MultiView extends View {
 	 * entirely
 	 */
 	private void closeMainwindow() {
-		if (!DorkTrayIconProxy.hasTrayIcon() && this == mainView) {
+		if (!TrayIconProxy.hasTrayIcon() && this == mainView) {
 			UIControl.shutDownUI();
 		} else {
 			this.dispose();

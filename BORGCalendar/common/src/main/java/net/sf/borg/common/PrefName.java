@@ -115,6 +115,10 @@ public class PrefName {
 
 	/** use system tray */
 	static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");
+	
+	/*** hidden option - force dork tray on windows */
+	static public PrefName FORCEDORKTRAY = new PrefName("forcedorktray", "false");
+	
 
 	/** show date is system tray */
 	static public PrefName SYSTRAYDATE = new PrefName("sysTrayDate", "true");

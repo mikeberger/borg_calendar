@@ -654,7 +654,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 	private void showTrayIcon() {
 
-		if (DorkTrayIconProxy.hasTrayIcon()) {
+		if (TrayIconProxy.hasTrayIcon()) {
 
 			try {
 				if (!(CalDav.isSyncing() || GCal.isSyncing()) || SyncLog.getReference().getAll().isEmpty()) {

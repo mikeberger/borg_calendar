@@ -18,22 +18,18 @@
  */
 package net.sf.borg.ui.calendar;
 
-import net.sf.borg.common.*;
-import net.sf.borg.model.*;
-import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.CalendarEntity;
-import net.sf.borg.model.sync.SubscribedCalendars;
-import net.sf.borg.ui.DockableView;
-import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.MultiView.CalendarModule;
-import net.sf.borg.ui.MultiView.ViewType;
-import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.DorkTrayIconProxy;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
@@ -42,8 +38,38 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.PrintHelper;
+import net.sf.borg.common.Resource;
+import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Day;
+import net.sf.borg.model.Model;
+import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Theme;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.sync.SubscribedCalendars;
+import net.sf.borg.ui.DockableView;
+import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.CalendarModule;
+import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.TrayIconProxy;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
  * DayPanel is the UI for a single day. It consists of a Navigator attached to a
@@ -723,7 +749,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 						par.setView(ViewType.DAY);
 					}
 				});
-		DorkTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+		TrayIconProxy.addAction(getModuleName(), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.DAY);
