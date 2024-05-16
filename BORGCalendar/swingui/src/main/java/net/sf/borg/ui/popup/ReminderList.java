@@ -207,8 +207,8 @@ public class ReminderList extends View {
 
 		JButton hideButton = new JButton();
 		
-		hideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
+		//hideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//		"/resource/Delete16.gif")));
 		hideButton.setText(Resource.getResourceString("Hide"));
 
 		hideButton.addActionListener(new java.awt.event.ActionListener() {

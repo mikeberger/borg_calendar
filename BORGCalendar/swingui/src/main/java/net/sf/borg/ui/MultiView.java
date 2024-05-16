@@ -42,6 +42,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.Errmsg;
@@ -223,7 +224,7 @@ public class MultiView extends View {
 				}, 0);
 
 		mainMenu.addAction(
-				new ImageIcon(getClass().getResource("/resource/Delete16.gif")),
+				UIManager.getIcon("InternalFrame.closeIcon"),
 				Resource.getResourceString("close_tabs"), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
@@ -433,8 +434,9 @@ public class MultiView extends View {
 
 		bar.addSeparator();
 
-		JButton clearbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
+		//JButton clearbut = new JButton(new ImageIcon(getClass().getResource(
+			//	"/resource/Delete16.gif")));
+		JButton clearbut = new JButton(UIManager.getIcon("InternalFrame.closeIcon"));
 		clearbut.setToolTipText(Resource.getResourceString("close_tabs"));
 		clearbut.addActionListener(new java.awt.event.ActionListener() {
 			@Override

@@ -163,9 +163,14 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				theTableCellComponent.setText(dateText);
 			} else if (column == 1) {
 				// set tooltip to todo text
-				theTableCellComponent.setToolTipText(theTableCellComponent
-						.getText());
+				theTableCellComponent.setToolTipText((String)table.getModel().getValueAt(row, 6));
 			}
+			
+			if( column == 2 || column == 3)
+				theTableCellComponent.setHorizontalAlignment(CENTER);
+			else
+				theTableCellComponent.setHorizontalAlignment(LEFT);
+
 			return theTableCellComponent;
 		}
 	}
@@ -472,10 +477,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					Resource.getResourceString("To_Do"),
 					Resource.getResourceString("Category"),
 					Resource.getResourceString("Color"), "key",
-					Resource.getResourceString("Priority") }, new Class[] {
+					Resource.getResourceString("Priority"), "tooltip" }, new Class[] {
 					Date.class, java.lang.String.class, java.lang.String.class,
 					java.lang.String.class, java.lang.Integer.class,
-					java.lang.Integer.class }));
+					java.lang.Integer.class, java.lang.String.class }));
 
 			todoTable.getColumnModel().getColumn(0).setPreferredWidth(140);
 			todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
@@ -498,9 +503,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			todoTable.setDefaultRenderer(Integer.class,
 					new TodoTableCellRenderer(defaultIntegerRenderer));
 
-			// remove the hidden columns - color and key
+			// remove the hidden columns - color and key and tooltip
 			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
 			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
+			todoTable.removeColumn(todoTable.getColumnModel().getColumn(4));
 
 			refresh();
 			isInitialized = true;
@@ -1004,7 +1010,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				String tx = AppointmentTextFormat.format(r, nt);
 
 				// add the table row
-				Object[] ro = new Object[6];
+				Object[] ro = new Object[7];
 				ro[0] = nt;
 				ro[1] = tx;
 				ro[2] = r.getCategory(); // category
@@ -1020,6 +1026,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 				// priority
 				ro[5] = r.getPriority();
+				
+				// tooltip
+				ro[6] = AppointmentTextFormat.format(r, nt, true);
 
 				tm.addRow(ro);
 				totalCount++;
@@ -1061,7 +1070,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						abb = "PR" + pj.getKey() + " ";
 					String todostring = abb + pj.getText();
 
-					Object[] ro = new Object[6];
+					Object[] ro = new Object[7];
 					ro[0] = pj.getDueDate();
 					ro[1] = todostring;
 					ro[2] = pj.getCategory();
@@ -1071,7 +1080,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						ro[3] = pj.getColor();
 					ro[4] = null;
 					ro[5] = null;
-
+					ro[6] = todostring;
 					tm.addRow(ro);
 					theTodoList.add(pj);
 					tm.tableChanged(new TableModelEvent(tm));
@@ -1097,7 +1106,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						abb = "BT" + mr.getKey() + " ";
 					String btstring = abb + mr.getText();
 
-					Object[] ro = new Object[6];
+					Object[] ro = new Object[7];
 					ro[0] = mr.getDueDate();
 					ro[1] = btstring;
 					ro[2] = mr.getCategory();
@@ -1107,6 +1116,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						ro[3] = mr.getColor();
 					ro[4] = null;
 					ro[5] = mr.getPriority();
+					ro[6] = btstring;
 
 					tm.addRow(ro);
 					theTodoList.add(mr);
@@ -1147,7 +1157,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						abb = "ST" + st.getKey() + " ";
 					String btstring = abb + st.getText();
 
-					Object[] ro = new Object[6];
+					Object[] ro = new Object[7];
 					ro[0] = st.getDueDate();
 					ro[1] = btstring;
 					ro[2] = cat;
@@ -1157,6 +1167,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						ro[3] = st.getColor();
 					ro[4] = null;
 					ro[5] = null;
+					ro[6] = btstring;
 
 					tm.addRow(ro);
 					theTodoList.add(st);
