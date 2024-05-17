@@ -153,9 +153,9 @@ public class UIControl {
 		MultiView mv = MultiView.getMainView();
 
 		// load the UI modules into the main window
-		mv.addModule(new MonthPanel());
-		mv.addModule(new WeekPanel());
 		mv.addModule(new DayPanel());
+		mv.addModule(new WeekPanel());
+		mv.addModule(new MonthPanel());
 		mv.addModule(new YearPanel());
 		mv.addModule(new AddrListView());
 		mv.addModule(new TodoView());
