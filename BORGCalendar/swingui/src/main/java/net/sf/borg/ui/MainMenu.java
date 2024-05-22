@@ -277,17 +277,19 @@ class MainMenu {
 		// "/resource/Export16.gif")));
 		ResourceHelper.setText(impexpMenu, "impexpMenu");
 
-		JMenuItem importMI = new JMenuItem();
-		importMI.addActionListener(new java.awt.event.ActionListener() {
+		
+		
+		JMenuItem exportMI = new JMenuItem();
+		exportMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				importMIActionPerformed();
+				exportMIActionPerformed();
 			}
 		});
-		importMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
-		ResourceHelper.setText(importMI, "impXML");
-		impexpMenu.add(importMI);
-
+		exportMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
+		ResourceHelper.setText(exportMI, "expXML");
+		impexpMenu.add(exportMI);
+		
 		JMenuItem importZipMI = new JMenuItem();
 		ResourceHelper.setText(importZipMI, "import_zip");
 		importZipMI.addActionListener(new java.awt.event.ActionListener() {
@@ -299,16 +301,18 @@ class MainMenu {
 		importZipMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
 		impexpMenu.add(importZipMI);
 
-		JMenuItem exportMI = new JMenuItem();
-		exportMI.addActionListener(new java.awt.event.ActionListener() {
+		
+		JMenuItem importMI = new JMenuItem();
+		importMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				exportMIActionPerformed();
+				importMIActionPerformed();
 			}
 		});
-		exportMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
-		ResourceHelper.setText(exportMI, "expXML");
-		impexpMenu.add(exportMI);
+		importMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
+		ResourceHelper.setText(importMI, "impXML");
+		impexpMenu.add(importMI);
+
 
 		menuBar.add(impexpMenu);
 

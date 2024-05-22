@@ -5,24 +5,18 @@
 <body><p>
 <u><b>Databases</b></u></p>
 <p>Borg
-will create an H2 database in a default location when started after
+will create an SQLite database in a default location when started after
 the first install. Most users should never alter the database
 settings. Some users may want to alter the location of the database,
-for example to be on a removable drive.</p>
+for example to be on a removable drive or a cloud drive.</p>
 <p>For those users that want to change the default
 settings, the available choices are:</p>
 <ul>
+	<li><p>SQLite</p>
 	<li><p>HSQLDB</p>
 	<li><p>H2</p>
 	<li><p>Generic JDBC</p>
 </ul>
-<p>Borg has code to
-explicitly support Sqlite when an Sqlite URL is entered via the JDBC
-option.</p>
-<p>Borg has legacy code to
-detect when a Mysql URL is entered and provides support for Mysql
-specific issues. However, Mysql is no longer being tested with Borg
-and is deprecated.</p>
 <p><br/>
 <br/>
 
