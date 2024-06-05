@@ -959,6 +959,7 @@ public class GCal {
 			}
 		}
 
+		SubscribedCalendars.getReference().createCache();
 		SubscribedCalendars.getReference().refresh();
 	}
 

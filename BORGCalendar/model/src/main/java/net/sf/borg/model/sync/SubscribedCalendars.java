@@ -1,5 +1,10 @@
 package net.sf.borg.model.sync;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -10,6 +15,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.PrefName;
@@ -41,6 +49,7 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 
 	private HashMap<String, HashMap<Integer, Collection<LabelEntity>>> calmap = new HashMap<String, HashMap<Integer, Collection<LabelEntity>>>();
 	private boolean show = true; // show/hide subscribed events
+	private boolean cacheLoaded = false;
 	
 	public void setShow(boolean b) {
 		show = b;
@@ -130,16 +139,23 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 
 	}
 
-	public void removeCal(String calendarId) {
-		calmap.remove(calendarId);
-	}
+	//public void removeCal(String calendarId) {
+	//	calmap.remove(calendarId);
+	//}
 
 	public void removeCals() {
 		calmap.clear();
+		deleteCache();
 	}
 
 	@Override
 	public List<CalendarEntity> getEntities(Date d) {
+		
+		if( !cacheLoaded )
+		{
+			loadCache();
+			cacheLoaded = true;
+		}
 				
 		ArrayList<CalendarEntity> l = new ArrayList<CalendarEntity>();
 		
@@ -262,5 +278,40 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 		
 		
 		return ret;
+	}
+	
+	private String cacheFile() {
+		String home = System.getProperty("user.home", "");
+		return home + "/.borg.subcache";
+	}
+	
+	private void deleteCache() {
+		File c = new File(cacheFile());
+		c.delete();
+	}
+	
+	public void createCache() {
+		deleteCache();
+		File c = new File(cacheFile());
+		Gson gson = new Gson();
+		
+		try (FileWriter writer = new FileWriter(c)) {
+		    gson.toJson(calmap, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void loadCache() {
+		Gson gson = new Gson();
+		File c = new File(cacheFile());
+		try (FileReader reader = new FileReader(c)) {
+		    java.lang.reflect.Type mapType = new TypeToken<HashMap<String, HashMap<Integer, Collection<LabelEntity>>>>(){}.getType();
+		    calmap = gson.fromJson(reader, mapType);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
