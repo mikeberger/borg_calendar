@@ -947,7 +947,7 @@ public class GCal {
 					if (newap == null)
 						continue;
 
-					SubscribedCalendars.getReference().addEvent(newap, calendarId);
+					SubscribedCalendars.getReference().addEvent(newap, id);
 
 				}
 
