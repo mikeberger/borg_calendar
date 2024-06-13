@@ -25,19 +25,24 @@
 
 package net.sf.borg.model.db.jdbc;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.model.entity.Option;
-
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Logger;
+
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.model.entity.Option;
 
 /**
  * class providing basic common JDBC services
@@ -414,6 +419,12 @@ final class JdbcDB {
             String hdir = Prefs.getPref(PrefName.SQLITEDIR);
             if (hdir.equals("not-set"))
                 return hdir;
+            
+            // make sure dir exists
+            File borgdir = new File(hdir);
+            if (!borgdir.exists()) {
+				borgdir.mkdir();
+			}
             dbdir = "jdbc:sqlite:" + Prefs.getPref(PrefName.SQLITEDIR)
                     + "/borg_sqlite.db";
         } else if (dbtype.equals("jdbc")) {
