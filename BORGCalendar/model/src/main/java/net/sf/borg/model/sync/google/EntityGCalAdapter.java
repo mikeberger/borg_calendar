@@ -102,7 +102,7 @@ public class EntityGCalAdapter {
 			ap.setUntimed("N");
 			if (event.getEnd().getDateTime() != null) {
 
-				long dur = event.getEnd().getDateTime().getValue() - utc.getTime();
+				long dur = (event.getEnd().getDateTime().getValue() - utc.getTime())/(1000*60); // ms to minutes
 
 				ap.setDuration((int) dur);
 			}
