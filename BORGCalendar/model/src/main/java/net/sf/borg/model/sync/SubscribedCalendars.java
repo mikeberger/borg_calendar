@@ -309,7 +309,7 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 		    java.lang.reflect.Type mapType = new TypeToken<HashMap<String, HashMap<Integer, Collection<LabelEntity>>>>(){}.getType();
 		    calmap = gson.fromJson(reader, mapType);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

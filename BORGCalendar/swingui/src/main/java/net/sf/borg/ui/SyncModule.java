@@ -364,7 +364,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 		gcalmenu.add(gcalsyncCleanmi);
 
-		JMenuItem gcalow = new JMenuItem("Overwrite");
+		JMenuItem gcalow = new JMenuItem("Full Sync");
 		gcalow.addActionListener(new ActionListener() {
 
 			@Override
@@ -375,11 +375,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Caldav-Overwrite-Warn"),
-							Resource.getResourceString("Confirm"), JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE);
-					if (ret != JOptionPane.OK_OPTION)
-						return;
+					
 					runGcalSync(true, false);
 
 				} catch (Exception e) {
@@ -388,15 +384,40 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		});
 		gcalmenu.add(gcalow);
+		
+		JMenuItem guns = new JMenuItem("UnSync");
+		guns.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if (!GCal.isSyncing()) {
+						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("unsync-Warn"),
+							"WARNING", JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.WARNING_MESSAGE);
+					if (ret != JOptionPane.OK_OPTION)
+						return;
+					GCal.getReference().unsync();
+
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+		gcalmenu.add(guns);
 
 		m.add(gcalmenu);
 
 		return m;
 	}
 
-	private static void runGcalSync(boolean overwrite, boolean cleanup) {
+	private static void runGcalSync(boolean fullsync, boolean cleanup) {
 
-		final boolean ov = overwrite;
+		final boolean full = fullsync;
 		class SyncWorker extends SwingWorker<Void, Object> {
 			@Override
 			public Void doInBackground() {
@@ -404,7 +425,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 					// modally lock borg
 					ModalMessageServer.getReference().sendMessage("lock:" + Resource.getResourceString("syncing"));
-					GCal.getReference().sync(Prefs.getIntPref(PrefName.GCAL_EXPORTYEARS), ov, cleanup);
+					GCal.getReference().sync(Prefs.getIntPref(PrefName.GCAL_EXPORTYEARS), full, cleanup);
 
 				} catch (Exception e) {
 					e.printStackTrace();

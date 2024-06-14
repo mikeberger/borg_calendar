@@ -48,7 +48,9 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.model.sync.SyncEvent;
@@ -138,7 +140,48 @@ public class GCal {
 
 	}
 
-	public synchronized void sync(Integer years, boolean overwrite, boolean cleanup) throws Exception {
+	/**
+	 * Remove the sync relationship of all borg records by deleting the saved google
+	 * json and regenrating all UIDs
+	 * 
+	 * @throws Exception
+	 */
+	public void unsync() throws Exception {
+
+		// delete all URL fields and regenerate the UIDs
+		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
+			if (ap.getUrl() != null || ap.getUid() != null) {
+				ap.setUrl(null);
+				ap.setUid(null);
+				AppointmentModel.getReference().saveAppt(ap, false);
+			}
+		}
+
+		// questionable implementation to get around code in save() that preserves url even when nulled out in object
+		DBHelper.getController().execSQL("update tasks set url = null");
+		DBHelper.getController().execSQL("update subtasks set url = null");
+		
+		for (net.sf.borg.model.entity.Task ap : TaskModel.getReference().getTasks()) {
+			if (ap.getUrl() != null || ap.getUid() != null) {
+				ap.setUrl(null);
+				ap.setUid(null);
+				TaskModel.getReference().savetask(ap, false);
+			}
+		}
+		for (Subtask ap : TaskModel.getReference().getSubTasks()) {
+			if (ap.getUrl() != null || ap.getUid() != null) {
+				ap.setUrl(null);
+				ap.setUid(null);
+				TaskModel.getReference().saveSubTask(ap, false);
+			}
+		}
+
+		// empty the sync log
+		SyncLog.getReference().deleteAll();
+
+	}
+
+	public synchronized void sync(Integer years, boolean fullsync, boolean cleanup) throws Exception {
 
 		Date after = null;
 		GregorianCalendar gcal = new GregorianCalendar();
@@ -150,7 +193,7 @@ public class GCal {
 		connect();
 		setIds();
 
-		if (overwrite) {
+		if (fullsync) {
 			// get all appointments and add to syncmap
 			for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
@@ -159,25 +202,58 @@ public class GCal {
 				if (latestInstance != null && latestInstance.before(after))
 					continue;
 
-				// if not in syncmap then add and null out URL if needed
-				if (ap.getUrl() == null) {
-					// never been synced - so force a new entry if none exists
-					if (SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.APPOINTMENT) == null) {
-						SyncEvent event = new SyncEvent();
-						event.setId(ap.getKey());
-						event.setAction(Model.ChangeEvent.ChangeAction.ADD);
-						event.setObjectType(SyncableEntity.ObjectType.APPOINTMENT);
-						event.setUid(ap.getUid());
-						SyncLog.getReference().insert(event);
+				// never been synced - so force a new entry if none exists
+				if (SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.APPOINTMENT) == null) {
+					SyncEvent event = new SyncEvent();
+					event.setId(ap.getKey());
+					event.setAction(Model.ChangeEvent.ChangeAction.ADD);
+					event.setObjectType(SyncableEntity.ObjectType.APPOINTMENT);
+					event.setUid(ap.getUid());
+					if( ap.getUrl() != null)
+					{
+						event.setUrl(ap.getUrl());
+						event.setAction(Model.ChangeEvent.ChangeAction.CHANGE);
 					}
-				} else {
-					// removing the URL will force a new sync log entry
-					ap.setUrl(null);
-					AppointmentModel.getReference().saveAppt(ap, false);
+					SyncLog.getReference().insert(event);
 				}
 
 			}
+			
+			for (net.sf.borg.model.entity.Task ap : TaskModel.getReference().getTasks()) {
+				if (SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.TASK) == null) {
+					SyncEvent event = new SyncEvent();
+					event.setId(ap.getKey());
+					event.setAction(Model.ChangeEvent.ChangeAction.ADD);
+					event.setObjectType(SyncableEntity.ObjectType.TASK);
+					event.setUid(ap.getUid());
+					if( ap.getUrl() != null)
+					{
+						event.setUrl(ap.getUrl());
+						event.setAction(Model.ChangeEvent.ChangeAction.CHANGE);
+					}
+					SyncLog.getReference().insert(event);
+				}
+
+			}
+			for (Subtask ap : TaskModel.getReference().getSubTasks()) {
+				if (SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.SUBTASK) == null) {
+					SyncEvent event = new SyncEvent();
+					event.setId(ap.getKey());
+					event.setAction(Model.ChangeEvent.ChangeAction.ADD);
+					event.setObjectType(SyncableEntity.ObjectType.SUBTASK);
+					event.setUid(ap.getUid());
+					if( ap.getUrl() != null)
+					{
+						event.setUrl(ap.getUrl());
+						event.setAction(Model.ChangeEvent.ChangeAction.CHANGE);
+					}
+					SyncLog.getReference().insert(event);
+				}
+			}
+		
 		}
+		
+		
 		processSyncMap();
 
 		syncFromServer(after, cleanup);
@@ -314,7 +390,8 @@ public class GCal {
 													log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
 												}
 											}
-											// null out url (google json) so that this will updated with the new task json
+											// null out url (google json) so that this will updated with the new task
+											// json
 											ap.setUrl(null);
 											AppointmentModel.getReference().saveAppt(ap);
 											t = EntityGCalAdapter.toGCalTask(ap);

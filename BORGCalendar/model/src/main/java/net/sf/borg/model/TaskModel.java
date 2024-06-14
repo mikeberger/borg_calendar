@@ -539,7 +539,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
             task.setCreateTime(new Date());
             task.setLastMod(task.getCreateTime());
             if (task.getUid() == null)
-                task.setUid(task.getKey() + "@BORGT-" + task.getCreateTime().getTime());
+                task.setUid(task.getKey() + "@BORGT-" + task.getLastMod().getTime());
             db_.addObj(task);
             if (!undo) {
                 Task t = getTask(task.getKey());
@@ -563,7 +563,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
             task.setLastMod(new Date());
             if (task.getUid() == null)
-                task.setUid(task.getKey() + "@BORGT-" + task.getCreateTime().getTime());
+                task.setUid(task.getKey() + "@BORGT-" + task.getLastMod().getTime());
             
             if( task.getUrl() == null && indb.getUrl() != null)
             	task.setUrl(indb.getUrl());
@@ -979,7 +979,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
             s.setCreateTime(new Date());
             s.setLastMod(s.getCreateTime());
             if (s.getUid() == null)
-                s.setUid(s.getKey() + "@BORGS-" + s.getCreateTime().getTime());
+                s.setUid(s.getKey() + "@BORGS-" + s.getLastMod().getTime());
             db_.addSubTask(s);
             if (!undo) {
                 Subtask st = db_.getSubTask(s.getKey());
@@ -1000,7 +1000,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
             s.setLastMod(new Date());
             if (s.getUid() == null)
-                s.setUid(s.getKey() + "@BORGS-" + s.getCreateTime().getTime());
+                s.setUid(s.getKey() + "@BORGS-" + s.getLastMod().getTime());
 
             // don't update if no difference - to prevent unneeded syncs
             if (st.equals(s)) return;

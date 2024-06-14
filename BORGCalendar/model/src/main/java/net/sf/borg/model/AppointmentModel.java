@@ -756,7 +756,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 				r.setCreateTime(new Date());
 				r.setLastMod(r.getCreateTime());
 				if (r.getUid() == null)
-					r.setUid(r.getKey() + "@BORGA-" + r.getCreateTime().getTime());
+					r.setUid(r.getKey() + "@BORGA-" + r.getLastMod().getTime());
 				db_.addObj(r);
 				if (!undo) {
 					UndoLog.getReference().addItem(AppointmentUndoItem.recordAdd(r));
@@ -768,7 +768,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 
 				r.setLastMod(new Date());
 				if (r.getUid() == null)
-					r.setUid(r.getKey() + "@BORGA-" + r.getCreateTime().getTime());
+					r.setUid(r.getKey() + "@BORGA-" + r.getLastMod().getTime());
 				action = ChangeEvent.ChangeAction.CHANGE;
 				db_.updateObj(r);
 				if (!undo) {
