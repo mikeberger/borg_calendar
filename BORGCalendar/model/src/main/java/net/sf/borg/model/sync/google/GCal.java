@@ -701,7 +701,9 @@ public class GCal {
 
 			// if appt was not synced, then don't delete
 			if (ap.getUrl() == null || !ap.getUrl().contains("etag")) {
-				log.fine("Appt was not synced - so do not delete: " + ap);
+				logBoth("-----------------------------------------------------");
+				logBoth("*** Appointment is not synced with google??? " + ap);
+				logBoth("-----------------------------------------------------");
 				continue;
 			}
 
