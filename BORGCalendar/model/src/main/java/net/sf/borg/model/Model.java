@@ -37,17 +37,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-
 /**
- * base class for data models. A Model provides access to a data store to the outside world.
- * Clients of the model can register as Listeners to be provided with feedback any time the model changes.
+ * base class for data models. A Model provides access to a data store to the
+ * outside world. Clients of the model can register as Listeners to be provided
+ * with feedback any time the model changes.
  */
-public abstract class Model
-{
+public abstract class Model {
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-    /**
+	/**
 	 * The Class ChangeEvent.
 	 */
 	@Data
@@ -58,12 +56,12 @@ public abstract class Model
 		 */
 		public enum ChangeAction {
 			ADD, CHANGE, DELETE
-        }
+		}
 
 		private ChangeAction action;
 
 		private final Object object;
-		
+
 		private Model model;
 
 		/**
@@ -72,39 +70,38 @@ public abstract class Model
 		 * @param object the changed object
 		 * @param action the action
 		 */
-		public ChangeEvent(Object object, ChangeAction action)
-		{
+		public ChangeEvent(Object object, ChangeAction action) {
 			this.object = object;
 			this.action = action;
-		}		
-		
+		}
+
 	}
-	
+
 	/**
 	 * list of all instatiated models
 	 */
 	private static final Set<Model> modelList = new HashSet<Model>();
-	
+
 	/**
 	 * get a list of all instantiated models
+	 * 
 	 * @return list of models
 	 */
-	public static Set<Model> getExistingModels()
-	{
+	public static Set<Model> getExistingModels() {
 		return modelList;
 	}
-	
+
 	/**
 	 * sync all models
 	 */
-	public static void syncModels()
-	{
-		for(Model m : modelList)
+	public static void syncModels() {
+		for (Model m : modelList)
 			m.sync();
 	}
-	
+
 	/**
-	 * sync the model with the underlying DB for DBs that can be changed without going through Borg (i.e. MySQL)
+	 * sync the model with the underlying DB for DBs that can be changed without
+	 * going through Borg (i.e. MySQL)
 	 */
 	protected void sync() {
 		// do nothing by default
@@ -114,116 +111,119 @@ public abstract class Model
 	 * Listener for a Model.
 	 * 
 	 */
-	public interface Listener
-	{
-		
+	public interface Listener {
+
 		/**
 		 * Called to notify Listener when the Model is changed.
 		 */
-        void update(ChangeEvent event);
-		
-	}
-	
-	// list of clients to notify when the model changes
-    private final ArrayList<Listener> listeners;
-    
-    /**
-     * Instantiates a new model.
-     */
-    public Model()
-    {
-    	modelList.add(this);
-        listeners = new ArrayList<Listener>();
-    }
-    
-    /**
-     * Adds a listener.
-     * 
-     * @param listener the listener
-     */
-    public void addListener(Listener listener)
-    {
-        listeners.add(listener);
-    }
-    
-    /**
-     * send an update message to all listeners with no change event
-     */
-    protected void refreshListeners()
-    {
-    	ChangeEvent ev = new ChangeEvent(null,ChangeAction.CHANGE);
-    	ev.model = this;
-    	refreshListeners(ev);
-    }
-    
-    /**
-     * send an update message to all listeners with a change event.
-     */
-    protected void refreshListeners(ChangeEvent event)
-    {
-  
-        if( log.isLoggable(Level.FINE))
-        	log.fine("Sending ChangeEvent[" + event.toString());
+		void update(ChangeEvent event);
 
-    	event.model = this;
-        for( int i = 0; i < listeners.size(); i++ )
-        {
-            Listener v = listeners.get(i);
-            v.update(event);
-            if( log.isLoggable(Level.FINE))
-            	log.fine("...To Listener: " + v);
-        }
-    }
-    
-    /**
-     * Removes the listeners.
-     */
-    public void remove(){
-    	removeListeners();
-    }
-    
-    /**
-    * Removes a listener.
-    * 
-    * @param listener the listener
-    */
-   public void removeListener(Listener listener) 
-    {
-        listeners.remove(listener);
-    }
-    
-    /**
-     * notify all listeners that the model is being destroyed
-     */
-    protected void removeListeners()
-    {
-        listeners.clear();     
-    }
-    
-    /**
-     * Export the models data to XML
-     * @param fw - writer to write the XML to
-     * @throws Exception
-     */
+	}
+
+	// list of clients to notify when the model changes
+	private final ArrayList<Listener> listeners;
+	private boolean notify_listeners = true;
+
+	/**
+	 * Instantiates a new model.
+	 */
+	public Model() {
+		modelList.add(this);
+		listeners = new ArrayList<Listener>();
+	}
+
+	/**
+	 * Adds a listener.
+	 * 
+	 * @param listener the listener
+	 */
+	public void addListener(Listener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * send an update message to all listeners with no change event
+	 */
+	protected void refreshListeners() {
+		ChangeEvent ev = new ChangeEvent(null, ChangeAction.CHANGE);
+		ev.model = this;
+		refreshListeners(ev);
+	}
+
+	/**
+	 * send an update message to all listeners with a change event.
+	 */
+	protected void refreshListeners(ChangeEvent event) {
+
+    	if( !notify_listeners ) return;
+
+		if (log.isLoggable(Level.FINE))
+			log.fine("Sending ChangeEvent[" + event.toString());
+
+		event.model = this;
+		for (int i = 0; i < listeners.size(); i++) {
+			Listener v = listeners.get(i);
+			v.update(event);
+			if (log.isLoggable(Level.FINE))
+				log.fine("...To Listener: " + v);
+		}
+	}
+
+	/**
+	 * Removes the listeners.
+	 */
+	public void remove() {
+		removeListeners();
+	}
+
+	/**
+	 * Removes a listener.
+	 * 
+	 * @param listener the listener
+	 */
+	public void removeListener(Listener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * notify all listeners that the model is being destroyed
+	 */
+	protected void removeListeners() {
+		listeners.clear();
+	}
+
+	/**
+	 * Export the models data to XML
+	 * 
+	 * @param fw - writer to write the XML to
+	 * @throws Exception
+	 */
 	public abstract void export(Writer fw) throws Exception;
-	
+
 	/**
 	 * Import model data from XML
+	 * 
 	 * @param is input stream containing XML
 	 * @throws Exception
 	 */
 	public abstract void importXml(InputStream is) throws Exception;
 
 	/**
-	 * get the root XML element name for this model's XML representation 
+	 * get the root XML element name for this model's XML representation
+	 * 
 	 * @return the XML root element name
 	 */
 	public abstract String getExportName();
 
 	/**
 	 * return user readable information about the model
+	 * 
 	 * @return user readable information String
 	 */
 	public abstract String getInfo() throws Exception;
-    
+
+	public void setNotifyListeners(boolean b) {
+		notify_listeners = b;
+	}
+
 }

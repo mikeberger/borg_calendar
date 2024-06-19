@@ -25,6 +25,7 @@ import net.sf.borg.common.ModalMessageServer;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -279,33 +280,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		});
 
 		vcardmenu.add(impvc);
-		/*
-
-		JMenuItem imcarddav = new JMenuItem();
-		imcarddav.setText(Resource.getResourceString("ImportCarddav"));
-		imcarddav.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-
-				try {
-
-					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock CardDav Password", false);
-					if( pass == null ) return;
-					List<VCard> vcards = CardDav.importVcardFromCarddav(pass);
-					String warning = CardDav.importVCard(vcards);
-					if (warning != null && !warning.isEmpty())
-						Errmsg.getErrorHandler().notice(warning);
-					CategoryModel.syncModels();
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-
-			}
-		});
-
-		vcardmenu.add(imcarddav);*/
-
+		
 		JMenuItem expvc = new JMenuItem();
 		expvc.setText(Resource.getResourceString("exportToFile"));
 		expvc.addActionListener(new ActionListener() {
@@ -423,6 +398,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			public Void doInBackground() {
 				try {
 
+					AppointmentModel.getReference().setNotifyListeners(false);
 					// modally lock borg
 					ModalMessageServer.getReference().sendMessage("lock:" + Resource.getResourceString("syncing"));
 					GCal.getReference().sync(Prefs.getIntPref(PrefName.GCAL_EXPORTYEARS), full, cleanup);
@@ -435,6 +411,10 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 				}
 
 				ModalMessageServer.getReference().sendLogMessage(Resource.getResourceString("done"));
+				AppointmentModel.getReference().setNotifyListeners(true);
+				AppointmentModel.getReference().refresh();
+
+
 
 				return null;
 			}
