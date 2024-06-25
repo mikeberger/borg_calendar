@@ -295,17 +295,17 @@ public class AddressView extends DockableView {
 		homeAddressPanel.add(jLabel13, GridBagConstraintsFactory.create(0, 3));
 		homeAddressPanel.add(jLabel15, GridBagConstraintsFactory.create(0, 4));
 
-		homeAddressPanel.add(workStreetAddressText, GridBagConstraintsFactory
+		homeAddressPanel.add(streetAddresText, GridBagConstraintsFactory
 				.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
-		homeAddressPanel.add(workCityText, GridBagConstraintsFactory.create(1,
+		homeAddressPanel.add(cityText, GridBagConstraintsFactory.create(1,
 				1, GridBagConstraints.BOTH, 1.0, 0.0));
-		homeAddressPanel.add(workStateText, GridBagConstraintsFactory.create(1,
+		homeAddressPanel.add(stateText, GridBagConstraintsFactory.create(1,
 				2, GridBagConstraints.BOTH, 1.0, 0.0));
-		homeAddressPanel.add(workCountryText, GridBagConstraintsFactory.create(
+		homeAddressPanel.add(countryText, GridBagConstraintsFactory.create(
 				1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
-		homeAddressPanel.add(workZipText, GridBagConstraintsFactory.create(1,
+		homeAddressPanel.add(zipCodeText, GridBagConstraintsFactory.create(1,
 				4, GridBagConstraints.BOTH, 1.0, 0.0));
-
+		
 		add(homeAddressPanel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 
@@ -346,17 +346,17 @@ public class AddressView extends DockableView {
 		workAddressPanel.add(jLabel20, GridBagConstraintsFactory.create(0, 3));
 		workAddressPanel.add(jLabel19, GridBagConstraintsFactory.create(0, 4));
 
-		workAddressPanel.add(streetAddresText, GridBagConstraintsFactory
+		workAddressPanel.add(workStreetAddressText, GridBagConstraintsFactory
 				.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
-		workAddressPanel.add(cityText, GridBagConstraintsFactory.create(1, 1,
+		workAddressPanel.add(workCityText, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		workAddressPanel.add(stateText, GridBagConstraintsFactory.create(1, 2,
+		workAddressPanel.add(workStateText, GridBagConstraintsFactory.create(1, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		workAddressPanel.add(countryText, GridBagConstraintsFactory.create(1,
+		workAddressPanel.add(workCountryText, GridBagConstraintsFactory.create(1,
 				3, GridBagConstraints.BOTH, 1.0, 0.0));
-		workAddressPanel.add(zipCodeText, GridBagConstraintsFactory.create(1,
+		workAddressPanel.add(workZipText, GridBagConstraintsFactory.create(1,
 				4, GridBagConstraints.BOTH, 1.0, 0.0));
-
+		
 
 		add(workAddressPanel, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
