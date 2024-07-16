@@ -157,10 +157,11 @@ public class GCal {
 			}
 		}
 
-		// questionable implementation to get around code in save() that preserves url even when nulled out in object
+		// questionable implementation to get around code in save() that preserves url
+		// even when nulled out in object
 		DBHelper.getController().execSQL("update tasks set url = null");
 		DBHelper.getController().execSQL("update subtasks set url = null");
-		
+
 		for (net.sf.borg.model.entity.Task ap : TaskModel.getReference().getTasks()) {
 			if (ap.getUrl() != null || ap.getUid() != null) {
 				ap.setUrl(null);
@@ -209,8 +210,7 @@ public class GCal {
 					event.setAction(Model.ChangeEvent.ChangeAction.ADD);
 					event.setObjectType(SyncableEntity.ObjectType.APPOINTMENT);
 					event.setUid(ap.getUid());
-					if( ap.getUrl() != null)
-					{
+					if (ap.getUrl() != null) {
 						event.setUrl(ap.getUrl());
 						event.setAction(Model.ChangeEvent.ChangeAction.CHANGE);
 					}
@@ -218,7 +218,7 @@ public class GCal {
 				}
 
 			}
-			
+
 			for (net.sf.borg.model.entity.Task ap : TaskModel.getReference().getTasks()) {
 				if (SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.TASK) == null) {
 					SyncEvent event = new SyncEvent();
@@ -226,8 +226,7 @@ public class GCal {
 					event.setAction(Model.ChangeEvent.ChangeAction.ADD);
 					event.setObjectType(SyncableEntity.ObjectType.TASK);
 					event.setUid(ap.getUid());
-					if( ap.getUrl() != null)
-					{
+					if (ap.getUrl() != null) {
 						event.setUrl(ap.getUrl());
 						event.setAction(Model.ChangeEvent.ChangeAction.CHANGE);
 					}
@@ -242,18 +241,16 @@ public class GCal {
 					event.setAction(Model.ChangeEvent.ChangeAction.ADD);
 					event.setObjectType(SyncableEntity.ObjectType.SUBTASK);
 					event.setUid(ap.getUid());
-					if( ap.getUrl() != null)
-					{
+					if (ap.getUrl() != null) {
 						event.setUrl(ap.getUrl());
 						event.setAction(Model.ChangeEvent.ChangeAction.CHANGE);
 					}
 					SyncLog.getReference().insert(event);
 				}
 			}
-		
+
 		}
-		
-		
+
 		processSyncMap();
 
 		syncFromServer(after, cleanup);
@@ -499,7 +496,7 @@ public class GCal {
 									// suspicious case - provide warning
 									ModalMessageServer.getReference().sendLogMessage("*** WARNING ***");
 									ModalMessageServer.getReference().sendLogMessage(
-											"Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
+											"Task was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
 									ModalMessageServer.getReference().sendLogMessage(task.toString());
 									addTask(t);
 								} else
@@ -550,7 +547,7 @@ public class GCal {
 									// suspicious case - provide warning
 									ModalMessageServer.getReference().sendLogMessage("*** WARNING ***");
 									ModalMessageServer.getReference().sendLogMessage(
-											"Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
+											"Subtask was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
 									ModalMessageServer.getReference().sendLogMessage(task.toString());
 									addTask(t);
 								} else
@@ -587,7 +584,12 @@ public class GCal {
 	}
 
 	private void updateTask(Task t) throws IOException {
-		tservice.tasks().update(taskList, t.getId(), t).execute();
+		try {
+			tservice.tasks().update(taskList, t.getId(), t).execute();
+		} catch (Exception e) {
+			logBoth("WARNING: google doesn't know about task: " + t.getId() + " " + t.getTitle() + " try to add...");
+			addTask(t);
+		}
 	}
 
 	private void removeTask(String id) throws IOException {
