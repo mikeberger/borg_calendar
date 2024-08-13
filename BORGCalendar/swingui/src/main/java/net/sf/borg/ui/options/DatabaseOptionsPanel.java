@@ -19,6 +19,21 @@
  */
 package net.sf.borg.ui.options;
 
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -27,10 +42,7 @@ import net.sf.borg.ui.HelpLauncher;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * Provides the UI for editing database options
@@ -82,7 +94,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		JButton chgdb = new JButton();
 		this.add(chgdb, gridBagConstraints5);
 		chgdb.setForeground(new java.awt.Color(255, 0, 51));
-		chgdb.setIcon(new ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
+		chgdb.setIcon(IconHelper.getIcon("/resource/Refresh16.gif"));
 		ResourceHelper.setText(chgdb, "Apply_DB_Change");
 		chgdb.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -97,7 +109,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		gridBagConstraintsh.anchor = GridBagConstraints.CENTER;
 		this.add(help, gridBagConstraintsh);
 		help.setForeground(new java.awt.Color(255, 0, 51));
-		help.setIcon(new ImageIcon(getClass().getResource("/resource/Help16.gif")));
+		help.setIcon(IconHelper.getIcon("/resource/Help16.gif"));
 		ResourceHelper.setText(help, "Help");
 
 		help.addActionListener(new java.awt.event.ActionListener() {

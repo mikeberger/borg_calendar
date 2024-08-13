@@ -16,6 +16,22 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.TreeSet;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
@@ -26,14 +42,8 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.InputDialog;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.TreeSet;
 
 /**
  * UI for choosing which categories to display and which to hide
@@ -175,13 +185,12 @@ public class CategoryChooser extends View {
 		 */
 		JMenu catmenu = new JMenu();
 
-		//catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//catmenu.setIcon(IconHelper.getIcon(
 		//		"/resource/Preferences16.gif")));
 		ResourceHelper.setText(catmenu, "Categories");
 
 		JMenuItem chooseCategoriesMI = new JMenuItem();
-		chooseCategoriesMI.setIcon(new javax.swing.ImageIcon(getClass()
-				.getResource("/resource/Preferences16.gif")));
+		chooseCategoriesMI.setIcon(IconHelper.getIcon("/resource/Preferences16.gif"));
 		ResourceHelper.setText(chooseCategoriesMI, "choosecat");
 		chooseCategoriesMI.setActionCommand("Choose Displayed Categories");
 		chooseCategoriesMI
@@ -194,8 +203,8 @@ public class CategoryChooser extends View {
 		catmenu.add(chooseCategoriesMI);
 
 		JMenuItem addCategoryMI = new JMenuItem();
-		addCategoryMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Add16.gif")));
+		addCategoryMI.setIcon(IconHelper.getIcon(
+				"/resource/Add16.gif"));
 		ResourceHelper.setText(addCategoryMI, "addcat");
 		addCategoryMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -229,8 +238,7 @@ public class CategoryChooser extends View {
 		catmenu.add(addCategoryMI);
 
 		JMenuItem removeCategoryMI = new JMenuItem();
-		removeCategoryMI.setIcon(new javax.swing.ImageIcon(getClass()
-				.getResource("/resource/Delete16.gif")));
+		removeCategoryMI.setIcon(IconHelper.getIcon("/resource/Delete16.gif"));
 		ResourceHelper.setText(removeCategoryMI, "remcat");
 		removeCategoryMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -282,8 +290,8 @@ public class CategoryChooser extends View {
 		if (delcatMI == null) {
 			delcatMI = new JMenuItem();
 			ResourceHelper.setText(delcatMI, "delete_cat");
-			delcatMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-					"/resource/Delete16.gif")));
+			delcatMI.setIcon(IconHelper.getIcon(
+					"/resource/Delete16.gif"));
 			delcatMI.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -430,8 +438,8 @@ public class CategoryChooser extends View {
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH,
 						1.0, 1.0));
 
-		applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Save16.gif")));
+		applyButton.setIcon(IconHelper.getIcon(
+				"/resource/Save16.gif"));
 		ResourceHelper.setText(applyButton, "apply");
 		applyButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -440,8 +448,8 @@ public class CategoryChooser extends View {
 			}
 		});
 
-		dismissButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
+		dismissButton.setIcon(IconHelper.getIcon(
+				"/resource/Stop16.gif"));
 		ResourceHelper.setText(dismissButton, "Dismiss");
 		dismissButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override

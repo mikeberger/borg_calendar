@@ -19,15 +19,25 @@
  */
 package net.sf.borg.ui.options;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * Provides the UI for editing Task options
@@ -45,12 +55,12 @@ public class TaskOptionsPanel extends OptionsPanel {
 	private final JSpinner orangeSpinner = new JSpinner(new SpinnerNumberModel());
 	private final JSpinner yellowSpinner = new JSpinner(new SpinnerNumberModel());
 
-	private final ImageIcon redIcon = new ImageIcon(getClass().getResource(
-			"/resource/red.png"));
-	private final ImageIcon orangeIcon = new ImageIcon(getClass().getResource(
-			"/resource/orange.png"));
-	private final ImageIcon yellowIcon = new ImageIcon(getClass().getResource(
-			"/resource/yellow.png"));
+	private final ImageIcon redIcon = IconHelper.getIcon(
+			"/resource/red.png");
+	private final ImageIcon orangeIcon = IconHelper.getIcon(
+			"/resource/orange.png");
+	private final ImageIcon yellowIcon = IconHelper.getIcon(
+			"/resource/yellow.png");
 	
 	/**
 	 * Instantiates a new task options panel.

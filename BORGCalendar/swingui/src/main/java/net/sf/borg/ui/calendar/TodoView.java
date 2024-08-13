@@ -50,7 +50,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -96,6 +95,7 @@ import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
@@ -650,8 +650,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				Resource.getResourceString("todoquickentry"),
 				TitledBorder.DEFAULT_JUSTIFICATION,
 				TitledBorder.DEFAULT_POSITION, null, null));
-		addTodoButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Save16.gif")));
+		addTodoButton.setIcon(IconHelper.getIcon(
+				"/resource/Save16.gif"));
 		ResourceHelper.setText(addTodoButton, "Add");
 		addTodoButton.addActionListener(new ActionListener() {
 			@Override
@@ -816,8 +816,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				doTodoAction(false);
 			}
 		});
-		doneButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Properties16.gif")));
+		doneButton.setIcon(IconHelper.getIcon(
+				"/resource/Properties16.gif"));
 		buttonPanel.add(doneButton, null);
 
 		JButton doneDeleteButton = new JButton();
@@ -828,8 +828,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				doTodoAction(true);
 			}
 		});
-		doneDeleteButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
+		doneDeleteButton.setIcon(IconHelper.getIcon(
+				"/resource/Delete16.gif"));
 		buttonPanel.add(doneDeleteButton, null);
 
 		// *******************************************************************
@@ -855,8 +855,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
 		parent.addToolBarItem(
-				new ImageIcon(getClass().getResource(
-						"/resource/Properties16.gif")), getModuleName(),
+				IconHelper.getIcon(
+						"/resource/Properties16.gif"), getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

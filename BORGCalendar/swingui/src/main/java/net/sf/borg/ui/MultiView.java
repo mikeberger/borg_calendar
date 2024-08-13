@@ -33,7 +33,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -50,6 +49,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.options.StartupViewsOptionsPanel;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 /**
@@ -215,7 +215,7 @@ public class MultiView extends View {
 		getContentPane().setLayout(new GridBagLayout());
 
 		mainMenu.addAction(
-				new ImageIcon(getClass().getResource("/resource/Print16.gif")),
+				IconHelper.getIcon("/resource/Print16.gif"),
 				Resource.getResourceString("Print"), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
@@ -421,8 +421,7 @@ public class MultiView extends View {
 	private JToolBar getToolBar() {
 		bar.setFloatable(false);
 
-		JButton printbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/Print16.gif")));
+		JButton printbut = new JButton(IconHelper.getIcon("/resource/Print16.gif"));
 		printbut.setToolTipText(Resource.getResourceString("Print"));
 		printbut.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -434,7 +433,7 @@ public class MultiView extends View {
 
 		bar.addSeparator();
 
-		//JButton clearbut = new JButton(new ImageIcon(getClass().getResource(
+		//JButton clearbut = new JButton(IconHelper.getIcon(
 			//	"/resource/Delete16.gif")));
 		JButton clearbut = new JButton(UIManager.getIcon("InternalFrame.closeIcon"));
 		clearbut.setToolTipText(Resource.getResourceString("close_tabs"));

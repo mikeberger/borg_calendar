@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -57,6 +56,7 @@ import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
@@ -573,8 +573,8 @@ public class CheckListPanel extends DockableView implements
 		JPanel sidePanel = new JPanel();
 		sidePanel.setLayout(new GridBagLayout());
 		JButton upButton = new JButton();
-		upButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Up16.gif")));
+		upButton.setIcon(IconHelper.getIcon(
+				"/resource/Up16.gif"));
 		sidePanel.add(upButton, GridBagConstraintsFactory.create(0, 0));
 		upButton.addActionListener(new ActionListener() {
 			@Override
@@ -590,8 +590,8 @@ public class CheckListPanel extends DockableView implements
 		});
 
 		JButton downButton = new JButton();
-		downButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Down16.gif")));
+		downButton.setIcon(IconHelper.getIcon(
+				"/resource/Down16.gif"));
 		downButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -620,8 +620,8 @@ public class CheckListPanel extends DockableView implements
 
 		final MultiView par = parent;
 		parent.addToolBarItem(
-				new ImageIcon(getClass().getResource(
-						"/resource/Preferences16.gif")), getModuleName(),
+				IconHelper.getIcon(
+						"/resource/Preferences16.gif"), getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

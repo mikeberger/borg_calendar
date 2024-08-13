@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -52,6 +51,7 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
@@ -270,8 +270,8 @@ public class AddrListView extends DockableView implements Module {
 		add(tableScrollPane, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
 
-		newbutton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Add16.gif")));
+		newbutton.setIcon(IconHelper.getIcon(
+				"/resource/Add16.gif"));
 		ResourceHelper.setText(newbutton, "Add_New");
 		newbutton
 				.addActionListener(alAddNew = new java.awt.event.ActionListener() {
@@ -285,8 +285,8 @@ public class AddrListView extends DockableView implements Module {
 
 		buttonPanel.add(newbutton);
 
-		editbutton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
+		editbutton.setIcon(IconHelper.getIcon(
+				"/resource/Edit16.gif"));
 		ResourceHelper.setText(editbutton, "Edit");
 		editbutton
 				.addActionListener(alEdit = new java.awt.event.ActionListener() {
@@ -299,8 +299,8 @@ public class AddrListView extends DockableView implements Module {
 
 		buttonPanel.add(editbutton);
 
-		delbutton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
+		delbutton.setIcon(IconHelper.getIcon(
+				"/resource/Delete16.gif"));
 		ResourceHelper.setText(delbutton, "Delete");
 		delbutton
 				.addActionListener(alDelete = new java.awt.event.ActionListener() {
@@ -313,8 +313,8 @@ public class AddrListView extends DockableView implements Module {
 		buttonPanel.add(delbutton);
 
 		// Find Button - Search a text in Address List
-		findbutton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Find16.gif")));
+		findbutton.setIcon(IconHelper.getIcon(
+				"/resource/Find16.gif"));
 		ResourceHelper.setText(findbutton, "Find");
 		findbutton
 				.addActionListener(alFind = new java.awt.event.ActionListener() {
@@ -423,8 +423,8 @@ public class AddrListView extends DockableView implements Module {
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/addr.png")), getModuleName(),
+		parent.addToolBarItem(IconHelper.getIcon(
+				"/resource/addr.png"), getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

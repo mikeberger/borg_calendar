@@ -36,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -72,6 +71,7 @@ import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.HTMLLimitDocument;
 import net.sf.borg.ui.util.HTMLTextPane;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
@@ -773,7 +773,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 
 		final MultiView par = parent;
 		parent.addToolBarItem(
-				new ImageIcon(getClass().getResource("/resource/Edit16.gif")),
+				IconHelper.getIcon("/resource/Edit16.gif"),
 				getModuleName(), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

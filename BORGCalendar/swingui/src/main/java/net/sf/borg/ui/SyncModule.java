@@ -40,6 +40,7 @@ import net.sf.borg.ui.options.GoogleOptionsPanel;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.FileDrop;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PasswordHelper;
 
 public class SyncModule implements Module, Prefs.Listener, Model.Listener {
@@ -587,7 +588,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		});
 
 		syncToolbarButton = MultiView.getMainView().addToolBarItem(
-				new javax.swing.ImageIcon(SyncModule.class.getResource("/resource/Refresh16.gif")),
+				IconHelper.getIcon("/resource/Refresh16.gif"),
 				Resource.getResourceString("Sync"), syncButtonListener);
 
 		String usetray = Prefs.getPref(PrefName.USESYSTRAY);

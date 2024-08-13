@@ -19,7 +19,26 @@
  */
 package net.sf.borg.ui.task;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+
 import com.toedter.calendar.JDateChooser;
+
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
@@ -34,14 +53,8 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PlainDateEditor;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
 
 /**
  * UI for viewing and editing a single project
@@ -331,8 +344,8 @@ public class ProjectView extends DockableView {
 		JPanel buttonPanel = new JPanel();
 		JButton savebutton = new JButton();
 
-		savebutton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Save16.gif")));
+		savebutton.setIcon(IconHelper.getIcon(
+				"/resource/Save16.gif"));
 		ResourceHelper.setText(savebutton, "Save");
 		savebutton.addActionListener(new ActionListener() {
 			@Override

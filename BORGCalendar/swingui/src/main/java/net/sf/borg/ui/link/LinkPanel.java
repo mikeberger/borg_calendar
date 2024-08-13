@@ -20,12 +20,50 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.link;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.*;
+import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.LinkModel.LinkType;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.entity.*;
+import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Link;
+import net.sf.borg.model.entity.Memo;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.EntitySelector;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -35,19 +73,9 @@ import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TableSorter;
-
-import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.net.URI;
-import java.util.List;
-import java.util.*;
 
 /**
  * Panel for managing links. This panel is included in the UIs for entities that
@@ -259,8 +287,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		// add the link file button
 		JButton linkFilebutton = new JButton(
 				Resource.getResourceString("link_file"));
-		linkFilebutton.setIcon(new javax.swing.ImageIcon(getClass()
-				.getResource("/resource/Add16.gif")));
+		linkFilebutton.setIcon(IconHelper.getIcon("/resource/Add16.gif"));
 		linkFilebutton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -301,8 +328,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		// attach file button
 		JButton attachFileButton = new JButton(
 				Resource.getResourceString("attach_file"));
-		attachFileButton.setIcon(new javax.swing.ImageIcon(getClass()
-				.getResource("/resource/Copy16.gif")));
+		attachFileButton.setIcon(IconHelper.getIcon("/resource/Copy16.gif"));
 		attachFileButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -342,8 +368,8 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 		// URL link button
 		JButton urlLinkButton = new JButton(Resource.getResourceString("url"));
-		urlLinkButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/WebComponent16.gif")));
+		urlLinkButton.setIcon(IconHelper.getIcon(
+				"/resource/WebComponent16.gif"));
 		urlLinkButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -379,8 +405,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 		// borg entity link button
 		JButton entityLinkbutton = new JButton("BORG");
-		entityLinkbutton.setIcon(new javax.swing.ImageIcon(getClass()
-				.getResource("/resource/borg16.jpg")));
+		entityLinkbutton.setIcon(IconHelper.getIcon("/resource/borg16.jpg"));
 		entityLinkbutton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

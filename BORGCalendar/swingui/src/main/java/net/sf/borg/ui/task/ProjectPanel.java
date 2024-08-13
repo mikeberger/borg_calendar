@@ -20,6 +20,22 @@
 
 package net.sf.borg.ui.task;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.util.Collection;
+import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelEvent;
+
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
@@ -31,15 +47,10 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
-
-import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import java.awt.*;
-import java.util.Collection;
-import java.util.Date;
 
 /**
  * shows a list of projects in a table
@@ -197,8 +208,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 			JButton addbutton = new JButton();
 			addbutton.setText(Resource.getResourceString("Add"));
-			addbutton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Add16.gif")));
+			addbutton.setIcon(IconHelper.getIcon(
+					"/resource/Add16.gif"));
 			addbutton.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -213,8 +224,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			buttonPanel.add(addbutton, null);
 
 			JButton changebutton1 = new JButton();
-			changebutton1.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Edit16.gif")));
+			changebutton1.setIcon(IconHelper.getIcon(
+					"/resource/Edit16.gif"));
 			changebutton1.setText(Resource.getResourceString("Change"));
 			changebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
@@ -226,8 +237,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			buttonPanel.add(changebutton1, null);
 
 			JButton deletebutton1 = new JButton();
-			deletebutton1.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Delete16.gif")));
+			deletebutton1.setIcon(IconHelper.getIcon(
+					"/resource/Delete16.gif"));
 			deletebutton1.setText(Resource.getResourceString("Delete"));
 			deletebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
@@ -239,8 +250,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			buttonPanel.add(deletebutton1, null);
 
 			JButton closebutton1 = new JButton();
-			closebutton1.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/greenlight.gif")));
+			closebutton1.setIcon(IconHelper.getIcon(
+					"/resource/greenlight.gif"));
 			closebutton1.setText(Resource.getResourceString("Close"));
 			closebutton1.addActionListener(new java.awt.event.ActionListener() {
 				@Override
@@ -251,8 +262,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			buttonPanel.add(closebutton1, null);
 
 			JButton clonebutton1 = new JButton();
-			clonebutton1.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Copy16.gif")));
+			clonebutton1.setIcon(IconHelper.getIcon(
+					"/resource/Copy16.gif"));
 			clonebutton1.setText(Resource.getResourceString("Clone"));
 			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
 				@Override

@@ -54,6 +54,7 @@ import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.sync.SubscribedCalendars;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.options.OptionsView;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.ScrolledDialog;
 
@@ -76,7 +77,7 @@ class MainMenu {
 	public MainMenu() {
 
 		menuBar.setBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.RAISED));
-		// actionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// actionMenu.setIcon(IconHelper.getIcon(
 		// "/resource/Application16.gif")));
 
 		/*
@@ -87,7 +88,7 @@ class MainMenu {
 		ResourceHelper.setText(actionMenu, "Action");
 
 		JMenuItem sqlMI = new JMenuItem();
-		sqlMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
+		sqlMI.setIcon(IconHelper.getIcon("/resource/Refresh16.gif"));
 		ResourceHelper.setText(sqlMI, "RunSQL");
 		sqlMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -98,7 +99,7 @@ class MainMenu {
 		actionMenu.add(sqlMI);
 
 		JMenuItem resendEmailMI = new JMenuItem();
-		// resendEmailMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// resendEmailMI.setIcon(IconHelper.getIcon(
 		// "/resource/Refresh16.gif")));
 		ResourceHelper.setText(resendEmailMI, "resendEmail");
 		resendEmailMI.addActionListener(new java.awt.event.ActionListener() {
@@ -147,7 +148,7 @@ class MainMenu {
 		actionMenu.add(resendEmailMI);
 
 		JMenuItem exitMenuItem = new JMenuItem();
-		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/stop.png")));
+		exitMenuItem.setIcon(IconHelper.getIcon("/resource/stop.png"));
 		exitMenuItem.setText(Resource.getResourceString("Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -164,7 +165,7 @@ class MainMenu {
 		 * Option Menu
 		 */
 
-		// optionsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// optionsMenu.setIcon(IconHelper.getIcon(
 		// "/resource/Preferences16.gif")));
 		ResourceHelper.setText(optionsMenu, "Options");
 
@@ -179,7 +180,7 @@ class MainMenu {
 		optionsMenu.add(editPrefsMenuItem);
 
 		JMenuItem exportPrefsMI = new JMenuItem();
-		exportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
+		exportPrefsMI.setIcon(IconHelper.getIcon("/resource/Export16.gif"));
 		ResourceHelper.setText(exportPrefsMI, "export_prefs");
 		exportPrefsMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -190,7 +191,7 @@ class MainMenu {
 		optionsMenu.add(exportPrefsMI);
 
 		JMenuItem importPrefsMI = new JMenuItem();
-		importPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
+		importPrefsMI.setIcon(IconHelper.getIcon("/resource/Import16.gif"));
 		ResourceHelper.setText(importPrefsMI, "import_prefs");
 		importPrefsMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -273,7 +274,7 @@ class MainMenu {
 		 * Import/Export Menu
 		 */
 		JMenu impexpMenu = new JMenu();
-		// impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// impexpMenu.setIcon(IconHelper.getIcon(
 		// "/resource/Export16.gif")));
 		ResourceHelper.setText(impexpMenu, "impexpMenu");
 
@@ -286,7 +287,7 @@ class MainMenu {
 				exportMIActionPerformed();
 			}
 		});
-		exportMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
+		exportMI.setIcon(IconHelper.getIcon("/resource/Export16.gif"));
 		ResourceHelper.setText(exportMI, "expXML");
 		impexpMenu.add(exportMI);
 		
@@ -298,7 +299,7 @@ class MainMenu {
 				importZipMIActionPerformed();
 			}
 		});
-		importZipMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
+		importZipMI.setIcon(IconHelper.getIcon("/resource/Import16.gif"));
 		impexpMenu.add(importZipMI);
 
 		
@@ -309,7 +310,7 @@ class MainMenu {
 				importMIActionPerformed();
 			}
 		});
-		importMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
+		importMI.setIcon(IconHelper.getIcon("/resource/Import16.gif"));
 		ResourceHelper.setText(importMI, "impXML");
 		impexpMenu.add(importMI);
 
@@ -337,7 +338,7 @@ class MainMenu {
 		 * 
 		 * Help Menu
 		 */
-		helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Help16.gif")));
+		helpmenu.setIcon(IconHelper.getIcon("/resource/Help16.gif"));
 		ResourceHelper.setText(helpmenu, "Help");
 
 		JMenuItem helpMI = new JMenuItem();
@@ -480,7 +481,7 @@ class MainMenu {
 				+ System.getProperty("java.version");
 		Object[] opts = { Resource.getResourceString("Dismiss") };
 		JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(MainMenu.class.getResource("/resource/borg.jpg")), opts,
+				JOptionPane.INFORMATION_MESSAGE, IconHelper.getIcon("/resource/borg.jpg"), opts,
 				opts[0]);
 
 	}
@@ -603,7 +604,7 @@ class MainMenu {
 		if (pluginMenu == null) {
 			pluginMenu = new JMenu();
 			pluginMenu.setText(Resource.getResourceString("Plugins"));
-			pluginMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
+			pluginMenu.setIcon(IconHelper.getIcon("/resource/Preferences16.gif"));
 			pluginMenu.setVisible(false);
 		}
 		return pluginMenu;
@@ -623,7 +624,7 @@ class MainMenu {
 	private JMenu getUndoMenu() {
 		JMenu m = new JMenu();
 		m.setText(Resource.getResourceString("undo"));
-		// m.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// m.setIcon(IconHelper.getIcon(
 		// "/resource/Refresh16.gif")));
 		final JMenu menu = m;
 		m.addMenuListener(new MenuListener() {

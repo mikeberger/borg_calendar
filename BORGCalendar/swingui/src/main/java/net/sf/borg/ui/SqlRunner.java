@@ -23,6 +23,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.ScrolledDialog;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -76,8 +77,8 @@ class SqlRunner extends JFrame {
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
 		jScrollPane1.setViewportView(this.editor);
 
-		runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Forward16.gif")));
+		runButton.setIcon(IconHelper.getIcon(
+				"/resource/Forward16.gif"));
 
 		runButton.setText("Run");
 		runButton.addActionListener(new java.awt.event.ActionListener() {
@@ -90,8 +91,8 @@ class SqlRunner extends JFrame {
 		jPanel1.add(runButton);
 
 		JButton clearButton = new JButton();
-		clearButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Undo16.gif")));
+		clearButton.setIcon(IconHelper.getIcon(
+				"/resource/Undo16.gif"));
 		clearButton.setText("Clear");
 		clearButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override

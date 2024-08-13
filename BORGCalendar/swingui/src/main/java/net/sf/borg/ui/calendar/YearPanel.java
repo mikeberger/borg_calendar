@@ -39,7 +39,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
@@ -60,6 +59,7 @@ import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * YearPanel is the Year UI. It shows all days of the year and allows navigation
@@ -633,7 +633,7 @@ public class YearPanel extends DockableView implements Printable,
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
 		parent.addToolBarItem(
-				new ImageIcon(getClass().getResource("/resource/year.jpg")),
+				IconHelper.getIcon("/resource/year.jpg"),
 				getModuleName(), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

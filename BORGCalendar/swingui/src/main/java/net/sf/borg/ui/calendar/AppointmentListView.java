@@ -36,7 +36,6 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -68,6 +67,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.MyDateChooser;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
@@ -314,8 +314,8 @@ public class AppointmentListView extends DockableView implements
 		if (copyButton == null) {
 			copyButton = new JButton();
 			ResourceHelper.setText(copyButton, "copy_appt");
-			copyButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Copy16.gif")));
+			copyButton.setIcon(IconHelper.getIcon(
+					"/resource/Copy16.gif"));
 			copyButton.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -376,8 +376,8 @@ public class AppointmentListView extends DockableView implements
 		if (reminderButton == null) {
 			reminderButton = new JButton();
 			ResourceHelper.setText(reminderButton, "send_reminder");
-			reminderButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/ComposeMail16.gif")));
+			reminderButton.setIcon(IconHelper.getIcon(
+					"/resource/ComposeMail16.gif"));
 			reminderButton
 					.addActionListener(new java.awt.event.ActionListener() {
 						@Override
@@ -493,8 +493,8 @@ public class AppointmentListView extends DockableView implements
 
 		buttonPanel.setLayout(new java.awt.GridLayout(0, 1));
 
-		addButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
+		addButton.setIcon(IconHelper.getIcon(
+				"/resource/Edit16.gif"));
 		ResourceHelper.setText(addButton, "EditNew");
 		addButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -507,8 +507,8 @@ public class AppointmentListView extends DockableView implements
 		buttonPanel.add(addButton);
 		buttonPanel.add(getCopyButton());
 
-		deleteButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
+		deleteButton.setIcon(IconHelper.getIcon(
+				"/resource/Delete16.gif"));
 		ResourceHelper.setText(deleteButton, "Delete");
 		deleteButton.setToolTipText(Resource.getResourceString("del_tip"));
 
@@ -539,8 +539,8 @@ public class AppointmentListView extends DockableView implements
 		deleteButton.addActionListener(alDel);
 		buttonPanel.add(deleteButton);
 
-		deleteOneOnlyButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
+		deleteOneOnlyButton.setIcon(IconHelper.getIcon(
+				"/resource/Delete16.gif"));
 		ResourceHelper.setText(deleteOneOnlyButton, "Delete_One_Only");
 		deleteOneOnlyButton.setToolTipText(Resource
 				.getResourceString("doo_tip"));

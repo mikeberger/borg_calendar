@@ -691,7 +691,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
         // button panel
         // ********************************************************************
 
-        saveButton.setIcon(new ImageIcon(getClass().getResource("/resource/Save16.gif")));
+        saveButton.setIcon(IconHelper.getIcon("/resource/Save16.gif"));
         ResourceHelper.setText(saveButton, "Save");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -711,7 +711,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
         });
         buttonPanel.add(saveButton);
 
-        saveCloseButton.setIcon(new ImageIcon(getClass().getResource("/resource/Save16.gif")));
+        saveCloseButton.setIcon(IconHelper.getIcon("/resource/Save16.gif"));
         ResourceHelper.setText(saveCloseButton, "Save_&_Close");
         saveCloseButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -787,7 +787,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
         });
         buttonPanel.add(decryptButton, null);
 
-        savedefaultsbutton.setIcon(new ImageIcon(getClass().getResource("/resource/SaveAs16.gif")));
+        savedefaultsbutton.setIcon(IconHelper.getIcon("/resource/SaveAs16.gif"));
         ResourceHelper.setText(savedefaultsbutton, "save_Def");
         savedefaultsbutton.setToolTipText(Resource.getResourceString("sd_tip"));
         savedefaultsbutton.addActionListener(new java.awt.event.ActionListener() {

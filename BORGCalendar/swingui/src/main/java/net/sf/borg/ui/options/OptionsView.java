@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -44,6 +43,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * UI for editing BORG options
@@ -97,8 +97,8 @@ public class OptionsView extends View {
 
             JPanel applyDismissPanel = new JPanel();
 
-            applyButton.setIcon(new ImageIcon(getClass().getResource(
-                    "/resource/Save16.gif")));
+            applyButton.setIcon(IconHelper.getIcon(
+                    "/resource/Save16.gif"));
             ResourceHelper.setText(applyButton, "apply");
             applyButton.addActionListener(new java.awt.event.ActionListener() {
                 @Override
@@ -108,8 +108,8 @@ public class OptionsView extends View {
             });
             applyDismissPanel.add(applyButton, null);
 
-            dismissButton.setIcon(new ImageIcon(getClass().getResource(
-                    "/resource/Stop16.gif")));
+            dismissButton.setIcon(IconHelper.getIcon(
+                    "/resource/Stop16.gif"));
             ResourceHelper.setText(dismissButton, "Dismiss");
             dismissButton
                     .addActionListener(new java.awt.event.ActionListener() {

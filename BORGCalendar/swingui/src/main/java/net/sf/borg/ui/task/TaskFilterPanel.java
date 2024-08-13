@@ -20,6 +20,21 @@
 
 package net.sf.borg.ui.task;
 
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
@@ -27,12 +42,7 @@ import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Collection;
-import java.util.TreeSet;
-import java.util.Vector;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * Wraps a Task List Table with filter criteria. This is the UI for the Tasks
@@ -129,8 +139,8 @@ public class TaskFilterPanel extends JPanel {
 		gridBagConstraints15.gridwidth = 3;
 		this.add(comboBoxPanel, gridBagConstraints15);
 
-		filterButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Find16.gif")));
+		filterButton.setIcon(IconHelper.getIcon(
+				"/resource/Find16.gif"));
 		ResourceHelper.setText(filterButton, "Filter:");
 		filterButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override

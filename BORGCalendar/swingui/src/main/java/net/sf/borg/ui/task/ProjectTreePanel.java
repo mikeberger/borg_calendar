@@ -18,6 +18,35 @@
  */
 package net.sf.borg.ui.task;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -31,19 +60,7 @@ import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * Presents a split pane showing a tree of projects, subprojects, and tasks on
@@ -64,18 +81,13 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private class ProjectTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		private static final long serialVersionUID = 1L;
-		private final ImageIcon redIcon = new ImageIcon(getClass().getResource(
-				"/resource/red.png"));
-		private final ImageIcon orangeIcon = new ImageIcon(getClass()
-				.getResource("/resource/orange.png"));
-		private final ImageIcon yellowIcon = new ImageIcon(getClass()
-				.getResource("/resource/yellow.png"));
-		private final ImageIcon greenIcon = new ImageIcon(getClass()
-				.getResource("/resource/green.png"));
-		private final ImageIcon emptyIcon = new ImageIcon(getClass()
-				.getResource("/resource/empty.png"));
-		private final ImageIcon doneIcon = new ImageIcon(getClass()
-				.getResource("/resource/done.png"));
+		private final ImageIcon redIcon = IconHelper.getIcon(
+				"/resource/red.png");
+		private final ImageIcon orangeIcon = IconHelper.getIcon("/resource/orange.png");
+		private final ImageIcon yellowIcon = IconHelper.getIcon("/resource/yellow.png");
+		private final ImageIcon greenIcon = IconHelper.getIcon("/resource/green.png");
+		private final ImageIcon emptyIcon = IconHelper.getIcon("/resource/empty.png");
+		private final ImageIcon doneIcon = IconHelper.getIcon("/resource/done.png");
 
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value,

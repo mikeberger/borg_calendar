@@ -19,18 +19,34 @@
  */
 package net.sf.borg.ui.options;
 
-import net.sf.borg.common.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.Theme;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.ColorChooserButton;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collection;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * Provides the UI for editing color options
@@ -102,8 +118,8 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		});
 
 		JButton saveButton = new JButton();
-		saveButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Add16.gif")));
+		saveButton.setIcon(IconHelper.getIcon(
+				"/resource/Add16.gif"));
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -138,8 +154,8 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		themePanel.add(saveButton, GridBagConstraintsFactory.create(2, 0));
 
 		JButton delButton = new JButton();
-		delButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
+		delButton.setIcon(IconHelper.getIcon(
+				"/resource/Delete16.gif"));
 		delButton.addActionListener(new ActionListener() {
 
 			@Override

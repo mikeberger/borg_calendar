@@ -32,7 +32,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -83,6 +82,7 @@ import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.ColorComboBox;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
@@ -254,7 +254,7 @@ public class SearchView extends DockableView implements Module {
     private JButton createChangeCategoryButton() {
         JButton changeCategoryButton = new JButton();
         ResourceHelper.setText(changeCategoryButton, "chg_cat");
-        changeCategoryButton.setIcon(new ImageIcon(getClass().getResource("/resource/Preferences16.gif"))); // Generated
+        changeCategoryButton.setIcon(IconHelper.getIcon("/resource/Preferences16.gif")); // Generated
         changeCategoryButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -461,7 +461,7 @@ public class SearchView extends DockableView implements Module {
     private JButton createDeleteButton() {
         JButton deleteButton = new JButton();
         ResourceHelper.setText(deleteButton, "delete_selected");
-        deleteButton.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
+        deleteButton.setIcon(IconHelper.getIcon("/resource/Stop16.gif"));
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -774,7 +774,7 @@ public class SearchView extends DockableView implements Module {
 
         JButton searchButton = new JButton();
         ResourceHelper.setText(searchButton, "srch");
-        searchButton.setIcon(new ImageIcon(getClass().getResource("/resource/Find16.gif")));
+        searchButton.setIcon(IconHelper.getIcon("/resource/Find16.gif"));
         searchButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -817,7 +817,7 @@ public class SearchView extends DockableView implements Module {
     @Override
     public void initialize(MultiView parent) {
         final MultiView par = parent;
-        parent.addToolBarItem(new ImageIcon(getClass().getResource("/resource/Find16.gif")), getModuleName(),
+        parent.addToolBarItem(IconHelper.getIcon("/resource/Find16.gif"), getModuleName(),
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent evt) {

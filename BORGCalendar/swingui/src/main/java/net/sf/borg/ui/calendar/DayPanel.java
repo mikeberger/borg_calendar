@@ -44,7 +44,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -70,6 +69,7 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * DayPanel is the UI for a single day. It consists of a Navigator attached to a
@@ -400,8 +400,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 			// add the zoom buttons
 			if (zoom < 4)
-				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
-						getClass().getResource("/resource/ZoomIn16.gif")),
+				boxes.add(new ButtonBox(cal.getTime(), "",IconHelper.getIcon("/resource/ZoomIn16.gif"),
 						new Rectangle(0, caltop, 20, smfontHeight), null) {
 
 					@Override
@@ -413,8 +412,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 				});
 
 			if (zoom > 0)
-				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
-						getClass().getResource("/resource/ZoomOut16.gif")),
+				boxes.add(new ButtonBox(cal.getTime(), "", IconHelper.getIcon("/resource/ZoomOut16.gif"),
 						new Rectangle(colleft - 20, caltop, 20, smfontHeight),
 						null) {
 
@@ -428,8 +426,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 			// add the scroll buttons
 			if (nonTimedPortion < 0.8) {
-				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
-						getClass().getResource("/resource/Down16.gif")),
+				boxes.add(new ButtonBox(cal.getTime(), "", IconHelper.getIcon("/resource/Down16.gif"),
 						new Rectangle(0, (int) aptop, colleft, smfontHeight),
 						null) {
 
@@ -442,8 +439,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 				});
 			}
 			if (nonTimedPortion > 0.2) {
-				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
-						getClass().getResource("/resource/Up16.gif")),
+				boxes.add(new ButtonBox(cal.getTime(), "", IconHelper.getIcon("/resource/Up16.gif"),
 						new Rectangle(0, (int) aptop - smfontHeight, colleft,
 								smfontHeight), null) {
 
@@ -742,7 +738,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
 		parent.addToolBarItem(
-				new ImageIcon(getClass().getResource("/resource/day.jpg")),
+				IconHelper.getIcon("/resource/day.jpg"),
 				getModuleName(), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

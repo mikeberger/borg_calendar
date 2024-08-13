@@ -19,8 +19,26 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui.address;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+
 import com.toedter.calendar.JDateChooser;
-import net.sf.borg.common.*;
+
+import net.sf.borg.common.DateUtil;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Address;
@@ -28,13 +46,9 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PlainDateEditor;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.util.Date;
 
 /**
  * UI for editing a single address record.
@@ -396,8 +410,8 @@ public class AddressView extends DockableView {
 		//
 		// BUTTON
 		//
-		saveButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Save16.gif")));
+		saveButton.setIcon(IconHelper.getIcon(
+				"/resource/Save16.gif"));
 		ResourceHelper.setText(saveButton, "Save");
 		saveButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override

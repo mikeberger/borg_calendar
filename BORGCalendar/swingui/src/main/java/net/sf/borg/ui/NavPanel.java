@@ -18,13 +18,18 @@
  */
 package net.sf.borg.ui;
 
-import net.sf.borg.common.Resource;
-import net.sf.borg.ui.util.DateDialog;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import net.sf.borg.common.Resource;
+import net.sf.borg.ui.util.DateDialog;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * A NavPanel provides common navigation buttons to other classes that navigate among dates
@@ -79,8 +84,8 @@ public class NavPanel extends JPanel {
 		// create the various navigator buttons
 		JButton Prev = new JButton();
 		Prev.setMaximumSize(new Dimension(16, 16));
-		Prev.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Back16.gif")));
+		Prev.setIcon(IconHelper.getIcon(
+				"/resource/Back16.gif"));
 		Prev.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,8 +95,8 @@ public class NavPanel extends JPanel {
 		});
 
 		JButton Next = new JButton();
-		Next.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Forward16.gif")));
+		Next.setIcon(IconHelper.getIcon(
+				"/resource/Forward16.gif"));
 		Next.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 		Next.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -102,8 +107,8 @@ public class NavPanel extends JPanel {
 		});
 
 		JButton Today = new JButton();
-		Today.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Home16.gif")));
+		Today.setIcon(IconHelper.getIcon(
+				"/resource/Home16.gif"));
 		Today.setToolTipText(Resource.getResourceString("Today"));
 		Today.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -114,8 +119,8 @@ public class NavPanel extends JPanel {
 		});
 
 		JButton Goto = new JButton();
-		Goto.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Undo16.gif")));
+		Goto.setIcon(IconHelper.getIcon(
+				"/resource/Undo16.gif"));
 		Goto.setToolTipText(Resource.getResourceString("Go_To"));
 		Goto.addActionListener(new java.awt.event.ActionListener() {
 			@Override

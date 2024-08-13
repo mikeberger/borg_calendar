@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -22,6 +21,7 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * The TaskModule is the UI Module for Tasks that is invoked from the MultiView
@@ -74,8 +74,8 @@ public class TaskModule extends DockableView implements Module {
 	public void initialize(MultiView parent) {
 		
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/Task16.gif")), getModuleName(), new ActionListener() {
+		parent.addToolBarItem(IconHelper.getIcon(
+		"/resource/Task16.gif"), getModuleName(), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.TASK);

@@ -82,6 +82,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.PopupMenuHelper;
@@ -469,7 +470,7 @@ public class TaskView extends DockableView {
 		JButton savebutton = new JButton();
 		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0, 2));
 
-		savebutton.setIcon(new ImageIcon(getClass().getResource("/resource/Save16.gif")));
+		savebutton.setIcon(IconHelper.getIcon("/resource/Save16.gif"));
 		ResourceHelper.setText(savebutton, "Save");
 		savebutton.addActionListener(new ActionListener() {
 			@Override
@@ -532,16 +533,12 @@ public class TaskView extends DockableView {
 	static private class DaysLeftCellRenderer extends DefaultTableCellRenderer {
 
 		private static final long serialVersionUID = 1L;
-		private final ImageIcon redIcon = new ImageIcon(getClass().getResource(
-				"/resource/red.png"));
-		private final ImageIcon orangeIcon = new ImageIcon(getClass()
-				.getResource("/resource/orange.png"));
-		private final ImageIcon yellowIcon = new ImageIcon(getClass()
-				.getResource("/resource/yellow.png"));
-		private final ImageIcon greenIcon = new ImageIcon(getClass()
-				.getResource("/resource/green.png"));
-		private final ImageIcon emptyIcon = new ImageIcon(getClass()
-				.getResource("/resource/empty.png"));
+		private final ImageIcon redIcon = IconHelper.getIcon(
+				"/resource/red.png");
+		private final ImageIcon orangeIcon = IconHelper.getIcon("/resource/orange.png");
+		private final ImageIcon yellowIcon = IconHelper.getIcon("/resource/yellow.png");
+		private final ImageIcon greenIcon = IconHelper.getIcon("/resource/green.png");
+		private final ImageIcon emptyIcon = IconHelper.getIcon("/resource/empty.png");
 		//private final ImageIcon doneIcon = new ImageIcon(getClass()
 		//		.getResource("/resource/done.png"));
 

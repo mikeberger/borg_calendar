@@ -19,16 +19,26 @@
 
 package net.sf.borg.ui.popup;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * PopupOptionsView displays a dialog that lets the user choose
@@ -96,8 +106,8 @@ public class PopupOptionsView extends JDialog {
 
 		JButton saveButton = new JButton();
 		ResourceHelper.setText(saveButton, "Save");
-		saveButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Save16.gif")));
+		saveButton.setIcon(IconHelper.getIcon(
+				"/resource/Save16.gif"));
 		saveButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,8 +154,8 @@ public class PopupOptionsView extends JDialog {
 
 		JButton dismissButton = new JButton();
 		ResourceHelper.setText(dismissButton, "Dismiss");
-		dismissButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
+		dismissButton.setIcon(IconHelper.getIcon(
+				"/resource/Stop16.gif"));
 		dismissButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {

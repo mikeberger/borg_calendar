@@ -40,7 +40,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
@@ -62,6 +61,7 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.TrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 
 /**
  * MonthPanel is the UI for a calendar month. It is Printable, but is NOT used
@@ -336,8 +336,8 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 						if (notey > rowtop + rowheight) {
 							// set clipping indication icon so that we dray it
 							// next to the date label
-							clipIcon = new ImageIcon(getClass().getResource(
-									"/resource/Import16.gif"));
+							clipIcon = IconHelper.getIcon(
+									"/resource/Import16.gif");
 						}
 
 						// add a label for the date. this is actually a button
@@ -647,8 +647,8 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/month.gif")), getModuleName(), 
+		parent.addToolBarItem(IconHelper.getIcon(
+		"/resource/month.gif"), getModuleName(), 
 		new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {

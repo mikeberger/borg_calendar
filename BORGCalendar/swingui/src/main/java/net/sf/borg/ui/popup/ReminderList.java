@@ -45,6 +45,7 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.IconHelper;
 import net.sf.borg.ui.util.TableSorter;
 
 /**
@@ -110,8 +111,8 @@ public class ReminderList extends View {
 					String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
 					if (use_marker.equals("true")) {
 						if (iconname.endsWith(".gif") || iconname.endsWith(".jpg")) {
-							Icon todoIcon = new javax.swing.ImageIcon(getClass().getResource(
-									"/resource/" + iconname));
+							Icon todoIcon = IconHelper.getIcon(
+									"/resource/" + iconname);
 							label.setIcon(todoIcon);
 							
 						} else {
@@ -207,7 +208,7 @@ public class ReminderList extends View {
 
 		JButton hideButton = new JButton();
 		
-		//hideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//hideButton.setIcon(IconHelper.getIcon(
 		//		"/resource/Delete16.gif")));
 		hideButton.setText(Resource.getResourceString("Hide"));
 
@@ -226,8 +227,8 @@ public class ReminderList extends View {
 
 		JButton doneButton = new JButton();
 
-		doneButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Undo16.gif")));
+		doneButton.setIcon(IconHelper.getIcon(
+				"/resource/Undo16.gif"));
 		ResourceHelper.setText(doneButton, "Done_(Delete)");
 		doneButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -246,8 +247,8 @@ public class ReminderList extends View {
 
 		JButton donendButton = new JButton();
 
-		donendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Undo16.gif")));
+		donendButton.setIcon(IconHelper.getIcon(
+				"/resource/Undo16.gif"));
 		ResourceHelper.setText(donendButton, "Done_(No_Delete)");
 		donendButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -265,8 +266,8 @@ public class ReminderList extends View {
 		buttonPanel.add(donendButton);
 
 		JButton resetButton = new JButton();
-		resetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Undo16.gif")));
+		resetButton.setIcon(IconHelper.getIcon(
+				"/resource/Undo16.gif"));
 		ResourceHelper.setText(resetButton, "Unhide_All");
 		resetButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
