@@ -216,7 +216,7 @@ public class PrefName {
 	static public PrefName YEARVIEWFONT = new PrefName("yearviewfont", "SansSerif-7");
 	static public PrefName TRAYFONT = new PrefName("trayfont", "SansSerif-BOLD-12");
 	
-	static public PrefName ICONSIZE = new PrefName("icon_size", Integer.valueOf(24));
+	static public PrefName ICONSIZE = new PrefName("icon_size", Integer.valueOf(16));
 
 
 	static public PrefName LNF = new PrefName("lnf", "com.jgoodies.looks.plastic.PlasticXPLookAndFeel");

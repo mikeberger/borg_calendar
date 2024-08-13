@@ -64,6 +64,9 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	private final JComboBox<String> wkendhr;
 
 	private final JComboBox<String> wkstarthr;
+	
+	private final JSpinner iconSizeSpinner = new JSpinner(new SpinnerNumberModel(16,8,64,1));
+
 
 	/**
 	 * Instantiates a new appearance options panel.
@@ -169,8 +172,13 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		this.add(localebox, GridBagConstraintsFactory.create(1, 12,
 				GridBagConstraints.BOTH));
+		
+		
+		this.add(new JLabel(Resource.getResourceString("iconSize")),GridBagConstraintsFactory.create(0, 13,
+				GridBagConstraints.BOTH));
 
-	
+		this.add(iconSizeSpinner, GridBagConstraintsFactory.create(1, 13,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(iso8601Box, "ISO_week_number");
 		this.add(iso8601Box, GridBagConstraintsFactory.create(0, 9,
@@ -238,6 +246,9 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 				Prefs.putPref(PrefName.LANGUAGE, locs[ii].getLanguage());
 			}
 		}
+		
+		Integer iconSize = (Integer) iconSizeSpinner.getValue();
+		Prefs.putPref(PrefName.ICONSIZE, iconSize);
 
 		// look and feel
 		// we no longer restart automatically or attempt to update the lnf
@@ -316,6 +327,10 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		String currentlocale = Locale.getDefault().getDisplayName();
 		localebox.setSelectedItem(currentlocale);
+		
+		int iconSize = Prefs.getIntPref(PrefName.ICONSIZE);
+		iconSizeSpinner.setValue(Integer.valueOf(iconSize));
+
 
 		// add installed look and feels to lnfBox
 		lnfBox.removeAllItems();
