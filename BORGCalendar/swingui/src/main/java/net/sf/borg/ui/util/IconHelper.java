@@ -18,6 +18,9 @@ public class IconHelper {
 		
 		if( iconSize == icon.getIconHeight()) return icon;
 		
+		// if not square - don't scale
+		if( icon.getIconHeight() != icon.getIconWidth()) return icon;
+		
 		Image img = icon.getImage();
 		Image resizeImage = img.getScaledInstance(iconSize, iconSize, java.awt.Image.SCALE_SMOOTH);
 		return new ImageIcon(resizeImage);
