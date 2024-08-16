@@ -1,3 +1,23 @@
+BORG 1.10.05
+------------
+Make SQLITE the default database for brand new installs. Does not affect current users.
+Make SQLITE-specific DB option tab requiring only the folder, not a jdbc url
+Add option to scale icon size
+Fix - System tray menu not appearing #205
+Some UI suggestions #202
+Secure the Caldav and Email passwords via the keystore #197
+fix address fields where home/work were reversed
+Update the help to clarify some items
+Remove CARDDAV import from server - not supported by 3pp
+Properly order the D/W/M/Y icons in the toolbar
+Move option to hide strike-through items to the View menu
+Make year view interactive instead of read-only
+Switch to use a better font chooser
+update 3pp versions
+
+
+Multiple fixes for google sync
+
 BORG 1.10.04
 ------------
 Change Taskbar implementation to fix Linux Mint (and possibly other OS) taskbar issues
