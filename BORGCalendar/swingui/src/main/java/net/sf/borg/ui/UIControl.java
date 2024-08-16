@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 import javax.swing.JCheckBox;
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -37,7 +39,6 @@ import net.sf.borg.ui.popup.ReminderListManager;
 import net.sf.borg.ui.popup.ReminderManager;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 import net.sf.borg.ui.task.TaskModule;
-import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.SplashScreen;
 import net.sf.borg.ui.util.UIErrorHandler;
 
@@ -52,16 +53,27 @@ public class UIControl {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-
 	/**
 	 * splash screen
 	 */
 	private static SplashScreen splashScreen = null;
 
+	static public void setDefaultFont(Font f) {
+		FontUIResource fui = new FontUIResource(f);
+		Enumeration<Object> keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof FontUIResource)
+				UIManager.put(key, fui);
+		}
+
+	}
+
 	/**
 	 * Main UI initialization.
 	 *
-	*/
+	 */
 	public static void startUI() {
 
 		Errmsg.setErrorHandler(new UIErrorHandler());
@@ -79,15 +91,15 @@ public class UIControl {
 		String deffont = Prefs.getPref(PrefName.DEFFONT);
 		if (!deffont.equals("")) {
 			Font f = Font.decode(deffont);
-			NwFontChooserS.setDefaultFont(f);
+			setDefaultFont(f);
 		}
-		//JGoodies Plastic L&F does not support the mac cmd key,
-		//If the user is running OS X, go to default Java L&F instead
+		// JGoodies Plastic L&F does not support the mac cmd key,
+		// If the user is running OS X, go to default Java L&F instead
 		String os = System.getProperty("os.name").toLowerCase();
 		String lnf = Prefs.getPref(PrefName.LNF);
 
-		if(os.contains("mac") && lnf.contains("jgoodies")) {
-			//Do nothing.
+		if (os.contains("mac") && lnf.contains("jgoodies")) {
+			// Do nothing.
 		} else {
 			// set the look and feel
 			try {
@@ -96,14 +108,12 @@ public class UIControl {
 				if (lnf.contains("jgoodies")) {
 					String theme = System.getProperty("Plastic.defaultTheme");
 					if (theme == null) {
-						System.setProperty("Plastic.defaultTheme",
-								Prefs.getPref(PrefName.GOODIESTHEME));
+						System.setProperty("Plastic.defaultTheme", Prefs.getPref(PrefName.GOODIESTHEME));
 					}
 				}
 
 				UIManager.setLookAndFeel(lnf);
-				UIManager.getLookAndFeelDefaults().put("ClassLoader",
-						UIControl.class.getClassLoader());
+				UIManager.getLookAndFeelDefaults().put("ClassLoader", UIControl.class.getClassLoader());
 			} catch (Exception e) {
 				log.severe(e.toString());
 			}
@@ -116,8 +126,8 @@ public class UIControl {
 			splashScreen.setVisible(true);
 
 			/*
-			 * in order for the splash to be seen, we will complete
-			 * initialization later (in the swing thread).
+			 * in order for the splash to be seen, we will complete initialization later (in
+			 * the swing thread).
 			 */
 			Timer t = new Timer(3000, new ActionListener() {
 
@@ -134,8 +144,8 @@ public class UIControl {
 	}
 
 	/**
-	 * complete the parts of the UI initialization that run after the splash
-	 * screen has shown for a while
+	 * complete the parts of the UI initialization that run after the splash screen
+	 * has shown for a while
 	 *
 	 */
 	private static void completeUIInitialization() {
@@ -163,20 +173,15 @@ public class UIControl {
 		mv.addModule(new MemoPanel());
 		mv.addModule(new CheckListPanel());
 		mv.addModule(new SearchView());
-		mv.addModule(new InfoView("/resource/RELEASE_NOTES.txt", Resource
-				.getResourceString("rlsnotes")));
-		mv.addModule(new InfoView("/resource/CHANGES.txt", Resource
-				.getResourceString("viewchglog")));
-		mv.addModule(new InfoView("/resource/borglicense.txt", Resource
-				.getResourceString("License")));
-		mv.addModule(new FileView(System.getProperty("user.home", "")
-				+ "/.borg.log", Resource.getResourceString("view_log")));
+		mv.addModule(new InfoView("/resource/RELEASE_NOTES.txt", Resource.getResourceString("rlsnotes")));
+		mv.addModule(new InfoView("/resource/CHANGES.txt", Resource.getResourceString("viewchglog")));
+		mv.addModule(new InfoView("/resource/borglicense.txt", Resource.getResourceString("License")));
+		mv.addModule(new FileView(System.getProperty("user.home", "") + "/.borg.log",
+				Resource.getResourceString("view_log")));
 		mv.addModule(new SyncModule());
 
-
 		// allow start to system tray if option set and there is a system tray
-		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART)
-				&& TrayIconProxy.hasTrayIcon();
+		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART) && TrayIconProxy.hasTrayIcon();
 
 		// make the main window visible
 		if (!bgStart) {
@@ -209,12 +214,9 @@ public class UIControl {
 
 		// warn about syncing
 		try {
-			if (SyncLog.getReference().isProcessUpdates()
-					&& !SyncLog.getReference().getAll().isEmpty()) {
-				int res = JOptionPane.showConfirmDialog(null,
-						Resource.getResourceString("Sync-Warn"), null,
-						JOptionPane.OK_CANCEL_OPTION,
-						JOptionPane.WARNING_MESSAGE);
+			if (SyncLog.getReference().isProcessUpdates() && !SyncLog.getReference().getAll().isEmpty()) {
+				int res = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Sync-Warn"), null,
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 
 				if (res != JOptionPane.YES_OPTION) {
 					return;
@@ -232,30 +234,22 @@ public class UIControl {
 		if (backupdir != null && !backupdir.equals("")) {
 
 			String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
-			if (shutdown_action.isEmpty()
-					|| SHUTDOWN_ACTION.PROMPT.toString()
-							.equals(shutdown_action)) {
-				JCheckBox b1 = new JCheckBox(
-						Resource.getResourceString("backup_notice") + " "
-								+ backupdir);
-				
+			if (shutdown_action.isEmpty() || SHUTDOWN_ACTION.PROMPT.toString().equals(shutdown_action)) {
+				JCheckBox b1 = new JCheckBox(Resource.getResourceString("backup_notice") + " " + backupdir);
 
 				Object[] array = { b1 };
 
-				int res = JOptionPane.showConfirmDialog(null, array,
-						Resource.getResourceString("shutdown_options"),
+				int res = JOptionPane.showConfirmDialog(null, array, Resource.getResourceString("shutdown_options"),
 						JOptionPane.OK_CANCEL_OPTION);
 
 				if (res != JOptionPane.YES_OPTION) {
 					return;
 				}
 
-				if (b1.isSelected() )
+				if (b1.isSelected())
 					do_backup = true;
-				
-				
-			} else if (SHUTDOWN_ACTION.BACKUP.toString()
-					.equals(shutdown_action)) {
+
+			} else if (SHUTDOWN_ACTION.BACKUP.toString().equals(shutdown_action)) {
 				do_backup = true;
 			}
 		}
@@ -318,7 +312,6 @@ public class UIControl {
 				}
 			}
 
-
 			// non-UI shutdown
 			Borg.shutdown();
 			return null;
@@ -326,5 +319,4 @@ public class UIControl {
 
 	}
 
-	
 }

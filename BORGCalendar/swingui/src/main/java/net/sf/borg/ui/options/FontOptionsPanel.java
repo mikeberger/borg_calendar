@@ -19,18 +19,27 @@
  */
 package net.sf.borg.ui.options;
 
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
+
+import org.drjekyll.fontchooser.FontDialog;
+
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.NwFontChooserS;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
-import java.awt.*;
 
 /**
  * Provides the UI for editing Font options
@@ -171,11 +180,27 @@ public class FontOptionsPanel extends OptionsPanel {
 		// will not likely be pretty
 		if (!origDefaultFont.equals(defaultFontText.getText())) {
 			Font f = Font.decode(defaultFontText.getText());
-			NwFontChooserS.setDefaultFont(f);
+			UIControl.setDefaultFont(f);
 			SwingUtilities.updateComponentTreeUI(this);
 		}
 
 	}
+	
+	 static private String fontString(Font font) {
+	        String fs = font.getFamily();
+	        if (!font.isPlain()) {
+	            fs += "-";
+	            if (font.isBold()) {
+	                fs += "BOLD";
+	            }
+	            if (font.isItalic()) {
+	                fs += "ITALIC";
+	            }
+	        }
+	        fs += "-" + font.getSize();
+	        return (fs);
+	    }
+
 
 	/**
 	 * bring up a font chooser UI and let the user change a font
@@ -189,13 +214,21 @@ public class FontOptionsPanel extends OptionsPanel {
 		Font pf = Font.decode(fontText.getText());
 
 		// choose a new font
-		Font f = NwFontChooserS.showDialog(null, null, pf);
+		FontDialog dialog = new FontDialog((Frame) null, Resource.getResourceString("font_chooser"), true);
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dialog.setSelectedFont(pf);
+        dialog.setVisible(true);
+        if( dialog.isCancelSelected())
+        	return;
+       
+
+		Font f = dialog.getSelectedFont();
 		if (f == null) {
 			return;
 		}
 
 		// get the font name and store
-		String s = NwFontChooserS.fontString(f);
+		String s = fontString(f);
 		fontText.setText(s);
 		
 		

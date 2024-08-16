@@ -49,6 +49,11 @@
 			<artifactId>SystemTray</artifactId>
 			<version>4.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.drjekyll</groupId>
+			<artifactId>fontchooser</artifactId>
+			<version>3.1.0</version>
+		</dependency>
 
 
 	</dependencies>
