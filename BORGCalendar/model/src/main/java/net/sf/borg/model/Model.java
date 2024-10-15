@@ -122,6 +122,7 @@ public abstract class Model {
 
 	// list of clients to notify when the model changes
 	private final ArrayList<Listener> listeners;
+	private final ArrayList<Listener> unBlockableListeners;
 	private boolean notify_listeners = true;
 
 	/**
@@ -130,6 +131,7 @@ public abstract class Model {
 	public Model() {
 		modelList.add(this);
 		listeners = new ArrayList<Listener>();
+		unBlockableListeners = new ArrayList<Listener>();
 	}
 
 	/**
@@ -139,6 +141,10 @@ public abstract class Model {
 	 */
 	public void addListener(Listener listener) {
 		listeners.add(listener);
+	}
+	
+	public void addUnblockableListener(Listener listener) {
+		unBlockableListeners.add(listener);
 	}
 
 	/**
@@ -155,10 +161,18 @@ public abstract class Model {
 	 */
 	protected void refreshListeners(ChangeEvent event) {
 
-    	if( !notify_listeners ) return;
 
 		if (log.isLoggable(Level.FINE))
 			log.fine("Sending ChangeEvent[" + event.toString());
+		
+		for (int i = 0; i < unBlockableListeners.size(); i++) {
+			Listener v = unBlockableListeners.get(i);
+			v.update(event);
+			if (log.isLoggable(Level.FINE))
+				log.fine("...To Listener: " + v);
+		}
+		
+    	if( !notify_listeners ) return;
 
 		event.model = this;
 		for (int i = 0; i < listeners.size(); i++) {
@@ -167,6 +181,8 @@ public abstract class Model {
 			if (log.isLoggable(Level.FINE))
 				log.fine("...To Listener: " + v);
 		}
+			
+	
 	}
 
 	/**
@@ -183,6 +199,7 @@ public abstract class Model {
 	 */
 	public void removeListener(Listener listener) {
 		listeners.remove(listener);
+		unBlockableListeners.remove(listener);
 	}
 
 	/**
@@ -190,6 +207,7 @@ public abstract class Model {
 	 */
 	protected void removeListeners() {
 		listeners.clear();
+		unBlockableListeners.clear();
 	}
 
 	/**

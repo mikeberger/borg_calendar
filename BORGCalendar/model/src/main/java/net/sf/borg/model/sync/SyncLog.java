@@ -56,8 +56,8 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		new JdbcDBUpgrader("select url from syncmap",
 				"ALTER TABLE syncmap ADD url longvarchar")
 						.upgrade();
-		AppointmentModel.getReference().addListener(this);
-		TaskModel.getReference().addListener(this);
+		AppointmentModel.getReference().addUnblockableListener(this);
+		TaskModel.getReference().addUnblockableListener(this);
 		Prefs.addListener(this);
 	}
 
