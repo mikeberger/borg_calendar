@@ -187,8 +187,8 @@ public class FontOptionsPanel extends OptionsPanel {
 	}
 	
 	 static private String fontString(Font font) {
-	        String fs = font.getFamily();
-	        if (!font.isPlain()) {
+	        String fs = font.getName();
+	        /*if (!font.isPlain()) {
 	            fs += "-";
 	            if (font.isBold()) {
 	                fs += "BOLD";
@@ -196,7 +196,7 @@ public class FontOptionsPanel extends OptionsPanel {
 	            if (font.isItalic()) {
 	                fs += "ITALIC";
 	            }
-	        }
+	        }*/
 	        fs += "-" + font.getSize();
 	        return (fs);
 	    }
