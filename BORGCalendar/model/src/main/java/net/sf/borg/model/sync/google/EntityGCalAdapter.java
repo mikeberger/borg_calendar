@@ -20,6 +20,8 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.sf.borg.common.ModalMessageServer;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
@@ -211,23 +213,7 @@ public class EntityGCalAdapter {
 				} else if (rl.startsWith("EXDATE")) {
 					// TODO
 					log.warning("skipping EXDATE: " + rl);
-					/*
-					 * ExDate ex = (ExDate) pl.getProperty(Property.EXDATE); if (ex != null) {
-					 * 
-					 * Vector<String> vect = new Vector<String>();
-					 * 
-					 * // add the current appt key to the SKip list DateList dl = ex.getDates();
-					 * dl.setUtc(true);
-					 * 
-					 * @SuppressWarnings("rawtypes") Iterator it = dl.iterator(); while
-					 * (it.hasNext()) { Object o = it.next(); if (o instanceof
-					 * net.fortuna.ical4j.model.Date) { int rkey = (int)
-					 * (((net.fortuna.ical4j.model.Date) o).getTime() / 1000 / 60 / 60 / 24);
-					 * vect.add(Integer.toString(rkey)); } }
-					 * 
-					 * ap.setSkipList(vect);
-					 */
-
+					
 				}
 			}
 		else {
@@ -302,6 +288,10 @@ public class EntityGCalAdapter {
 	}
 
 	public static Event toGCalEvent(Appointment ap) {
+		
+		boolean todosAsEvents = Prefs.getBoolPref(PrefName.GOOGLE_NOTODOS);
+
+		
 		Event ev = new Event();
 		ev.setKind("calendar#event");
 		ev.setEventType("default");
@@ -321,7 +311,7 @@ public class EntityGCalAdapter {
 			}
 		}
 
-		if (ap.isTodo())
+		if (ap.isTodo() && !todosAsEvents )
 			return null;
 		String uidval = ap.getUid();
 		if (uidval == null || uidval.isEmpty()) {

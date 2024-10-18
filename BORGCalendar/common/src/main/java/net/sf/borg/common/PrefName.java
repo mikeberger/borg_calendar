@@ -309,6 +309,7 @@ public class PrefName {
 	public static final PrefName GOOGLE_TOKEN_DIR = new PrefName("google_token_dir", "");
 	public static final PrefName GCAL_EXPORTYEARS = new PrefName("gcal-export-years", Integer.valueOf(2));
 	public static final PrefName GOOGLE_SUBSCRIBED = new PrefName("google_subscribed", "");
+	public static final PrefName GOOGLE_NOTODOS = new PrefName("google_notodos", "false"); // if true, send todos to google as events, not tasks
 
 
 

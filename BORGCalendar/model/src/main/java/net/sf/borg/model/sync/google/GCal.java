@@ -320,6 +320,8 @@ public class GCal {
 	private void processSyncMap() throws Exception {
 
 		List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
+		
+		boolean todosAsEvents = Prefs.getBoolPref(PrefName.GOOGLE_NOTODOS);
 
 		int num_outgoing = syncEvents.size();
 
@@ -333,7 +335,7 @@ public class GCal {
 					if (se.getAction().equals(Model.ChangeEvent.ChangeAction.ADD)) {
 						Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
 						if (ap != null) {
-							if (ap.isTodo()) {
+							if (ap.isTodo() && !todosAsEvents) {
 								Task t = EntityGCalAdapter.toGCalTask(ap);
 								if (t != null) {
 									// check if task exists in google already
@@ -353,7 +355,7 @@ public class GCal {
 
 						Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
 						if (ap != null) {
-							if (ap.isTodo()) {
+							if (ap.isTodo() && !todosAsEvents) {
 								Task t = EntityGCalAdapter.toGCalTask(ap);
 								if (t != null) {
 									// check if task exists in google already
@@ -641,6 +643,8 @@ public class GCal {
 	private void syncFromServer(Date after, boolean cleanup) throws Exception {
 
 		logBoth("SYNC: Start Incoming Sync");
+		
+		boolean todosAsEvents = Prefs.getBoolPref(PrefName.GOOGLE_NOTODOS);
 
 		String pageToken = "";
 		int count = 0;
@@ -712,7 +716,7 @@ public class GCal {
 			// NOTE - a delete of a google task will not cause delete of the BORG appt
 			if (!serverUids.contains(ap.getUid())) {
 
-				if (ap.isTodo() && !cleanup) {
+				if (ap.isTodo() && !todosAsEvents && !cleanup) {
 					logBoth("-----------------------------------------------------");
 					logBoth("*** Todo not found on google - WILL LEAVE IN BORG: " + ap);
 					logBoth("*** Use Sync with cleanup option to delete or handle manually");
@@ -806,6 +810,9 @@ public class GCal {
 				newap.setKey(ap.getKey());
 				newap.setReminderTimes(ap.getReminderTimes());
 				newap.setEncrypted(ap.isEncrypted());
+				newap.setNextTodo(ap.getNextTodo());
+				newap.setTodo(ap.isTodo());
+				
 
 				SyncLog.getReference().setProcessUpdates(false);
 				log.info("SYNC save: " + event);
