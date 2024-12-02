@@ -735,6 +735,13 @@ public class GCal {
 		log.fine("Incoming event: " + event.toString());
 
 		String uid = event.getICalUID();
+		
+		// ignore cancelled events - gcal seems to keep a placeholder for cancelled instances in a repeating series
+		if( uid == null && event.getStatus().equalsIgnoreCase("cancelled")) {
+			log.info("Ignoring cancelled event: " + event.toString());
+			return 0;
+		}
+		
 
 		// ignore incoming tasks
 		// TODO - process completion??
