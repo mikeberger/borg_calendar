@@ -101,10 +101,18 @@ public class EntityGCalAdapter {
 			ap.setDate(utc);
 			ap.setUntimed("N");
 			if (event.getEnd().getDateTime() != null) {
-
 				long dur = (event.getEnd().getDateTime().getValue() - utc.getTime())/(1000*60); // ms to minutes
-
 				ap.setDuration((int) dur);
+				
+				// if timed event spans days - just repeat it
+				if( ap.getDuration() > 24*60 )
+				{
+					// timed appt > 1 day
+					ap.setFrequency(net.sf.borg.model.Repeat.DAILY);
+					ap.setRepeatFlag(true);
+					ap.setTimes(Math.floorDiv(ap.getDuration(),24*60)+1);
+
+				}
 			}
 		} else {
 			Date utc = new Date();
@@ -210,34 +218,17 @@ public class EntityGCalAdapter {
 					ap.setRepeatFlag(true);
 				} else if (rl.startsWith("EXDATE")) {
 					// TODO
-					log.warning("skipping EXDATE: " + rl);
-					/*
-					 * ExDate ex = (ExDate) pl.getProperty(Property.EXDATE); if (ex != null) {
-					 * 
-					 * Vector<String> vect = new Vector<String>();
-					 * 
-					 * // add the current appt key to the SKip list DateList dl = ex.getDates();
-					 * dl.setUtc(true);
-					 * 
-					 * @SuppressWarnings("rawtypes") Iterator it = dl.iterator(); while
-					 * (it.hasNext()) { Object o = it.next(); if (o instanceof
-					 * net.fortuna.ical4j.model.Date) { int rkey = (int)
-					 * (((net.fortuna.ical4j.model.Date) o).getTime() / 1000 / 60 / 60 / 24);
-					 * vect.add(Integer.toString(rkey)); } }
-					 * 
-					 * ap.setSkipList(vect);
-					 */
-
+					log.warning("skipping EXDATE: " + rl);					
 				}
 			}
 		else {
 			// check if non-repeating event spans multiple days. if so, convert to repeating daily
-			if( ap.getDuration() > 24*60*60*1000 )
+			if( ap.getDuration() > 24*60)
 			{
 				// timed appt > 1 day
 				ap.setFrequency(net.sf.borg.model.Repeat.DAILY);
 				ap.setRepeatFlag(true);
-				ap.setTimes(Math.floorDiv(ap.getDuration(),24*60*60*1000)+1);
+				ap.setTimes(Math.floorDiv(ap.getDuration(),24*60)+1);
 
 			}
 			else if( ap.getDuration() == 0 && event.getStart().getDate() != null){
