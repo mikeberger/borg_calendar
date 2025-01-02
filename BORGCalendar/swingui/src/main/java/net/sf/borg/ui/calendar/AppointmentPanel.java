@@ -755,21 +755,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
                         return;
                     appt.decrypt(pw);
 
-                    // set appt text, split apart title and body
-                    String t = appt.getText();
-                    String title = "";
-                    String body = "";
-                    if (t == null)
-                        t = "";
-                    int newlineIndex = t.indexOf('\n');
-                    if (newlineIndex != -1) {
-                        title = t.substring(0, newlineIndex);
-                        body = t.substring(newlineIndex + 1);
-                    } else {
-                        title = t;
-                    }
-                    appointmentBodyTextArea.setText(body);
-                    apptTitleField.setText(title);
+                    
+                    appointmentBodyTextArea.setText(appt.getBody());
+                    apptTitleField.setText(appt.getTitle());
 
                     appointmentBodyTextArea.setEditable(true);
                     apptTitleField.setEditable(true);
@@ -1337,22 +1325,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
                     appointmentBodyTextArea.setText("");
                     appointmentBodyTextArea.setEditable(false);
                     decryptButton.setEnabled(true);
-                } else {
-                    // set appt text, split apart title and body
-                    String t = appt.getText();
-                    String title = "";
-                    String body = "";
-                    if (t == null)
-                        t = "";
-                    int newlineIndex = t.indexOf('\n');
-                    if (newlineIndex != -1) {
-                        title = t.substring(0, newlineIndex);
-                        body = t.substring(newlineIndex + 1);
-                    } else {
-                        title = t;
-                    }
-                    appointmentBodyTextArea.setText(body);
-                    apptTitleField.setText(title);
+                } else {                  
+                    appointmentBodyTextArea.setText(appt.getBody());
+                    apptTitleField.setText(appt.getTitle());
                 }
 
                 // color

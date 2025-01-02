@@ -968,7 +968,7 @@ public class GCal {
 
 					return 1;
 				}
-			} else if (!ap.getText().equals(task.getTitle())) {
+			} else if (!ap.getTitle().equals(task.getTitle())) {
 				// text only chg
 				ap.setText(task.getTitle());
 				AppointmentModel.getReference().saveAppt(ap);

@@ -322,16 +322,9 @@ public class EntityGCalAdapter {
 
 		ev.setCreated(new DateTime(ap.getCreateTime()));
 		ev.setUpdated(new DateTime(ap.getLastMod()));
-
-		String appttext = ap.getText();
-
-		int ii = appttext.indexOf('\n');
-		if (ii != -1) {
-			ev.setSummary(appttext.substring(0, ii));
-			ev.setDescription(appttext.substring(ii + 1));
-		} else {
-			ev.setSummary(appttext);
-		}
+		
+		ev.setSummary(ap.getTitle());
+		ev.setDescription(ap.getBody());
 
 		EventDateTime dt = new EventDateTime();
 		if (AppointmentModel.isNote(ap)) {
@@ -398,10 +391,14 @@ public class EntityGCalAdapter {
 
 		if (!appt.isTodo())
 			return null;
+		
+		
 
 		Task task = new Task();
 		task.setKind("tasks#task");
-		task.setTitle(appt.getText());
+		task.setTitle(appt.getTitle());
+		String notes = appt.getBody();
+		
 		task.setFactory(new GsonFactory());
 
 		if (appt.getUrl() != null) {
@@ -429,9 +426,8 @@ public class EntityGCalAdapter {
 			uidval = appt.getKey() + "@BORGA-" + appt.getCreateTime().getTime();
 		}
 
-		String notes = "";
 		if (appt.isRepeatFlag()) {
-			notes += "[" + RecurrenceRule.getRRule(appt) + "]";
+			notes += " [" + RecurrenceRule.getRRule(appt) + "]";
 		}
 
 		notes += " UID:" + uidval;

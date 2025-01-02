@@ -155,5 +155,28 @@ public class Appointment extends KeyedEntity<Appointment> implements
 	public SyncableEntity.ObjectType getObjectType() {
 		return SyncableEntity.ObjectType.APPOINTMENT;
 	}
+	public String getTitle() {
+		 String t = getText();
+         if (t == null)
+             t = "";
+         int newlineIndex = t.indexOf('\n');
+         if (newlineIndex != -1) {
+             return t.substring(0, newlineIndex);
+         } 
+         
+         return getText();
+	}
+	
+	public String getBody() {
+		 String t = getText();
+         if (t == null)
+             t = "";
+         int newlineIndex = t.indexOf('\n');
+         if (newlineIndex != -1) {
+             return t.substring(newlineIndex + 1);
+         } 
+
+         return "";
+	}
 
 }
