@@ -26,16 +26,7 @@ public class CardDav {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 	}
-	/*
-	private static PathResolver createPathResolver() {
-		GenericPathResolver pathResolver = new GenericPathResolver();
-		String basePath = Prefs.getPref(PrefName.CALDAV_PATH);
-		if (!basePath.endsWith("/"))
-			basePath += "/";
-		pathResolver.setPrincipalPath(basePath + Prefs.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
-		pathResolver.setUserPath(basePath + Prefs.getPref(PrefName.CARDDAV_USER_PATH));
-		return pathResolver;
-	}*/
+	
 	
 	public static void exportToFile(String filename) throws Exception {
 		
@@ -57,23 +48,6 @@ public class CardDav {
 		InputStream is = new FileInputStream(file);
 		return importVcardFromInputStream(is);
 	}
-/*
-	static public List<VCard> importVcardFromCarddav(String pass) throws Exception {
-
-		setHints();
-
-		List<VCard> list = new ArrayList<VCard>();
-
-		CardDavStore store = CardDav.connect(pass);
-		CardDavCollection col = CardDav.getCollection(store, Prefs.getPref(PrefName.CARDDAV_BOOK));
-
-		for (VCard vc : col.getComponents()) {
-			list.add(vc);
-		}
-
-		return list;
-	}
-*/
 	
 	static public List<VCard> importVcardFromInputStream(InputStream is) throws Exception {
 
@@ -132,49 +106,5 @@ public class CardDav {
 		return (warning.toString());
 
 	}
-/*
-	@SuppressWarnings("deprecation")
-	public static CardDavStore connect(String password) throws Exception {
 
-		if (!CalDav.isSyncing())
-			return null;
-
-
-		if (Prefs.getBoolPref(PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT)) {
-			// Allow access even though certificate is self signed
-			Protocol lEasyHttps = new Protocol("https", new EasySslProtocolSocketFactory(), 443);
-			Protocol.registerProtocol("https", lEasyHttps);
-		} else {
-			Protocol sslprot = new Protocol("https", new SSLProtocolSocketFactory(), 443);
-			Protocol.registerProtocol("https", sslprot);
-		}
-
-		String protocol = Prefs.getBoolPref(PrefName.CALDAV_USE_SSL) ? "https" : "http";
-
-		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
-		String[] serverPart = server.split(":");
-		int port = -1;
-		if (serverPart.length == 2) {
-			try {
-				port = Integer.parseInt(serverPart[1]);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(PrefName.CALDAV_PATH));
-		ModalMessageServer.getReference().sendLogMessage("SYNC: connect to " + url);
-		log.info("SYNC: connect to " + url);
-
-		CardDavStore store = new CardDavStore("-", url, createPathResolver());
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), password.toCharArray()))
-			return store;
-
-		return null;
-	}
-
-	public static CardDavCollection getCollection(CardDavStore store, String name) throws Exception {
-		String id = createPathResolver().getUserPath(Prefs.getPref(PrefName.CALDAV_USER)) + "/" + name;
-		return store.getCollection(id);
-	}*/
 }

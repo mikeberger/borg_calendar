@@ -25,10 +25,8 @@ public class DumpPw {
 		
 		System.out.println("STORE = " + Prefs.getPref(PrefName.KEYSTORE));
 		System.out.println("EMPASS = " + Prefs.getPref(PrefName.EMAILPASS));
-		System.out.println("CALPASS = " + Prefs.getPref(PrefName.CALDAV_PASSWORD));
 		
 		System.out.println("Clear EM Pass = " + PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.EMAILPASS), "test", false));
-		System.out.println("Clear CAL Pass = " + PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "test", false));
 		
 
 	}

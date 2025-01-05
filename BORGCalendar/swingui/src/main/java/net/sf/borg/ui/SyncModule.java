@@ -31,7 +31,6 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.sync.SyncLog;
 import net.sf.borg.model.sync.google.GCal;
-import net.sf.borg.model.sync.ical.CalDav;
 import net.sf.borg.model.sync.ical.CardDav;
 import net.sf.borg.model.sync.ical.ICal;
 import net.sf.borg.ui.MultiView.Module;
@@ -41,7 +40,6 @@ import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.FileDrop;
 import net.sf.borg.ui.util.IconHelper;
-import net.sf.borg.ui.util.PasswordHelper;
 
 public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
@@ -54,10 +52,6 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 				if (GCal.isSyncing()) {
 					runGcalSync(false, false);
-				} else if (CalDav.isSyncing()) {
-					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
-					if( pass != null )
-						runBackgroundSync(Synctype.FULL, pass);
 				} else {
 					JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
 							JOptionPane.ERROR_MESSAGE);
@@ -68,24 +62,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		}
 	};
-	private static final ActionListener syncListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			try {
-				if (!CalDav.isSyncing()) {
-					JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
-				if( pass != null )
-					runBackgroundSync(Synctype.FULL, pass);
-
-			} catch (Exception e) {
-				Errmsg.getErrorHandler().errmsg(e);
-			}
-		}
-	};
+	
 	private JButton syncToolbarButton = null;
 
 	public SyncModule() {
@@ -95,71 +72,6 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 	public static JMenu getIcalMenu() {
 		JMenu m = new JMenu();
 		m.setText("Sync");
-
-		// m.setIcon(new
-		// javax.swing.ImageIcon(IcalModule.class.getResource("/resource/Export16.gif")));
-
-		JMenu calmenu = new JMenu("CALDAV");
-
-		JMenuItem caldavs = new JMenuItem();
-		caldavs.setText(Resource.getResourceString("CALDAV-Sync"));
-		caldavs.addActionListener(syncListener);
-
-		calmenu.add(caldavs);
-
-		JMenuItem caldavso = new JMenuItem();
-		caldavso.setText(Resource.getResourceString("CALDAV-Sync-out"));
-		caldavso.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-								JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
-					if( pass != null )
-						runBackgroundSync(Synctype.ONEWAY, pass);
-
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-
-		calmenu.add(caldavso);
-
-		JMenuItem caldavo = new JMenuItem();
-		caldavo.setText(Resource.getResourceString("CALDAV-Overwrite"));
-		caldavo.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-								JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Caldav-Overwrite-Warn"),
-							Resource.getResourceString("Confirm"), JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE);
-					if (ret != JOptionPane.OK_OPTION)
-						return;
-					String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
-					if( pass != null )
-						runBackgroundSync(Synctype.OVERWRITE, pass);
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-
-		calmenu.add(caldavo);
-
-		m.add(calmenu);
 
 		JMenu icsmenu = new JMenu("ICS");
 
@@ -430,46 +342,6 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		(new SyncWorker()).execute();
 	}
 
-	/**
-	 * run a sync command in a background thread while a modal message is presented
-	 */
-	static private void runBackgroundSync(Synctype type, String pass) {
-
-		final Synctype ty = type;
-		class SyncWorker extends SwingWorker<Void, Object> {
-			@Override
-			public Void doInBackground() {
-				try {
-
-					// modally lock borg
-					ModalMessageServer.getReference().sendMessage("lock:" + Resource.getResourceString("syncing"));
-					if (ty == Synctype.FULL)
-						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false, pass);
-					else if (ty == Synctype.ONEWAY)
-						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true, pass);
-					else if (ty == Synctype.OVERWRITE)
-						CalDav.export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), pass);
-
-				} catch (Exception e) {
-					e.printStackTrace();
-					ModalMessageServer.getReference().sendLogMessage(e.toString());
-				}
-
-				ModalMessageServer.getReference().sendLogMessage(Resource.getResourceString("done"));
-
-				return null;
-			}
-
-			@Override
-			protected void done() {
-				ModalMessageServer.getReference().sendMessage("unlock");
-
-			}
-		}
-
-		(new SyncWorker()).execute();
-
-	}
 
 	/**
 	 * export appts
@@ -602,10 +474,6 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 							try {
 								if (GCal.isSyncing()) {
 									runGcalSync(false, false);
-								} else if (CalDav.isSyncing()) {
-									String pass = PasswordHelper.getReference().decryptText(Prefs.getPref(PrefName.CALDAV_PASSWORD), "Unlock Caldav Password", false);
-									if( pass != null )
-										runBackgroundSync(Synctype.FULL, pass);
 								} else {
 									JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"),
 											null, JOptionPane.ERROR_MESSAGE);
@@ -647,9 +515,6 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 		String label = Integer.toString(SyncLog.getReference().getAll().size());
 
-		if (CalDav.isServerSyncNeeded())
-			label += "^";
-
 		syncToolbarButton.setText(label);
 
 	}
@@ -659,7 +524,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		if (TrayIconProxy.hasTrayIcon()) {
 
 			try {
-				if (!(CalDav.isSyncing() || GCal.isSyncing()) || SyncLog.getReference().getAll().isEmpty()) {
+				if (!(GCal.isSyncing()) || SyncLog.getReference().getAll().isEmpty()) {
 					SystemTray.get("sync").setEnabled(false);
 				} else {
 					SystemTray.get("sync").setEnabled(true);
@@ -682,8 +547,5 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		}
 	}
 
-	private enum Synctype {
-		FULL, ONEWAY, OVERWRITE
-	}
 
 }
