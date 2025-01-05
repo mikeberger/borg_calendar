@@ -25,7 +25,6 @@ import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 import net.sf.borg.model.sync.google.GCal;
-import net.sf.borg.model.sync.ical.CalDav;
 
 /**
  * class to track all appointment model changes since the last sync it will
@@ -48,7 +47,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 	public SyncLog() {
 
-		setProcessUpdates(CalDav.isSyncing() || GCal.isSyncing());
+		setProcessUpdates(GCal.isSyncing());
 
 		new JdbcDBUpgrader("select id from syncmap",
 				"CREATE TABLE IF NOT EXISTS syncmap (id integer NOT NULL,uid longvarchar, url longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
@@ -276,7 +275,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 	@Override
 	public void prefsChanged() {
 
-		setProcessUpdates(CalDav.isSyncing() || GCal.isSyncing());
+		setProcessUpdates(GCal.isSyncing());
 
 	}
 
