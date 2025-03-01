@@ -542,4 +542,49 @@ public class EntityGCalAdapter {
 		log.info(s);
 		ModalMessageServer.getReference().sendLogMessage(s);
 	}
+	
+	// create a simple dummy event to show a todo on a "special" google calendar
+	public static Event toGCalDummyEvent(Appointment ap) {
+		Event ev = new Event();
+		ev.setKind("calendar#event");
+		ev.setEventType("default");
+		ev.setFactory(new GsonFactory());
+
+		ev.setCreated(new DateTime(ap.getCreateTime()));
+		ev.setUpdated(new DateTime(ap.getLastMod()));
+		
+		ev.setSummary(ap.getTitle());
+		ev.setDescription(ap.getBody());
+		
+		Date nt = ap.getNextTodo();
+		if (nt == null) {
+			nt = ap.getDate();
+		}
+
+		EventDateTime dt = new EventDateTime();
+		dt.setDate(new DateTime(true, nt.getTime(), 0));
+		ev.setStart(dt);
+		
+		EventDateTime edt = new EventDateTime();
+		edt.setDate(new DateTime(true, nt.getTime() + 1000 * 60 * 30, 0));
+		ev.setEnd(edt);
+
+
+		// TODO categories, holiday, vacation, color
+		Map<String, String> propmap = new HashMap<String, String>();
+
+		// private
+		if (ap.isPrivate()) {
+			propmap.put("private", "true");
+			ev.setVisibility("private");
+		}
+
+		if (ev.getExtendedProperties() == null)
+			ev.setExtendedProperties(new Event.ExtendedProperties());
+		ev.getExtendedProperties().setPrivate(propmap);
+
+
+		return ev;
+	}
+
 }

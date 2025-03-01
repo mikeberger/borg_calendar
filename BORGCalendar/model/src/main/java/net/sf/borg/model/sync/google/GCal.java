@@ -69,6 +69,7 @@ public class GCal {
 	static volatile private GCal singleton = null;
 
 	private String calendarId;
+	private String todoCalId;
 	private String taskList;
 	private Calendar service = null;
 	private Tasks tservice = null;
@@ -123,6 +124,7 @@ public class GCal {
 	public void resetGoogleIds() {
 		calendarId = null;
 		taskList = null;
+		todoCalId = null;
 	}
 
 	public void connect() throws Exception {
@@ -261,6 +263,8 @@ public class GCal {
 		processSyncMap();
 
 		syncSubscribed(after);
+		
+		syncTodoCalendar();
 
 		log.info("SYNC: Done");
 	}
@@ -268,6 +272,7 @@ public class GCal {
 	public void setIds() throws Exception {
 
 		String calname = Prefs.getPref(PrefName.GCAL_CAL_ID);
+		String todoCalname = Prefs.getPref(PrefName.GCAL_TODO_CAL_ID);
 		String taskname = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
 		subscribed.clear();
 
@@ -296,6 +301,17 @@ public class GCal {
 			}
 
 		}
+		
+		if (todoCalId == null && todoCalname != null && !todoCalname.isEmpty() ) {
+			for (CalendarListEntry c : cals.getItems()) {
+				if (todoCalname.equals(c.getSummary()) || todoCalname.equals(c.getId())) {
+					todoCalId = c.getId();
+					break;
+				}
+			}
+
+		}
+		
 		if (taskList == null) {
 			TaskLists result = tservice.tasklists().list().execute();
 			List<TaskList> taskLists = result.getItems();
@@ -1049,6 +1065,90 @@ public class GCal {
 
 		SubscribedCalendars.getReference().createCache();
 		SubscribedCalendars.getReference().refresh();
+	}
+	
+	/**
+	 * sync all todos to a separate calendar as a crude way to share todos with another google user.
+	 * Todos in google are currently not shareable.
+	 * @throws Exception 
+	 */
+	private void syncTodoCalendar() throws Exception{
+		
+		if( todoCalId == null ) return;
+		
+		List<Event> todoEvents = new ArrayList<Event>();
+		
+		// read all todos on the server
+		logBoth("SYNC: Read all Events from Todo Calendar");
+
+		String pageToken = "";
+
+		while (true) {
+			Events events = service.events().list(todoCalId).setMaxResults(1000).setPageToken(pageToken)
+					.setSingleEvents(false).execute();
+			todoEvents.addAll(events.getItems());
+
+			if (events.getNextPageToken() == null)
+				break;
+
+			pageToken = events.getNextPageToken();
+
+		}
+		
+		logBoth("SYNC: found " + todoEvents.size() + " Todo Events on server");
+
+		
+		// compare with todos in BORG and add/delete/update in google as needed
+		Collection<Appointment> borgTodos = AppointmentModel.getReference().get_todos();
+		
+		for(Appointment borgTodo : borgTodos) {
+			
+			if( !AppointmentModel.isNote(borgTodo)) continue;
+			
+			boolean found_on_server = false;
+			
+			for( Event ge : todoEvents) {
+				
+				// match by text and date only
+				if( borgTodo.getTitle().equals(ge.getSummary())) {
+					
+					Date nt = borgTodo.getNextTodo();
+					if (nt == null) {
+						nt = borgTodo.getDate();
+					}
+					
+					Date utc = new Date();
+					utc.setTime(ge.getStart().getDate().getValue() - tzOffset(ge.getStart().getDate().getValue()));
+					
+					if( nt.equals(utc)) {
+						//match found
+						todoEvents.remove(ge);
+						found_on_server = true;
+						break;
+					}
+				}
+				
+				
+			}
+			
+			if(  !found_on_server )
+			{
+				// add to server
+				Event ve1 = EntityGCalAdapter.toGCalDummyEvent(borgTodo);
+				ve1.setId(null);
+				log.info(ve1.toPrettyString());
+				service.events().insert(todoCalId, ve1).execute();
+			}
+			
+			
+		}
+		
+		// delete leftover google Events
+		for( Event ge : todoEvents) {
+			service.events().delete(todoCalId, ge.getId()).execute();
+		}
+		
+		
 	}
 
 }
