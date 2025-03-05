@@ -62,7 +62,6 @@ Lists of 87 third-party dependencies.
      (The Apache Software License, Version 2.0) Java 6 (and higher) extensions to the Google OAuth Client Library for Java. (com.google.oauth-client:google-oauth-client-java6:1.37.0 - https://github.com/googleapis/google-oauth-java-client/google-oauth-client-java6)
      (The Apache Software License, Version 2.0) OAuth 2.0 verification code receiver for Google OAuth Client Library for Java. (com.google.oauth-client:google-oauth-client-jetty:1.37.0 - https://github.com/googleapis/google-oauth-java-client/google-oauth-client-jetty)
      (MPL 2.0 or EPL 1.0) H2 Database Engine (com.h2database:h2:1.4.197 - http://www.h2database.com)
-     (The BSD License) JGoodies Looks (com.jgoodies:looks:2.2.2 - https://looks.dev.java.net/)
      (Eclipse Distribution License - v 1.0) Old JAXB Core (com.sun.xml.bind:jaxb-core:4.0.5 - https://eclipse-ee4j.github.io/jaxb-ri/)
      (Eclipse Distribution License - v 1.0) Old JAXB Runtime (com.sun.xml.bind:jaxb-impl:4.0.5 - https://eclipse-ee4j.github.io/jaxb-ri/)
      (GNU LESSER GENERAL PUBLIC LICENSE) JCalendar (com.toedter:jcalendar:1.4 - http://www.toedter.com/en/jcalendar/)

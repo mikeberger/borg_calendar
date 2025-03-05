@@ -1,3 +1,14 @@
+BORG 1.10.06
+------------
+Remove the default JGoodies Look and Feel - Action menu not displayed properly - Win 10 (Issue #224)
+Add a mechanism to share Todos on google with other users since google Tasks cannot currently be shared (Issue #223)
+Unable to set font style to bold with new font chooser #222
+Tasks created in google are added to BORG repeatedly #221
+Fix google sync to properly set title/notes of task that has multi-line text
+Fix logic that handles google non-repeating events that span multiple days
+Ignore cancelled events from google calendar during sync
+Update 3pp versions
+
 BORG 1.10.05
 ------------
 Make SQLITE the default database for brand new installs. Does not affect current users.
