@@ -104,12 +104,10 @@ public class UIControl {
 			// set the look and feel
 			try {
 
-				// set default jgoodies theme
+				// jgoodies has been removed - was buggy
 				if (lnf.contains("jgoodies")) {
-					String theme = System.getProperty("Plastic.defaultTheme");
-					if (theme == null) {
-						System.setProperty("Plastic.defaultTheme", Prefs.getPref(PrefName.GOODIESTHEME));
-					}
+					lnf = "com.formdev.flatlaf.FlatLightLaf";
+					Prefs.putPref(PrefName.LNF, lnf);
 				}
 
 				UIManager.setLookAndFeel(lnf);

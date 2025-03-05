@@ -219,8 +219,7 @@ public class PrefName {
 	static public PrefName ICONSIZE = new PrefName("icon_size", Integer.valueOf(16));
 
 
-	static public PrefName LNF = new PrefName("lnf", "com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
-	static public PrefName GOODIESTHEME = new PrefName("goodies_theme", "ExperienceBlue");
+	static public PrefName LNF = new PrefName("lnf", "com.formdev.flatlaf.FlatLightLaf");
 
 	static public PrefName COUNTRY = new PrefName("country", "");
 	static public PrefName LANGUAGE = new PrefName("language", "");

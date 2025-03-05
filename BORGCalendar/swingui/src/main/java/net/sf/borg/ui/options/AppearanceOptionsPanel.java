@@ -54,7 +54,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	private final JCheckBox iso8601Box = new JCheckBox();
 
 	private final JComboBox<String> lnfBox;
-	private final JComboBox<String> themeBox;
 	private final JComboBox<String> localebox;
 
 	private final JCheckBox miltime;
@@ -75,7 +74,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		
 		lnfBox = new JComboBox<String>();
-		themeBox = new JComboBox<String>();
 		holiday1 = new JCheckBox();
 		mondaycb = new JCheckBox();
 		miltime = new JCheckBox();
@@ -102,29 +100,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		this.add(lnfBox, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
-		JLabel themeLabel = new JLabel();
-		ResourceHelper.setText(themeLabel, "JGoodies_Theme");
-		jLabel4.setLabelFor(themeBox);
-		this.add(themeLabel,
-				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
-
-		themeBox.setEditable(true);
-		themeBox.setMaximumSize(new java.awt.Dimension(131, 24));
-		themeBox.setPreferredSize(new java.awt.Dimension(50, 24));
-		themeBox.setAutoscrolls(true);
-		this.add(themeBox, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		String[] themes = { "BrownSugar", "DarkStar", "DesertBlue",
-				"DesertBluer", "DesertGreen", "DesertRed", "DesertYellow",
-				"ExperienceBlue", "ExperienceGreen", "ExperienceRoyale",
-				"LightGray", "Silver", "SkyBlue", "SkyBluer", "SkyGreen",
-				"SkyKrupp", "SkyPink", "SkyRed", "SkyYellow" };
-
-		// add to the combo box
-		for (String theme : themes) {
-			themeBox.addItem(theme);
-		}
 
 		ResourceHelper.setText(holiday1, "Show_U.S._Holidays");
 		this.add(holiday1,
@@ -261,12 +236,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.LNF, newlnf);
 		}
 
-		String newtheme = (String) themeBox.getSelectedItem();
-		String oldtheme = Prefs.getPref(PrefName.GOODIESTHEME);
-		if (!newtheme.equals(oldtheme)) {
-			lnfChange = true;
-			Prefs.putPref(PrefName.GOODIESTHEME, newtheme);
-		}
 
 		if (lnfChange) {
 			try {
@@ -345,11 +314,8 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		}
 
 		
-		// add the included jgoodies look and feels
-		String[] looks = { "com.jgoodies.looks.plastic.PlasticLookAndFeel",
-				"com.jgoodies.looks.windows.WindowsLookAndFeel",
-				"com.jgoodies.looks.plastic.PlasticXPLookAndFeel",
-				"com.jgoodies.looks.plastic.Plastic3DLookAndFeel",
+		// add some included look and feels
+		String[] looks = { 
 				"com.formdev.flatlaf.FlatLightLaf",
 				"com.formdev.flatlaf.FlatDarkLaf"
 				};
@@ -379,9 +345,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		lnfBox.setSelectedItem(curlnf);
 		lnfBox.setEditable(false);
 
-		String curtheme = Prefs.getPref(PrefName.GOODIESTHEME);
-		themeBox.setSelectedItem(curtheme);
-		themeBox.setEditable(false);
+	
 
 	}
 
@@ -395,7 +359,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		if (lnf == null)
 			return;
 
-		themeBox.setEnabled(lnf.contains("goodies"));
 	}
 
 }
