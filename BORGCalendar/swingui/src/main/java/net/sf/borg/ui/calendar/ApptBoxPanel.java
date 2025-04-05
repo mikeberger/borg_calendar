@@ -18,6 +18,7 @@
  */
 package net.sf.borg.ui.calendar;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -581,9 +582,12 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	 * @return true, if is strike
 	 */
 	public static boolean isStrike(CalendarEntity appt, Date date) {
+		//if( appt.getNextTodo()!= null)
+		//	System.out.println(appt.getText() + " " + appt.getNextTodo() + " " + date);
 		return (appt.getColor() != null && appt.getColor().equals("strike"))
-				|| (appt.isTodo() && !(appt.getNextTodo() == null || !appt
-				.getNextTodo().after(date)));
+				|| (appt.isTodo() && !(appt.getNextTodo() == null ||
+				(DateUtil.dayOfEpoch(date) >= DateUtil.dayOfEpoch(appt.getNextTodo()))));
+				//!appt.getNextTodo().after(date)));
 	}
 
 	/** the Boxes managed by this container */
