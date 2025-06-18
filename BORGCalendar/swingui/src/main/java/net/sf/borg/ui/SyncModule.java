@@ -1,7 +1,6 @@
 package net.sf.borg.ui;
 
 import java.awt.Component;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -18,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import dorkbox.systemTray.SystemTray;
 import net.fortuna.ical4j.vcard.VCard;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.ModalMessageServer;
@@ -45,7 +43,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 	private static final PrefName url_pref = new PrefName("saved_import_url", "");
-	private static final ActionListener syncButtonListener = new ActionListener() {
+	public static final ActionListener syncButtonListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
@@ -466,26 +464,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
 		if (usetray.equals("true")) {
 
-			SystemTray.get("sync").setTooltip("BORG " + Resource.getResourceString("Sync"));
-			SystemTray.get("sync").getMenu()
-					.add(new dorkbox.systemTray.MenuItem(Resource.getResourceString("Sync"), new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent arg0) {
 							try {
-								if (GCal.isSyncing()) {
-									runGcalSync(false, false);
-								} else {
-									JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"),
-											null, JOptionPane.ERROR_MESSAGE);
-								}
-
-							} catch (Exception e) {
-								Errmsg.getErrorHandler().errmsg(e);
-							}
-						}
-					}));
-
-			try {
 				updateSyncButton();
 				showTrayIcon();
 			} catch (Exception e1) {
@@ -525,11 +504,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
 			try {
 				if (!(GCal.isSyncing()) || SyncLog.getReference().getAll().isEmpty()) {
-					SystemTray.get("sync").setEnabled(false);
+					TrayIconProxy.disableTrayIcon();
 				} else {
-					SystemTray.get("sync").setEnabled(true);
-					SystemTray.get("sync").setImage(
-							Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
+					TrayIconProxy.enableTrayIcon();
 				}
 			} catch (Exception e) {
 				// ignore

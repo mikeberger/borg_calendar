@@ -18,6 +18,7 @@
  */
 package net.sf.borg.ui;
 
+import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -66,12 +67,11 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 
 	private int iconSize = 16;
 
+	private final Menu actionMenu = new Menu();
 
-	 private final Menu actionMenu = new Menu();
-
-	
 	/** the TrayIcon */
 	private TrayIcon trayIcon = null;
+	private TrayIcon syncIcon = null;
 
 	/**
 	 * initalize the system tray
@@ -85,18 +85,19 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 
 		iconSize = SystemTray.getSystemTray().getTrayIconSize().height;
 
-		trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/resource/borg16.jpg")));
+		trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/borg16.jpg")));
 
 		trayIcon.setToolTip("BORG");
+
+		syncIcon = new TrayIcon(
+				Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
 
 		actionMenu.setLabel(Resource.getResourceString("Open"));
 
 		PopupMenu popup = new PopupMenu();
 
 		String fontName = Prefs.getPref(PrefName.DEFFONT);
-		if( !fontName.isEmpty())
-		{
+		if (!fontName.isEmpty()) {
 			Font f = Font.decode(fontName);
 			popup.setFont(f);
 		}
@@ -181,6 +182,16 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 		SystemTray tray = SystemTray.getSystemTray();
 		tray.add(trayIcon);
 
+		PopupMenu menu = new PopupMenu();
+		MenuItem sitem = new MenuItem();
+		sitem.setLabel(Resource.getResourceString("Sync"));
+		item = new MenuItem();
+		item.setLabel(Resource.getResourceString("Sync"));
+		item.addActionListener(SyncModule.syncButtonListener);
+		menu.add(item);
+		if (syncIcon != null)
+			syncIcon.setPopupMenu(menu);
+
 		updateImage();
 
 		Prefs.addListener(this);
@@ -205,15 +216,12 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 			log.fine("Updating systray image...");
 
 			// get date text
-			String text = Integer.toString(new GregorianCalendar()
-					.get(Calendar.DATE));
+			String text = Integer.toString(new GregorianCalendar().get(Calendar.DATE));
 
-			BufferedImage bimage = new BufferedImage(iconSize, iconSize,
-					BufferedImage.TYPE_INT_RGB);
+			BufferedImage bimage = new BufferedImage(iconSize, iconSize, BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = bimage.createGraphics();
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
-	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
-			
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
 			// draw icon background
 			Theme t = Theme.getCurrentTheme();
 			g.setColor(new Color(t.getTrayIconBg()));
@@ -224,19 +232,15 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 			g.setFont(font);
 			FontMetrics metrics = g.getFontMetrics();
 			g.setColor(new Color(t.getTrayIconFg()));
-			g.drawString(text, (iconSize - metrics.stringWidth(text)) / 2,
-					(iconSize + metrics.getAscent()) / 2);
+			g.drawString(text, (iconSize - metrics.stringWidth(text)) / 2, (iconSize + metrics.getAscent()) / 2);
 			g.dispose();
 
 			image = bimage;
 
-			trayIcon.setToolTip("BORG - "
-					+ DateFormat.getDateInstance(DateFormat.MEDIUM).format(
-							new Date()));
+			trayIcon.setToolTip("BORG - " + DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date()));
 
 		} else {
-			image = Toolkit.getDefaultToolkit().getImage(
-					getClass().getResource("/resource/borg16.jpg"));
+			image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/borg16.jpg"));
 
 		}
 
@@ -265,18 +269,32 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 	/**
 	 * Add an action to the action menu
 	 * 
-	 * @param text
-	 *            the text for the menu item
-	 * @param action
-	 *            the action listener for the menu item
+	 * @param text   the text for the menu item
+	 * @param action the action listener for the menu item
 	 */
-	 public void addAction(String text, ActionListener action) {
+	public void addAction(String text, ActionListener action) {
 		MenuItem item = new MenuItem();
 		item.setLabel(text);
 		item.addActionListener(action);
 
 		actionMenu.add(item);
 	}
-	
-	
+
+	@Override
+	public void enableTrayIcon() {
+		try {
+			SystemTray.getSystemTray().add(syncIcon);
+		} catch (AWTException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void disableTrayIcon() {
+		SystemTray.getSystemTray().remove(syncIcon);
+
+	}
+
 }

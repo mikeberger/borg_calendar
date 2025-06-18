@@ -136,6 +136,12 @@ public class DorkTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 
 		iconSize = systemTray.getTrayImageSize();
 		log.info("Icon Size = " + iconSize);
+		
+		SystemTray.get("sync").setTooltip("BORG " + Resource.getResourceString("Sync"));
+		SystemTray.get("sync").getMenu()
+				.add(new dorkbox.systemTray.MenuItem(Resource.getResourceString("Sync"), SyncModule.syncButtonListener ));
+		SystemTray.get("sync").setImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
+
 
 		updateImage();
 
@@ -226,6 +232,20 @@ public class DorkTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 
 
 		actionMenu.add(new MenuItem(text, action));
+	}
+
+	@Override
+	public void disableTrayIcon() {
+		SystemTray.get("sync").setEnabled(false);
+		
+	}
+
+	@Override
+	public void enableTrayIcon() {
+		SystemTray.get("sync").setEnabled(true);
+		SystemTray.get("sync").setImage(
+				Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
+		
 	}
 
 
