@@ -93,7 +93,21 @@ public class TrayIconProxy {
 		 */
 
 		void addAction(String text, ActionListener action);
+		
+		void enableTrayIcon();
+		
+		void disableTrayIcon();
 
 	}
+	
+	public static void enableTrayIcon() {
+		singleton.enableTrayIcon();
+	}
+	
+	public static void disableTrayIcon() {
+		singleton.disableTrayIcon();
+	}
+	
+	
 
 }
