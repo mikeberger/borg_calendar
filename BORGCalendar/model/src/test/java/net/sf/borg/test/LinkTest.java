@@ -21,7 +21,7 @@ public class LinkTest {
 		// open the borg dbs - in memory
 		DBHelper.setFactory(new JdbcDBHelper());
 		DBHelper.setController(new JdbcDBHelper());
-		DBHelper.getController().connect("jdbc:h2:mem:");
+		DBHelper.getController().connect("jdbc:h2:mem:db;NON_KEYWORDS=value");
 		
 	}
 	

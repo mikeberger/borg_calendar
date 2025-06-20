@@ -338,7 +338,7 @@ final class JdbcDB {
             if (hdir.equals("not-set"))
                 return hdir;
             dbdir = "jdbc:h2:file:" + Prefs.getPref(PrefName.H2DIR)
-                    + "/borgdb;USER=sa";
+                    + "/borgdb;USER=sa;NON_KEYWORDS=value";
         } else if (dbtype.equals("sqlite")) {
             String hdir = Prefs.getPref(PrefName.SQLITEDIR);
             if (hdir.equals("not-set"))
