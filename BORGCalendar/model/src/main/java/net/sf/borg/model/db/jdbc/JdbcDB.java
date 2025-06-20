@@ -112,77 +112,7 @@ final class JdbcDB {
         if (url == null)
             url = buildDbDir();
         url_ = url;
-        if (url.startsWith("jdbc:hsqldb")) {
-            Class.forName("org.hsqldb.jdbcDriver");
-            if (connection_ == null) {
-                Properties props = new Properties();
-                props.setProperty("user", "sa");
-                props.setProperty("password", "");
-
-                // only want to apply these properties to an embedded
-                // stand-alone db
-                if (url.startsWith("jdbc:hsqldb:file")) {
-                    props.setProperty("shutdown", "true");
-                    props.setProperty("ifexists", "true");
-                }
-                try {
-                    connection_ = DriverManager.getConnection(url, props);
-                } catch (SQLException se) {
-                    if (se.getSQLState().equals("08003")) {
-                        // need to create the db
-                        try {
-                            log.info("Creating Database");
-                            InputStream is = JdbcDB.class
-                                    .getResourceAsStream("/borg_hsqldb.sql");
-                            StringBuffer sb = new StringBuffer();
-                            InputStreamReader r = new InputStreamReader(is);
-                            while (true) {
-                                int ch = r.read();
-                                if (ch == -1)
-                                    break;
-                                sb.append((char) ch);
-                            }
-                            r.close();
-                            props.setProperty("ifexists", "false");
-                            connection_ = DriverManager.getConnection(url,
-                                    props);
-                            execSQL(sb.toString());
-                        } catch (Exception e2) {
-                            throw e2;
-
-                        }
-                    } else if (se.getMessage().indexOf("locked") != -1) {
-                        throw se;
-                    } else {
-                        throw se;
-                    }
-                }
-                // if running with a memory only db (for testing)
-                // always need to run the db creation scripts
-                if (url.startsWith("jdbc:hsqldb:mem")) {
-                    // need to create the db
-                    try {
-                        log.info("Creating Database");
-                        InputStream is = JdbcDB.class
-                                .getResourceAsStream("/borg_hsqldb.sql");
-                        StringBuffer sb = new StringBuffer();
-                        InputStreamReader r = new InputStreamReader(is);
-                        while (true) {
-                            int ch = r.read();
-                            if (ch == -1)
-                                break;
-                            sb.append((char) ch);
-                        }
-                        r.close();
-                        props.setProperty("ifexists", "false");
-                        connection_ = DriverManager.getConnection(url, props);
-                        execSQL(sb.toString());
-                    } catch (Exception e2) {
-                        throw e2;
-                    }
-                }
-            }
-        } else if (url.startsWith("jdbc:h2")) {
+       if (url.startsWith("jdbc:h2")) {
             if (connection_ == null) {
                 Properties props = new Properties();
                 props.setProperty("user", "sa");
@@ -193,7 +123,7 @@ final class JdbcDB {
                 try {
                     connection_ = DriverManager.getConnection(url, props);
                 } catch (SQLException se) {
-                    if (se.getSQLState().equals("90013")) {
+                    if (se.getSQLState().equals("90146")) {
                         // need to create the db
                         try {
                             log.info("Creating Database");
@@ -403,13 +333,7 @@ final class JdbcDB {
         // get dir for DB
         String dbdir = "";
         String dbtype = Prefs.getPref(PrefName.DBTYPE);
-        if (dbtype.equals("hsqldb")) {
-            String hdir = Prefs.getPref(PrefName.HSQLDBDIR);
-            if (hdir.equals("not-set"))
-                return hdir;
-            dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
-                    + "/borg_";
-        } else if (dbtype.equals("h2")) {
+       if (dbtype.equals("h2")) {
             String hdir = Prefs.getPref(PrefName.H2DIR);
             if (hdir.equals("not-set"))
                 return hdir;

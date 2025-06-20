@@ -25,11 +25,11 @@ class OptionJdbcDB implements OptionDB {
 	public String getOption(String oname) throws Exception {
 		String ret = null;
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT value FROM options WHERE name = ?");
+				"SELECT opt_value FROM options WHERE name = ?");
 		stmt.setString(1, oname);
 		ResultSet rs = stmt.executeQuery();
 		if (rs.next()) {
-			ret = rs.getString("value");
+			ret = rs.getString("opt_value");
 		}
 		rs.close();
 		stmt.close();
@@ -49,10 +49,10 @@ class OptionJdbcDB implements OptionDB {
 	public Collection<Option> getOptions() throws Exception {
 		ArrayList<Option> keys = new ArrayList<Option>();
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT name, value FROM options");
+				"SELECT name, opt_value FROM options");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			keys.add(new Option(rs.getString("name"), rs.getString("value")));
+			keys.add(new Option(rs.getString("name"), rs.getString("opt_value")));
 		}
 
 		rs.close();
@@ -91,7 +91,7 @@ class OptionJdbcDB implements OptionDB {
 			return;
 
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"INSERT INTO options ( name, value ) " + "VALUES ( ?, ?)");
+				"INSERT INTO options ( name, opt_value ) " + "VALUES ( ?, ?)");
 
 		stmt.setString(1, oname);
 		stmt.setString(2, value);

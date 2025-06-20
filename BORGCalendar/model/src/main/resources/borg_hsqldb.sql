@@ -78,7 +78,7 @@ CREATE INDEX app_todo ON appointments (todo);
 
 CREATE CACHED TABLE options (
   name varchar(30) default '' NOT NULL,
-  value longvarchar NOT NULL,
+  opt_value longvarchar NOT NULL,
   PRIMARY KEY  (name)
 );
 
@@ -90,9 +90,9 @@ CREATE CACHED TABLE projects (
   category varchar(255) default NULL,
   status varchar(10) default '' NOT NULL,
   parent integer default NULL,
+    PRIMARY KEY  (id),
   FOREIGN KEY (parent) REFERENCES projects ( id)
-     ON DELETE CASCADE,
-  PRIMARY KEY  (id)
+     ON DELETE CASCADE
 );
 
 CREATE CACHED TABLE tasks (

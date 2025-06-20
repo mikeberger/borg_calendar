@@ -57,15 +57,12 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 
 	private JPanel dbTypePanel = null;
 
-	private JRadioButton hsqldbButton;
 	private JRadioButton h2Button;
 	private JRadioButton sqliteButton;
 
-	private final JTextField hsqldbdir = new JTextField();
 	private final JTextField h2dir = new JTextField();
 	private final JTextField sqlitedir = new JTextField();
 
-	private JPanel hsqldbPanel;
 	private JPanel h2Panel;
 	private JPanel sqlitePanel;
 
@@ -123,11 +120,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			}
 		});
 
-		GridBagConstraints gridBagConstraints6h = GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH, 1.0,
-				1.0);
-		gridBagConstraints6h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		this.add(getHSQLDBPanel(), gridBagConstraints6h);
-
+		
 		GridBagConstraints gridBagConstraints7h = GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH, 1.0,
 				1.0);
 		gridBagConstraints7h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -163,18 +156,13 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 				Resource.getResourceString("Confirm_DB_Change"), JOptionPane.YES_NO_OPTION);
 		if (ret == JOptionPane.YES_OPTION) {
 
-			String hh = hsqldbdir.getText();
-			Prefs.putPref(PrefName.HSQLDBDIR, hh);
-
 			String h2 = h2dir.getText();
 			Prefs.putPref(PrefName.H2DIR, h2);
 			
 			String sq = sqlitedir.getText();
 			Prefs.putPref(PrefName.SQLITEDIR, sq);
 
-			if (hsqldbButton.isSelected()) {
-				Prefs.putPref(PrefName.DBTYPE, "hsqldb");
-			} else if (h2Button.isSelected()) {
+			if (h2Button.isSelected()) {
 				Prefs.putPref(PrefName.DBTYPE, "h2");
 			} else if( sqliteButton.isSelected()) {
 				Prefs.putPref(PrefName.DBTYPE, "sqlite");
@@ -196,23 +184,15 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 	 * @param type db type
 	 */
 	private void dbTypeChange(String type) {
-		if (type.equals("hsqldb")) {
-			hsqldbPanel.setVisible(true);
-			sqlitePanel.setVisible(false);
-			jdbcPanel.setVisible(false);
-			h2Panel.setVisible(false);
-		} else if (type.equals("h2")) {
-			hsqldbPanel.setVisible(false);
+		 if (type.equals("h2")) {
 			jdbcPanel.setVisible(false);
 			h2Panel.setVisible(true);
 			sqlitePanel.setVisible(false);
 		} else if (type.equals("sqlite")) {
 			sqlitePanel.setVisible(true);
-			hsqldbPanel.setVisible(false);
 			jdbcPanel.setVisible(false);
 			h2Panel.setVisible(false);
 		} else {
-			hsqldbPanel.setVisible(false);
 			jdbcPanel.setVisible(true);
 			h2Panel.setVisible(false);
 			sqlitePanel.setVisible(false);
@@ -243,17 +223,6 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			});
 			dbTypePanel.add(sqliteButton, null);
 
-			hsqldbButton = new JRadioButton();
-			hsqldbButton.setActionCommand("hsqldb");
-			ResourceHelper.setText(hsqldbButton, "hsqldb");
-			hsqldbButton.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					dbTypeChange(e.getActionCommand());
-				}
-			});
-			dbTypePanel.add(hsqldbButton, null);
-
 			h2Button = new JRadioButton();
 			h2Button.setActionCommand("h2");
 			h2Button.setText("H2");
@@ -280,7 +249,6 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 
 			dbTypeGroup = new ButtonGroup();
 			dbTypeGroup.add(sqliteButton);
-			dbTypeGroup.add(hsqldbButton);
 			dbTypeGroup.add(h2Button);
 			dbTypeGroup.add(jdbcButton);
 
@@ -288,45 +256,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		return dbTypePanel;
 	}
 
-	/**
-	 * get the hsql options panel
-	 *
-	 * @return the hsql options panel
-	 */
-	private JPanel getHSQLDBPanel() {
-		hsqldbPanel = new JPanel();
-		hsqldbPanel.setLayout(new java.awt.GridBagLayout());
 
-		JLabel hs1 = new JLabel();
-		hsqldbPanel.setBorder(new TitledBorder(Resource.getResourceString("hsqldbinfo")));
-		ResourceHelper.setText(hs1, "DataBase_Directory");
-		hs1.setLabelFor(dbDirText);
-		hsqldbPanel.add(hs1, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-
-		hsqldbPanel.add(hsqldbdir, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 0.5, 0.0));
-
-		JButton hsb1 = new JButton();
-		ResourceHelper.setText(hsb1, "Browse");
-		hsb1.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				// browse for new database dir
-				String dbdir = OptionsPanel.chooseDir();
-				if (dbdir == null) {
-					return;
-				}
-
-				// update text field - nothing else changes. DB change will take
-				// effect
-				// only on restart
-				hsqldbdir.setText(dbdir);
-			}
-		});
-
-		hsqldbPanel.add(hsb1, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
-
-		return hsqldbPanel;
-	}
 
 	/**
 	 * get the h2 options panel
@@ -443,9 +373,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		// database type
 		//
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		if (dbtype.equals("hsqldb")) {
-			hsqldbButton.setSelected(true);
-		} else if (dbtype.equals("h2")) {
+		if (dbtype.equals("h2")) {
 			h2Button.setSelected(true);
 		} else if (dbtype.equals("sqlite")) {
 			sqliteButton.setSelected(true);
@@ -456,7 +384,6 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		dbTypeChange(dbtype);
 
 		jdbcText.setText(Prefs.getPref(PrefName.JDBCURL));
-		hsqldbdir.setText(Prefs.getPref(PrefName.HSQLDBDIR));
 		h2dir.setText(Prefs.getPref(PrefName.H2DIR));
 		sqlitedir.setText(Prefs.getPref(PrefName.SQLITEDIR));
 

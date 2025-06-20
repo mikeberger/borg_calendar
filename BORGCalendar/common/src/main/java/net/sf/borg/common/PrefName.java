@@ -89,12 +89,9 @@ public class PrefName {
 	/** database type. */
 	static public PrefName DBTYPE = new PrefName("dbtype", "h2");
 
-	/** jdbc url - for generic jdbc only, not hsql or mysql */
 	static public PrefName JDBCURL = new PrefName("jdbcurl", "");
 
-	/** hsql database directory */
-	static public PrefName HSQLDBDIR = new PrefName("hsqldbdir", "not-set");
-
+	
 	/** h2 database directory */
 	static public PrefName H2DIR = new PrefName("h2dir", "not-set");
 	
@@ -116,8 +113,6 @@ public class PrefName {
 	/** use system tray */
 	static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");
 	
-	/*** hidden option - force dork tray on windows */
-	static public PrefName FORCEDORKTRAY = new PrefName("forcedorktray", "false");
 	
 
 	/** show date is system tray */

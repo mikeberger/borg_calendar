@@ -42,7 +42,6 @@ Lists of 87 third-party dependencies.
      (Apache License) HttpClient (commons-httpclient:commons-httpclient:3.1 - http://jakarta.apache.org/httpcomponents/httpclient-3.x/)
      (The Apache Software License, Version 2.0) Commons IO (commons-io:commons-io:2.3 - http://commons.apache.org/io/)
      (The Apache Software License, Version 2.0) Apache Commons Logging (commons-logging:commons-logging:1.2 - http://commons.apache.org/proper/commons-logging/)
-     (HSQLDB License) HSQLDB (hsqldb:hsqldb:1.8.0.10 - http://hsqldb.org/)
      (Apache 2.0) io.grpc:grpc-api (io.grpc:grpc-api:1.68.2 - https://github.com/grpc/grpc-java)
      (Apache 2.0) io.grpc:grpc-context (io.grpc:grpc-context:1.68.2 - https://github.com/grpc/grpc-java)
      (The Apache License, Version 2.0) OpenCensus (io.opencensus:opencensus-api:0.31.1 - https://github.com/census-instrumentation/opencensus-java)
