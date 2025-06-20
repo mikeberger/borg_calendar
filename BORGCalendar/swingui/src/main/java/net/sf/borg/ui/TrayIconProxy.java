@@ -27,7 +27,7 @@ public class TrayIconProxy {
 
 	public static void startTrayIcon() {
 
-		boolean isWindows = System.getProperty("os.name").startsWith("Windows");
+		//boolean isWindows = System.getProperty("os.name").startsWith("Windows");
 
 		// start the system tray icon - or at least attempt to
 		// it doesn't run on all OSs and all WMs
@@ -37,13 +37,9 @@ public class TrayIconProxy {
 			trayIconStarted = false;
 		} else {
 			try {
-				boolean forcedork = Prefs.getBoolPref(PrefName.FORCEDORKTRAY);
 
-				if (isWindows && !forcedork)
 					singleton = new SunTrayIconProxy();
-				else
-					singleton = new DorkTrayIconProxy();
-
+				
 				singleton.init();
 			} catch (UnsatisfiedLinkError le) {
 				le.printStackTrace();
