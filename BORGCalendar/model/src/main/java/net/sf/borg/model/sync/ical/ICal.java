@@ -1,15 +1,25 @@
 package net.sf.borg.model.sync.ical;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -35,16 +45,74 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 
-
-
 public class ICal {
-	
+
 	static {
 		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", "net.fortuna.ical4j.util.MapTimeZoneCache");
 	}
-	
+
+	static public void exportApptsToFileByYear(String dir) throws Exception {
+
+		Collection<Appointment> appts = AppointmentModel.getReference().getAllAppts();
+		if (appts.isEmpty())
+			return;
+
+		HashMap<Integer, List<Appointment>> apptMap = new HashMap<Integer, List<Appointment>>();
+
+		// put all appts into a tree by year
+		GregorianCalendar cal = new GregorianCalendar();
+		for (Appointment ap : appts) {
+
+			cal.setTime(ap.getDate());
+			int year = cal.get(java.util.Calendar.YEAR);
+			if (!apptMap.containsKey(year)) {
+				List<Appointment> l = new ArrayList<Appointment>();
+				apptMap.put(year, l);
+			}
+
+			apptMap.get(year).add(ap);
+		}
+
+		// start the output zip file
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String uniq = sdf.format(new Date());
+
+		String backupFilename = dir + "/borg_ics" + uniq + ".zip";
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(backupFilename));
+		Writer fw = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+
+		// put out the years
+		for (Integer year : apptMap.keySet()) {
+
+			out.putNextEntry(new ZipEntry(year + ".ics"));
+
+			ComponentList<CalendarComponent> clist = new ComponentList<CalendarComponent>();
+
+			for (Appointment ap : apptMap.get(year)) {
+				ap.setUid("");
+				ap.setUrl("");
+				CalendarComponent ve = EntityIcalAdapter.toIcal(ap, true);
+				if (ve != null)
+					clist.add(ve);
+			}
+			
+			PropertyList<Property> pl = new PropertyList<Property>();
+			pl.add(new ProdId("BORG Calendar"));
+			pl.add(Version.VERSION_2_0);
+			net.fortuna.ical4j.model.Calendar ical = new net.fortuna.ical4j.model.Calendar(pl, clist);
+			ical.validate();
+			fw.write(ical.toString());
+			fw.flush();
+			out.closeEntry();
+		}
+
+		out.close();
+
+		
+	}
+
 	static public void exportIcalToFile(String filename, Date after) throws Exception {
-		Calendar cal = exportIcal(after, false);
+		Calendar cal = exportIcal(after);
 		OutputStream oostr = IOHelper.createOutputStream(filename);
 		CalendarOutputter op = new CalendarOutputter();
 		op.output(cal, oostr);
@@ -52,24 +120,21 @@ public class ICal {
 	}
 
 	static public String exportIcalToString(Date after) throws Exception {
-		Calendar cal = exportIcal(after, false);
+		Calendar cal = exportIcal(after);
 		CalendarOutputter op = new CalendarOutputter();
 		StringWriter sw = new StringWriter();
 		op.output(cal, sw);
 		return sw.toString();
 	}
 
-	static public Calendar exportIcal(Date after, boolean caldav) throws Exception {
+	static public Calendar exportIcal(Date after) throws Exception {
 
 		ComponentList<CalendarComponent> clist = new ComponentList<CalendarComponent>();
 
 		exportAppointments(clist, after);
 		exportTasks(clist);
 		exportSubTasks(clist);
-
-		if (!caldav) {
-			exportProjects(clist);
-		}
+		exportProjects(clist);
 
 		PropertyList<Property> pl = new PropertyList<Property>();
 		pl.add(new ProdId("BORG Calendar"));
@@ -137,7 +202,7 @@ public class ICal {
 
 		}
 	}
-	
+
 	static private void setHints() {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
@@ -160,10 +225,9 @@ public class ICal {
 	}
 
 	static public String importIcalFromFile(String file) throws Exception {
-		
+
 		setHints();
 
-		
 		CalendarBuilder builder = new CalendarBuilder();
 		InputStream is = new FileInputStream(file);
 		Calendar cal = builder.build(is);
@@ -178,7 +242,6 @@ public class ICal {
 		StringBuffer dups = new StringBuffer();
 
 		setHints();
-
 
 		StringBuffer warning = new StringBuffer();
 
