@@ -19,6 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.fortuna.ical4j.vcard.VCard;
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.ModalMessageServer;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -237,6 +238,20 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 		});
 
 		icsmenu.add(exp);
+
+		m.add(icsmenu);
+		
+		JMenuItem expz = new JMenuItem();
+		expz.setText(Resource.getResourceString("exportToIcalZipFile"));
+		expz.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				exportToZip();
+			}
+		});
+
+		icsmenu.add(expz);
 
 		m.add(icsmenu);
 
@@ -506,6 +521,46 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			} else {
 				ICal.exportIcalToFile(s, null);
 			}
+
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
+	}
+	
+	private static void exportToZip() {
+
+		String s;
+		while (true) {
+			// prompt for a directory to store the files
+			JFileChooser chooser = new JFileChooser();
+
+			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
+			chooser.setDialogTitle(Resource.getResourceString("select_export_dir"));
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			chooser.setApproveButtonText(Resource.getResourceString("select_export_dir"));
+
+			int returnVal = chooser.showOpenDialog(null);
+			if (returnVal != JFileChooser.APPROVE_OPTION)
+				return;
+
+			s = chooser.getSelectedFile().getAbsolutePath();
+			IOHelper.setHomeDirectory(s);
+			File dir = new File(s);
+			String err = null;
+			if (!dir.exists()) {
+				err = Resource.getResourceString("Directory_[") + s + Resource.getResourceString("]_does_not_exist");
+			} else if (!dir.isDirectory()) {
+				err = "[" + s + Resource.getResourceString("]_is_not_a_directory");
+			}
+
+			if (err == null)
+				break;
+
+			Errmsg.getErrorHandler().notice(err);
+		}
+
+		try {
+			ICal.exportApptsToFileByYear(s);
 
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
