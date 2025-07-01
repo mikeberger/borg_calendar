@@ -156,7 +156,7 @@ public class CalDav {
 			cal.add(java.util.Calendar.YEAR, -1 * years.intValue());
 			after = cal.getTime();
 		}
-		Calendar calendar = ICal.exportIcal(after, true);
+		Calendar calendar = ICal.exportIcal(after);
 
 		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
 
