@@ -694,7 +694,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
         if (dbtype.equals("jdbc") && url != null && url.contains("mysql"))
             DBHelper.getController().execSQL("SET foreign_key_checks = 0;");
         else if (dbtype.equals("jdbc") && url != null && url.contains("sqlite"))
-            DBHelper.getController().execSQL("PRAGMA foreign_keys = false;");
+            DBHelper.getController().execSQL("PRAGMA foreign_keys = OFF;");
+        else if( dbtype.equals("sqlite"))
+            DBHelper.getController().execSQL("PRAGMA foreign_keys = OFF;");
         else {
             try {
                 DBHelper.getController()
@@ -770,7 +772,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
             if (dbtype.equals("jdbc") && url != null && url.contains("mysql"))
                 DBHelper.getController().execSQL("SET foreign_key_checks = 1;");
             else if (dbtype.equals("jdbc") && url != null && url.contains("sqlite"))
-                DBHelper.getController().execSQL("PRAGMA foreign_keys = true;");
+                DBHelper.getController().execSQL("PRAGMA foreign_keys = ON;");
+            else if( dbtype.equals("sqlite"))
+                DBHelper.getController().execSQL("PRAGMA foreign_keys = ON;");
             else
                 try {
                     DBHelper.getController().execSQL(

@@ -232,7 +232,7 @@ final class JdbcDB {
                     connection_ = DriverManager.getConnection(url, props);
                     
                     // turn on foreign key validation
-                    String s = "PRAGMA foreign_keys = true";
+                    String s = "PRAGMA foreign_keys = ON";
                     log.fine("SQL: " + s);
                     execSQL(s);
                     
