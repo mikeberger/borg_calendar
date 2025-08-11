@@ -461,7 +461,7 @@ public class EntityGCalAdapter {
 
 		Date due = t.getDueDate();
 		if (due != null) {
-			DateTime tdue = new DateTime(due);
+			DateTime tdue = new DateTime(false,due.getTime(), 0);
 			task.setDue(tdue.toStringRfc3339());
 		}
 
@@ -521,7 +521,7 @@ public class EntityGCalAdapter {
 			}
 		}
 
-		DateTime tdue = new DateTime(due);
+		DateTime tdue = new DateTime(false,due.getTime(), 0);
 		task.setDue(tdue.toStringRfc3339());
 
 		String uidval = s.getUid();
