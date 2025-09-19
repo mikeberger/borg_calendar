@@ -579,6 +579,10 @@ public class WeekPanel extends DockableView implements Printable,
 					23, 59);
 			int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);
 			cal.setFirstDayOfWeek(fdow);
+			if (Prefs.getPref(PrefName.ISOWKNUMBER).equals("true"))
+				cal.setMinimalDaysInFirstWeek(4);
+			else
+				cal.setMinimalDaysInFirstWeek(1);
 
 			// move cal back to first dow for the chosen week
 			int offset = cal.get(Calendar.DAY_OF_WEEK) - fdow;
@@ -594,7 +598,7 @@ public class WeekPanel extends DockableView implements Printable,
 
 			return df.format(beg) + " "
 					+ Resource.getResourceString("__through__") + " "
-					+ df.format(end);
+					+ df.format(end) + "     (" + cal.get(Calendar.WEEK_OF_YEAR) + ")";
 
 		}
 
