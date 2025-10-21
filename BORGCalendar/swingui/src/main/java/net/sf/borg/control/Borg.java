@@ -23,6 +23,7 @@ import net.sf.borg.common.*;
 import net.sf.borg.model.*;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
+import net.sf.borg.model.sync.google.GDrive;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.PasswordHelper;
@@ -283,6 +284,10 @@ public class Borg implements SocketServer.SocketHandler {
 					return;
 				}
 			}
+			
+			// if the DB is on GDrive, check if GDrive is newer and if so, warn that we are out of sync
+			GDrive.getReference().connect();
+			GDrive.getReference().checkModTimes();
 
 			// connect to the db - for now, it is jdbc only
 			DBHelper.getController().connect(dbdir);

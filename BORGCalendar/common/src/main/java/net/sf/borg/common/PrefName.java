@@ -290,6 +290,7 @@ public class PrefName {
 	public static final PrefName GOOGLE_TOKEN_DIR = new PrefName("google_token_dir", "");
 	public static final PrefName GCAL_EXPORTYEARS = new PrefName("gcal-export-years", Integer.valueOf(2));
 	public static final PrefName GOOGLE_SUBSCRIBED = new PrefName("google_subscribed", "");
+	public static final PrefName GOOGLE_DB_FILE_ID = new PrefName("google_db_file_id", "");
 
 
 

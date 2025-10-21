@@ -56,6 +56,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
     private final JTextField token_dir_box = new JTextField();
     private final JTextField sub_box = new JTextField();
     private final JTextField todo_cal_box = new JTextField();
+    private final JTextField gfile_box = new JTextField();
 
 
     private final JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
@@ -150,6 +151,12 @@ public class GoogleOptionsPanel extends OptionsPanel {
                 GridBagConstraints.BOTH, 1.0, 0.0);
         gbc1.gridwidth = 2;
         this.add(filep, gbc1);
+        
+        this.add(new JLabel("Google Drive File ID:"),
+                GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
+        this.add(gfile_box,
+                GridBagConstraintsFactory.create(1, 7, GridBagConstraints.BOTH));
+
 
 
     }
@@ -171,6 +178,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
         Prefs.putPref(PrefName.GOOGLE_TOKEN_DIR, token_dir_box.getText());
         Prefs.putPref(PrefName.GOOGLE_SUBSCRIBED, sub_box.getText());
         Prefs.putPref(PrefName.GCAL_TODO_CAL_ID, todo_cal_box.getText());
+        Prefs.putPref(PrefName.GOOGLE_DB_FILE_ID, gfile_box.getText());
 
         GCal.getReference().resetGoogleIds();
 
@@ -191,6 +199,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
 		exportyears.setValue(Prefs.getIntPref(PrefName.GCAL_EXPORTYEARS));
         sub_box.setText(Prefs.getPref(PrefName.GOOGLE_SUBSCRIBED));
         todo_cal_box.setText(Prefs.getPref(PrefName.GCAL_TODO_CAL_ID));
+        gfile_box.setText(Prefs.getPref(PrefName.GOOGLE_DB_FILE_ID));
 
 
     }
