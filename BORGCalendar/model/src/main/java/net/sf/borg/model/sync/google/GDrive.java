@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -124,6 +126,8 @@ public class GDrive {
 			
 			if( lastModifiedMillis < fileMeta.getModifiedTime().getValue()) {
 				Errmsg.getErrorHandler().notice("Google DB file is newer than local File, sync needed");
+				JOptionPane.showMessageDialog(null, "Google DB file is newer than local File, sync needed");
+
 			}
 
 
