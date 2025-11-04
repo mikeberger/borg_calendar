@@ -1104,6 +1104,7 @@ public class GCal {
 		for(Appointment borgTodo : borgTodos) {
 			
 			if( !AppointmentModel.isNote(borgTodo)) continue;
+			if(borgTodo.isPrivate()) continue;
 			
 			boolean found_on_server = false;
 			
