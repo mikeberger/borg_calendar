@@ -76,6 +76,30 @@ public class LabelEntity implements CalendarEntity {
 		// TODO Auto-generated method stub
 		return tooltipText;
 	}
+
+	@Override
+	public Date getCreateTime() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Date getLastMod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getBody() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

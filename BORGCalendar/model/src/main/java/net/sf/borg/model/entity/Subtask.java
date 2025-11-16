@@ -171,4 +171,14 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity, Syn
 	public ObjectType getObjectType() {
 		return ObjectType.SUBTASK;
 	}
+
+	@Override
+	public String getTitle() {
+		return getText();
+	}
+
+	@Override
+	public String getBody() {
+		return getDescription();
+	}
 }

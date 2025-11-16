@@ -76,4 +76,10 @@ public interface CalendarEntity {
     Integer getPriority();
 	
 	boolean isPrivate();
+	
+	Date getCreateTime();
+	Date getLastMod();
+	
+	String getTitle();
+	String getBody();
 }

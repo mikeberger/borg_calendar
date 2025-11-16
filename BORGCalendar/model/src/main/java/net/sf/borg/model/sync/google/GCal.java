@@ -50,6 +50,7 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.sync.SubscribedCalendars;
@@ -1099,12 +1100,31 @@ public class GCal {
 
 		
 		// compare with todos in BORG and add/delete/update in google as needed
-		Collection<Appointment> borgTodos = AppointmentModel.getReference().get_todos();
+		Collection<CalendarEntity> borgTodos = new ArrayList<CalendarEntity>();
+		borgTodos.addAll(AppointmentModel.getReference().get_todos());
 		
-		for(Appointment borgTodo : borgTodos) {
+		Collection<net.sf.borg.model.entity.Task> tasks = TaskModel.getReference().getTasks();
+		for( net.sf.borg.model.entity.Task task : tasks ) {
+			if( TaskModel.isClosed(task) || task.getDate() == null ) continue;
+			borgTodos.add(task);
+		}
+		Collection<Subtask> subtasks = TaskModel.getReference().getSubTasks();
+		for( Subtask subtask : subtasks ) {
+			if( subtask.getDueDate() == null || subtask.getCloseDate() != null ) continue;
+			borgTodos.add(subtask);
+		}
+
+		
+		for(CalendarEntity borgTodo : borgTodos) {
 			
-			if( !AppointmentModel.isNote(borgTodo)) continue;
 			if(borgTodo.isPrivate()) continue;
+			
+			Date nt = borgTodo.getNextTodo();
+			if (nt == null) {
+				nt = borgTodo.getDate();
+			}
+			
+			if( nt == null) continue;
 			
 			boolean found_on_server = false;
 			
@@ -1112,12 +1132,7 @@ public class GCal {
 				
 				// match by text and date only
 				if( borgTodo.getTitle().equals(ge.getSummary())) {
-					
-					Date nt = borgTodo.getNextTodo();
-					if (nt == null) {
-						nt = borgTodo.getDate();
-					}
-					
+											
 					Date utc = new Date();
 					utc.setTime(ge.getStart().getDate().getValue() - tzOffset(ge.getStart().getDate().getValue()));
 					
@@ -1134,6 +1149,7 @@ public class GCal {
 			
 			if(  !found_on_server )
 			{
+				
 				// add to server
 				Event ve1 = EntityGCalAdapter.toGCalDummyEvent(borgTodo);
 				ve1.setId(null);

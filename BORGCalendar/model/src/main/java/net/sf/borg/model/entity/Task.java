@@ -161,4 +161,14 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity, SyncableE
 	public ObjectType getObjectType() {
 		return ObjectType.TASK;
 	}
+
+	@Override
+	public String getTitle() {
+		return getSummary();
+	}
+
+	@Override
+	public String getBody() {
+		return getDescription();
+	}
 }

@@ -24,6 +24,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.sync.RecurrenceRule;
 
@@ -544,7 +545,7 @@ public class EntityGCalAdapter {
 	}
 	
 	// create a simple dummy event to show a todo on a "special" google calendar
-	public static Event toGCalDummyEvent(Appointment ap) {
+	public static Event toGCalDummyEvent(CalendarEntity ap) {
 		Event ev = new Event();
 		ev.setKind("calendar#event");
 		ev.setEventType("default");

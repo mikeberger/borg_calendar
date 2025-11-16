@@ -127,4 +127,26 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 		return false;
 	}
 
+	@Override
+	public Date getCreateTime() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Date getLastMod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getTitle() {
+		return getText();
+	}
+
+	@Override
+	public String getBody() {
+		return getDescription();
+	}
+
 }
