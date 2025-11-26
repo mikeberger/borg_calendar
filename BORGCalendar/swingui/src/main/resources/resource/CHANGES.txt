@@ -1,3 +1,17 @@
+BORG 2.0.0
+----------
+Remove CALDAV sync
+Remove HSQLDB
+Upgrade H2 database to 2.0
+Remove Dorkbox system tray and use the default tray for Linux
+Add method to export all appts to a zip file containing ics files by year - for importing to google in manageable pieces. 
+Import from backup XML does not work for Sqlite databases since 1.10.05 #233
+subtasks syncing to google on the wrong day (Issue #234)
+Show week number in week view (feature request) (Issue #235)
+If the database is synced on google drive, add the ability to check the timestamp from drive on startup and warn the user if the db is out of sync (GDrive is newer than local)
+Do not sync private todos  to the google todo calendar
+add Tasks and Subtasks to the items synced to the "todo calendar" on google that was created by enhancement #223
+
 BORG 1.10.06
 ------------
 Remove the default JGoodies Look and Feel - Action menu not displayed properly - Win 10 (Issue #224)
