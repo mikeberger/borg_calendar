@@ -236,6 +236,10 @@ public class Borg implements SocketServer.SocketHandler {
 		if (!language.equals("")) {
 			Locale.setDefault(Locale.of(language, country));
 		}
+		
+		
+		// check for upgrade issues
+		UpgradeCheck.checkUpgrade();
 
 		// JDBC is only choice for now. In the future, set this based on DBType
 		DBHelper.setFactory(new JdbcDBHelper());
