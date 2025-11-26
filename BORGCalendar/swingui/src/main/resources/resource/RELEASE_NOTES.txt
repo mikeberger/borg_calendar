@@ -1,12 +1,38 @@
 ==================================
-RELEASE NOTES for BORG 1.10
+RELEASE NOTES for BORG 2.0
 ==================================
 
-There are always new text strings that have not been translated. 
-Feel free to mail any translations to mike@mbcsoft.com.
-There is nobody on the project actively updating the translations. Any
-received translations will be posted as patches and then included in
-the next release.
+BORG 2.0 is a major release
+
+Functionality that relied on out of date third party software has been removed.
+
+DO NOT upgrade to BORG 2.0 without reading this.
+
+-----
+
+!!!CALDAV sync is Removed in BORG 2.0. If you rely on Caldav sync, stay on version 1.X!!!
+CALDAV functionality continues to degrade as CALDAV servers receive updates while the third party software used
+by BORG does not.
+
+----
+
+*** DATABASE CHANGES ****
+
+If you use HSQL or H2 as your database you MUST export your database from BORG 1.0, delete your database file, 
+and import your data back into into BORG 2.0 into H2 or Sqlite.
+
+HSQL has been removed from BORG 2.0. BORG 1.X is still runs HSQLDB 1.8 from 2009. HSQL 2.0 (2010) was a complete 
+rewrite of HSQLDB that BORG will not support.
+
+H2 has been upgraded to version 2. There is no automated upgrade from H2 v1 (2019) to H2 v2 provided by the H2 software.
+This is a MANUAL upgrade, which BORG will do when you manually export from BORG 1.X, delete the database and import into BORG 2.0. 
+
+Sqlite users can upgrade normally.
+
+----
+
+The Dorkbox system tray that was being used for Linux has been removed. It had problems that were not being addressed.
+The default Java system tray will be used for Linux even though it is not perfect.
 
 
 LICENSE
