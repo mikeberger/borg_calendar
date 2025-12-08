@@ -24,7 +24,11 @@ public class UpgradeCheck {
 	static private final PrefName CALDAV_SERVER = new PrefName("caldav-server", "");
 
 	public static void main(String args[]) {
-		checkUpgrade();
+		//checkUpgrade();
+		showDialogWithDismissCheckbox(
+				"<html>You are using an H2 database.<br>If your database was created by BORG 1.X, and you have not already done so,<br> you need to export the database using BORG 1.X and then import as an H2 or Sqlite"
+						+ " database in BORG 2.0.<br>" + "</html>",
+						new PrefName("xxx", "false"), false);
 		System.exit(0);
 	}
 

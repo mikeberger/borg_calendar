@@ -28,7 +28,7 @@ public class GDriveTest {
        
 
         Prefs.setPrefRootNode("net/sf/borg/test");
-        Prefs.putPref(PrefName.GOOGLE_DB_FILE_ID, "");
+        Prefs.putPref(PrefName.GOOGLE_DB_FILE_PATH, "");
         Prefs.putPref(PrefName.GOOGLE_TOKEN_DIR, "/home/mike/borgcred/");
         Prefs.putPref(PrefName.GOOGLE_CRED_FILE, "/home/mike/borgcred/xxx.json");
         //Prefs.putPref(PrefName.GOOGLE_SYNC, "true");

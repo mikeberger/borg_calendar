@@ -100,6 +100,7 @@ public class Borg implements SocketServer.SocketHandler {
 		shutdownTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				GDrive.getReference().showUploadDialog();
 				System.exit(0);
 			}
 		}, 3 * 1000, 28 * 60 * 1000);
