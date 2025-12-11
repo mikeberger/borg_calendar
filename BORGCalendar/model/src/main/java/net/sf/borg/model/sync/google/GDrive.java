@@ -125,7 +125,7 @@ public class GDrive {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			Errmsg.getErrorHandler().errmsg(e);
+			showErrorDialog(false, e.getMessage());
 			return;
 		}
 
@@ -141,7 +141,9 @@ public class GDrive {
 
 		} catch (IOException e) {
 			System.err.println("An error occurred: " + e.getMessage());
-			Errmsg.getErrorHandler().errmsg(e);
+			e.printStackTrace();
+			showErrorDialog(false, "<html>" + e.getMessage() + ":" + e.getClass() + "<br/>The download failed. Error: "
+					+ e.getMessage() + "<br/>It is recommended that you exit and fix the issue manually</html>");
 			return;
 		}
 
@@ -165,10 +167,10 @@ public class GDrive {
 			log.info("Database File Mod: " + localDBFile + " " + lastModifiedMillis + " " + lastModifiedDate);
 
 			if (lastModifiedMillis + 1000 * 60 < fileMeta.getModifiedTime().getValue()) {
-				String msg = "<html>Google DB file is newer than local File, sync may be needed<br/>" + 
-						"Google file: " + fileMeta.getName() + " " + gdate + 
-						"<br/>Local file: " + localDBFile + " " + lastModifiedDate + "<br/>" +
-						"Difference: " + (fileMeta.getModifiedTime().getValue() - lastModifiedMillis)/1000 + " seconds</html>";
+				String msg = "<html>Google DB file is newer than local File, sync may be needed<br/>" + "Google file: "
+						+ fileMeta.getName() + " " + gdate + "<br/>Local file: " + localDBFile + " " + lastModifiedDate
+						+ "<br/>" + "Difference: " + (fileMeta.getModifiedTime().getValue() - lastModifiedMillis) / 1000
+						+ " seconds</html>";
 				log.info(msg);
 				showSyncNeededDialog(googleFileId, localDBFile, msg);
 
@@ -194,7 +196,8 @@ public class GDrive {
 
 		} catch (IOException e) {
 			System.err.println("Download failed: " + e.getMessage());
-			// Handle specific IO exceptions
+			showErrorDialog(false, "<html>The download failed. Error: " + e.getMessage()
+					+ "<br/>It is recommended that you exit and fix the issue manually</html>");
 		}
 	}
 
@@ -343,8 +346,16 @@ public class GDrive {
 		}
 		JButton exitButton = new JButton("Yes, Upload", exitIcon);
 		exitButton.addActionListener(e -> {
+			try {
+				GDrive.getReference().uploadFile(googleFilePath, localDBFile);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				showErrorDialog(true, "<html>The upload failed. Error: " + e1.getMessage()
+						+ "<br/>It is recommended that you exit and try again, or fix the issue manually</html>");
+
+			}
 			dialog.dispose();
-			GDrive.getReference().uploadFile(googleFilePath, localDBFile);
 
 		});
 
@@ -383,33 +394,20 @@ public class GDrive {
 
 	}
 
-	private void uploadFile(String googleFilePath, String localPath) {
+	private void uploadFile(String googleFilePath, String localPath) throws Exception {
 		log.info("Uploading file");
 		java.io.File f = new java.io.File(localPath);
 
 		DriveFileManager fileManager = new DriveFileManager(service);
 
 		String googleFileId = null;
-		try {
-			String fileMimeType = "application/octet-stream";
+		String fileMimeType = "application/octet-stream";
 
-			googleFileId = fileManager.findOrCreateFile(googleFilePath, fileMimeType);
+		googleFileId = fileManager.findOrCreateFile(googleFilePath, fileMimeType);
 
-			log.info("Final File ID: " + googleFileId);
+		log.info("Final File ID: " + googleFileId);
 
-		} catch (IOException e) {
-			System.err.println("An error occurred: " + e.getMessage());
-			Errmsg.getErrorHandler().errmsg(e);
-			return;
-		}
-
-		try {
-			updateFileContent(service, googleFileId, f.toPath(), "application/octet-stream");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Errmsg.getErrorHandler().errmsg(e);
-		}
+		updateFileContent(service, googleFileId, f.toPath(), "application/octet-stream");
 
 	}
 
@@ -456,6 +454,83 @@ public class GDrive {
 			System.err.println("An error occurred during file update: " + e);
 			throw e;
 		}
+	}
+
+	public static void showErrorDialog(boolean exitOnly, String msg) {
+
+		// Create the main frame (or just use null for parent if not needed)
+		// We'll use a hidden JFrame as the owner to properly center the dialog.
+		JFrame ownerFrame = new JFrame();
+		ownerFrame.setSize(0, 0); // Keep it invisible
+		ownerFrame.setVisible(false);
+
+		final JDialog dialog = new JDialog(ownerFrame, "Error", true);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+		// 2. Create the main content panel
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(new BorderLayout(20, 20)); // Padding between components
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20)); // Overall padding
+
+		// --- Text Area ---
+		JLabel textLabel = new JLabel(msg);
+
+		JPanel textPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		textPanel.add(textLabel);
+		contentPanel.add(textPanel, BorderLayout.CENTER);
+
+		// --- Button Panel ---
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
+		Icon exitIcon = UIManager.getIcon("OptionPane.informationIcon"); // Using a standard information icon
+		if (exitIcon == null) {
+			log.info("Could not find UIManager information icon, falling back to a dummy icon.");
+			exitIcon = new ImageIcon(); // Fallback
+		}
+		JButton exitButton = new JButton("Exit", exitIcon);
+		exitButton.addActionListener(e -> {
+			dialog.dispose();
+			System.exit(0);
+
+		});
+
+		buttonPanel.add(exitButton);
+
+		if (!exitOnly) {
+
+			// For standard icons, we can try using a built-in one like error/warning icon:
+			Icon stopIcon = UIManager.getIcon("OptionPane.errorIcon");
+			if (stopIcon == null) {
+				// Fallback if the UIManager doesn't provide a suitable icon (less common)
+				log.info("Could not find UIManager icon, falling back to a dummy icon.");
+				stopIcon = new ImageIcon(); // Empty icon
+			}
+
+			JButton proceedButton1 = new JButton("Proceed anyway", stopIcon);
+			// Optional: Set the button to be the default action
+			dialog.getRootPane().setDefaultButton(proceedButton1);
+
+			proceedButton1.addActionListener(e -> {
+				// Get the checkbox state
+				log.info("user chose to proceed");
+
+				// In a real app, you would save the 'shouldHide' state here.
+				dialog.dispose(); // Close the dialog
+			});
+
+			// 5. Add buttons to the button panel
+			buttonPanel.add(proceedButton1);
+		}
+
+		// Add all main components to the dialog
+		dialog.add(contentPanel, BorderLayout.CENTER);
+		dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+		// 6. Configure and show the dialog
+		dialog.pack(); // Size the dialog based on its contents
+		dialog.setLocationRelativeTo(ownerFrame); // Center the dialog on the screen (relative to the invisible owner)
+		dialog.setVisible(true);
+
 	}
 
 }

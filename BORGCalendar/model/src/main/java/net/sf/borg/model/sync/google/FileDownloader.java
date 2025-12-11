@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 /*
  * written by google gemini
@@ -12,7 +13,8 @@ import java.nio.file.Path;
 
 public class FileDownloader {
 	
-	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
 
     /**
      * Downloads a Google Drive file given its ID.
@@ -24,7 +26,7 @@ public class FileDownloader {
      */
     public void downloadFile(Drive driveService, String fileId, Path localFilePath) throws IOException {
         
-        System.out.println("Attempting to download file ID: " + fileId + " to path: " + localFilePath);
+        log.info("Attempting to download file ID: " + fileId + " to path: " + localFilePath);
 
         // Handle Google Docs, Sheets, Slides, etc. (Google native formats)
         // These files cannot be downloaded directly via 'files().get()'. 
@@ -40,11 +42,11 @@ public class FileDownloader {
                 // 2. Download the file content and write it directly to the output stream
                 .executeMediaAndDownloadTo(outputStream); 
 
-            System.out.println("Successfully downloaded file to: " + localFilePath);
+            log.info("Successfully downloaded file to: " + localFilePath);
 
         } catch (HttpResponseException e) {
-            System.err.println("Error downloading file. Status Code: " + e.getStatusCode());
-            System.err.println("Reason: " + e.getStatusMessage());
+            log.info("Error downloading file. Status Code: " + e.getStatusCode());
+            log.info("Reason: " + e.getStatusMessage());
             throw e; // Re-throw the exception for proper handling
         }
     }

@@ -293,11 +293,11 @@ public class Borg implements SocketServer.SocketHandler {
 			// if the DB is on GDrive, check if GDrive is newer and if so, warn that we are
 			// out of sync
 			try {
-				GDrive.getReference().connect();
+				//GDrive.getReference().connect();
 				GDrive.getReference().checkModTimes();
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
-				JOptionPane.showMessageDialog(null, "GDrive check failed--> " + e);
+				GDrive.showErrorDialog(false,e.getMessage());
 			}
 
 			// connect to the db - for now, it is jdbc only
