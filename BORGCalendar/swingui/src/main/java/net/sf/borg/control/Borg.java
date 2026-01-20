@@ -164,8 +164,10 @@ public class Borg implements SocketServer.SocketHandler {
 		}
 
 		// if testing, use alternate prefs so regular prefs can be left alone
-		if (testing)
+		if (testing) {
 			Prefs.setPrefRootNode("net/sf/borg/test");
+			Prefs.putPref(PrefName.SUB_CACHE_FILENAME, ".borg.testcache");
+		}
 
 		// logging
 		ConsoleHandler ch = new ConsoleHandler();
@@ -270,9 +272,13 @@ public class Borg implements SocketServer.SocketHandler {
 					borgdir = new File(home, "Library/BorgCalendar");
 				}
 				// Default:, store as hidden folder inside $HOME
+				else if( testing ) {
+					borgdir = new File(home + "/borgtestdb");
+				}
 				else {
 					borgdir = new File(home + "/.borg_db");
 				}
+				
 				if (!borgdir.exists()) {
 					borgdir.mkdir();
 				}

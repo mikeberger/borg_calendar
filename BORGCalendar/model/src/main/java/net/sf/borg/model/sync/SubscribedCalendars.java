@@ -282,7 +282,7 @@ public class SubscribedCalendars extends Model implements CalendarEntityProvider
 	
 	private String cacheFile() {
 		String home = System.getProperty("user.home", "");
-		return home + "/.borg.subcache";
+		return home + "/" + Prefs.getPref(PrefName.SUB_CACHE_FILENAME);
 	}
 	
 	private void deleteCache() {

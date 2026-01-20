@@ -2,6 +2,8 @@ package net.sf.borg.control;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -62,14 +64,20 @@ public class UpgradeCheck {
 			} else {
 
 				showDialogWithDismissCheckbox(
-						"<html>You are using an H2 database.<br>If your database was created by BORG 1.X, and you have not already done so,<br> you need to export the database using BORG 1.X and then import as an H2 or Sqlite"
-								+ " database in BORG 2.0.<br>" + "</html>",
+						"<html>You are using an H2 database.<br>If your database was created by BORG 1.X, and you have not already converted to 2_0<br><br>RECOMMENDED:" 
+					    + "<ol><li>export the database using BORG 1.X into a backup zip file</li><li>change BORG 1.X to use Sqlite as the database</li>"
+						+ "<li>import your backup zip file into BORG 2_0</li><</ol>"
+					    + "<br>If you truly want to keep H2 as your database:"
+						+ "<ol><li>export the database using BORG 1.X into a backup zip file</li>"
+						+ "<li>go to your database folder and rename or delete your current database file. you cannot import into an existing database</li>"
+						+ "<li>import your backup zip file into BORG 2_0</li></ol><br>Do not proceed if you need to return to BORG 1_X"
+						+ "</html>",
 						DBCHECKDONE, false);
 			}
 		} else if (dbtype.contains("hsql")) {
 			showDialogWithDismissCheckbox(
-					"<html>You are using an HSQLDB database.<br>BORG 2.0 does not support this.<br>You should export the database using BORG 1.X and then import as an H2 or Sqlite"
-							+ " database in BORG 2.0.<br><br> DO NOT PROCEEED<br>" + "</html>",
+					"<html>You are using an HSQLDB database.<br>BORG 2.0 does not support this.<br>You should: <ol><li>export the database using BORG 1.X into a backup zip file</li><li>change BORG 1.X to use Sqlite as the database</li>"
+					+ "<li>import your backup zip file into BORG 1_X</li><li>Run BORG 2_0</li></ol><br><br> DO NOT PROCEEED<br>" + "</html>",
 					DBCHECKDONE, true);
 		} else
 			Prefs.putPref(DBCHECKDONE, "true");
@@ -93,8 +101,16 @@ public class UpgradeCheck {
 		ownerFrame.setSize(0, 0); // Keep it invisible
 		ownerFrame.setVisible(false);
 
+
 		final JDialog dialog = new JDialog(ownerFrame, "Upgrade Warning", true);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		
+		dialog.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		        System.exit(0); // Force the application to close
+		    }
+		});
 
 		// 2. Create the main content panel
 		JPanel contentPanel = new JPanel();
