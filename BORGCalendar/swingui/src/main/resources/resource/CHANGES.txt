@@ -1,3 +1,12 @@
+BORG 1.10.07
+------------
+Add ability to export all appts ICS files by year - for manageable importing into google or other calendars
+Show week number in week view (feature request) (Issue #235)
+Next Todo occurrence marked as done on month view, but not on Todo list (Issue #227)
+Import from backup XML does not work for Sqlite databases since 1.10.05 #233
+subtasks syncing to google on the wrong day (Issue #234)
+Update 3pp versions
+
 BORG 1.10.06
 ------------
 Remove the default JGoodies Look and Feel - Action menu not displayed properly - Win 10 (Issue #224)
