@@ -21,7 +21,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -347,7 +349,40 @@ public class GDrive {
 		JButton exitButton = new JButton("Yes, Upload", exitIcon);
 		exitButton.addActionListener(e -> {
 			try {
-				GDrive.getReference().uploadFile(googleFilePath, localDBFile);
+
+				JDialog loadingDialog = new JDialog(ownerFrame, "Please Wait", true);
+				loadingDialog.add(new JLabel("Uploading... Please wait."), BorderLayout.CENTER);
+				loadingDialog.setSize(250, 100);
+				loadingDialog.setLocationRelativeTo(ownerFrame);
+				loadingDialog.setModal(true);
+
+				// 2. Create the SwingWorker
+				SwingWorker<Void, Void> worker = new SwingWorker<>() {
+					@Override
+					protected Void doInBackground() throws Exception {
+						
+						GDrive.getReference().uploadFile(googleFilePath, localDBFile);
+						return null;
+					}
+
+					@Override
+					protected void done() {
+						try {
+							get();
+							JOptionPane.showMessageDialog(ownerFrame, "Upload Completed Successfully!");
+						} catch (Exception e1) {
+							showErrorDialog(true, "<html>The upload failed. Error: " + e1.getMessage()
+									+ "<br/>It is recommended that you exit and try again, or fix the issue manually</html>");
+						}
+						loadingDialog.dispose();
+
+
+					}
+				};
+
+				// 4. Start the worker and show the dialog
+				worker.execute();
+				loadingDialog.setVisible(true);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
