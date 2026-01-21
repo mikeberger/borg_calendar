@@ -20,6 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import net.fortuna.ical4j.vcard.VCard;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
+import net.sf.borg.common.LogViewer;
 import net.sf.borg.common.ModalMessageServer;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -348,6 +349,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			@Override
 			protected void done() {
 				ModalMessageServer.getReference().sendMessage("unlock");
+				new LogViewer(GCal.getReference().getLogEntries()).setVisible(true);
 
 			}
 		}
