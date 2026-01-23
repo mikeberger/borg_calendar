@@ -596,15 +596,17 @@ public class GCal {
 
 	private void updateTask(Task t) throws IOException {
 		try {
+			logEntry("Update Google Task: " + t.getTitle());
 			tservice.tasks().update(taskList, t.getId(), t).execute();
 		} catch (Exception e) {
-			logEntry("WARNING: google doesn't know about task: " + t.getId() + " " + t.getTitle() + " try to add...");
+			logEntry(LogEntry.WARN,"WARNING: google doesn't know about task: " + t.getId() + " " + t.getTitle() + " try to add...");
 			addTask(t);
 		}
 	}
 
 	private void removeTask(String id) throws IOException {
-		log.fine("removeTask:" + id);
+		logEntry("Delete Google Task: " + id);
+
 		try {
 			tservice.tasks().delete(taskList, id).execute();
 		} catch (IOException e) {
@@ -622,6 +624,7 @@ public class GCal {
 	}
 
 	private void addTask(Task t) throws IOException {
+		logEntry("Add Google Task: " + t.getTitle());
 		tservice.tasks().insert(taskList, t).execute();
 	}
 
@@ -636,16 +639,18 @@ public class GCal {
 	}
 
 	public void removeEvent(String id) throws IOException {
+		logEntry("Delete Google Event: " + id);
 		service.events().delete(calendarId, id).execute();
 	}
 
 	public void updateEvent(Event ve1) throws IOException {
+		logEntry("Update Google Event: " + ve1.toPrettyString());
 		service.events().update(calendarId, ve1.getId(), ve1).execute();
 	}
 
 	public void addEvent(Event ve1) throws IOException {
 		ve1.setId(null);
-		log.info(ve1.toPrettyString());
+		logEntry("Add Google Event: " + ve1.toPrettyString());
 		service.events().insert(calendarId, ve1).execute();
 	}
 
@@ -779,7 +784,7 @@ public class GCal {
 
 				SyncLog.getReference().setProcessUpdates(false);
 				log.info(" save: " + event);
-				logEntry(" save: " + newap);
+				logEntry("Borg Save: " + newap);
 				AppointmentModel.getReference().saveAppt(newap);
 			} finally {
 				SyncLog.getReference().setProcessUpdates(true);
@@ -807,7 +812,7 @@ public class GCal {
 
 					SyncLog.getReference().setProcessUpdates(false);
 					log.info(" save: " + event);
-					logEntry(" save: " + ap);
+					logEntry(" Borg Save: " + ap);
 					AppointmentModel.getReference().saveAppt(ap);
 				} finally {
 					SyncLog.getReference().setProcessUpdates(true);
@@ -822,7 +827,7 @@ public class GCal {
 
 				SyncLog.getReference().setProcessUpdates(false);
 				log.info(" save: " + event);
-				logEntry(" save: " + newap);
+				logEntry(" Borg Save: " + newap);
 				AppointmentModel.getReference().saveAppt(newap);
 			} finally {
 				SyncLog.getReference().setProcessUpdates(true);
@@ -866,7 +871,7 @@ public class GCal {
 					bt.setUrl(task.toPrettyString());
 					try {
 						SyncLog.getReference().setProcessUpdates(false);
-						logEntry(" save: " + bt);
+						logEntry(" Borg Save: " + bt);
 						TaskModel.getReference().savetask(bt);
 					} finally {
 						SyncLog.getReference().setProcessUpdates(true);
@@ -881,7 +886,7 @@ public class GCal {
 					bt.setUrl(task.toPrettyString());
 					try {
 						SyncLog.getReference().setProcessUpdates(false);
-						logEntry(" save: " + bt);
+						logEntry(" Borg Save: " + bt);
 						TaskModel.getReference().saveSubTask(bt);
 					} finally {
 						SyncLog.getReference().setProcessUpdates(true);
@@ -894,7 +899,7 @@ public class GCal {
 			serverUids.add(uid);
 			Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 			if (ap == null) {
-				logEntry(" ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
+				logEntry(LogEntry.WARN," ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
 				return 0;
 			}
 
@@ -904,6 +909,8 @@ public class GCal {
 				try {
 					SyncLog.getReference().setProcessUpdates(false);
 					log.info(" save: " + ap);
+					logEntry(" Borg Update URL: " + ap.getText());
+
 					AppointmentModel.getReference().saveAppt(ap);
 				} finally {
 					SyncLog.getReference().setProcessUpdates(true);
@@ -915,7 +922,7 @@ public class GCal {
 
 			if (task.getStatus().equals("completed")) {
 				// do_todo
-				logEntry(" do_todo: " + ap);
+				logEntry(" BORG do_todo: " + ap);
 				AppointmentModel.getReference().do_todo(ap.getKey(), false);
 				return 1;
 			}
