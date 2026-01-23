@@ -311,6 +311,28 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		});
 		gcalmenu.add(guns);
+		
+		JMenuItem forceDlMI = new JMenuItem("Force DB Download on Restart");
+		forceDlMI.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if (!GCal.isSyncing()) {
+						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					 
+					Prefs.putPref(PrefName.GOOGLE_DB_FORCE_DOWNLOAD, "true");
+
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+		gcalmenu.add(forceDlMI);
+
 
 		m.add(gcalmenu);
 

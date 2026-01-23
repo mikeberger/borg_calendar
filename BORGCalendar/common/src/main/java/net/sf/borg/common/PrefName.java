@@ -292,7 +292,7 @@ public class PrefName {
 	public static final PrefName GOOGLE_SUBSCRIBED = new PrefName("google_subscribed", "");
 	public static final PrefName GOOGLE_DB_FILE_PATH = new PrefName("google_db_file_path", "");
 	public static final PrefName SUB_CACHE_FILENAME = new PrefName("sub_cache_file_name", ".borg.subcache");
-
+	public static final PrefName GOOGLE_DB_FORCE_DOWNLOAD = new PrefName("google_db_force_dl", "false");
 
 
 

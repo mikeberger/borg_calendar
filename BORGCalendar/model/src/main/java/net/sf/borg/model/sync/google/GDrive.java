@@ -144,7 +144,7 @@ public class GDrive {
 		} catch (IOException e) {
 			System.err.println("An error occurred: " + e.getMessage());
 			e.printStackTrace();
-			showErrorDialog(false, "<html>" + e.getMessage() + ":" + e.getClass() + "<br/>The download failed. Error: "
+			showErrorDialog(false, "<html>" + e.getMessage() + ":" + e.getClass() + "<br/>Accessing the google file failed, Error: "
 					+ e.getMessage() + "<br/>It is recommended that you exit and fix the issue manually</html>");
 			return;
 		}
@@ -175,12 +175,23 @@ public class GDrive {
 						+ " seconds</html>";
 				log.info(msg);
 				showSyncNeededDialog(googleFileId, localDBFile, msg);
+				Prefs.putPref(PrefName.GOOGLE_DB_FORCE_DOWNLOAD, "false");
 
+
+			}else if( Prefs.getBoolPref(PrefName.GOOGLE_DB_FORCE_DOWNLOAD)) {
+				String msg = "<html>You requested to download the google DB file<br/>" + "Google file: "
+						+ fileMeta.getName() + " " + gdate + "<br/>Local file: " + localDBFile + " " + lastModifiedDate
+						+ "</html>";
+				log.info(msg);
+				showSyncNeededDialog(googleFileId, localDBFile, msg);
+				Prefs.putPref(PrefName.GOOGLE_DB_FORCE_DOWNLOAD, "false");
 			}
 
 		} else {
 			log.warning(localDBFile + "Not Found");
 		}
+		
+		
 
 	}
 
