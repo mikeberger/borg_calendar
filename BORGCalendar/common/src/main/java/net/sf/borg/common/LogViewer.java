@@ -35,6 +35,10 @@ public class LogViewer extends JFrame {
 	                    c.setBackground(new Color(255, 210, 210)); // Soft Red
 	                    c.setForeground(Color.RED.darker());
 	                }
+	                case "UPDATE" -> {
+	                    c.setBackground(new Color(210, 255, 210)); // Soft Green
+	                    c.setForeground(Color.GREEN.darker());
+	                }
 	                case "WARN" -> {
 	                    c.setBackground(new Color(255, 245, 200)); // Soft Yellow
 	                    c.setForeground(new Color(150, 100, 0));  // Dark Orange/Brown
@@ -55,6 +59,7 @@ public class LogViewer extends JFrame {
 	
 	public static class LogEntry {
 		public final static String INFO = "INFO";
+		public final static String UPDATE = "UPDATE";
 		public final static String WARN = "WARN";
 		public final static String ERROR = "ERROR";
 		private String type; // INFO, WARN, ERROR
@@ -136,7 +141,7 @@ public class LogViewer extends JFrame {
             new LogEntry("INFO", "System started successfully at 09:00 AM."),
             new LogEntry("WARN", "Memory usage exceeding 80% threshold."),
             new LogEntry("ERROR", "NullPointerException in DatabaseConnector.java:42. Connection failed."),
-            new LogEntry("INFO", "User 'Admin' logged in from IP 192.168.1.1.")
+            new LogEntry("UPDATE", "User 'Admin' logged in from IP 192.168.1.1.")
         );
 
         SwingUtilities.invokeLater(() -> {

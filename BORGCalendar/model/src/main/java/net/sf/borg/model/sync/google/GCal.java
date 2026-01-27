@@ -401,7 +401,7 @@ public class GCal {
 											Event comp = getEvent(id);
 
 											if (comp != null) {
-												logEntry(" removeEvent: " + comp);
+												logEntry(LogEntry.UPDATE," removeEvent: " + comp);
 												try {
 													removeEvent(comp.getId());
 												} catch (IOException e) {
@@ -596,7 +596,7 @@ public class GCal {
 
 	private void updateTask(Task t) throws IOException {
 		try {
-			logEntry("Update Google Task: " + t.getTitle());
+			logEntry(LogEntry.UPDATE,"Update Google Task:" + t.toPrettyString());
 			tservice.tasks().update(taskList, t.getId(), t).execute();
 		} catch (Exception e) {
 			logEntry(LogEntry.WARN,"WARNING: google doesn't know about task: " + t.getId() + " " + t.getTitle() + " try to add...");
@@ -605,9 +605,9 @@ public class GCal {
 	}
 
 	private void removeTask(String id) throws IOException {
-		logEntry("Delete Google Task: " + id);
-
+		log.fine("removeTask:" + id);
 		try {
+			logEntry(LogEntry.UPDATE,"Delete Google Task:" + id);
 			tservice.tasks().delete(taskList, id).execute();
 		} catch (IOException e) {
 			if (e instanceof GoogleJsonResponseException ge) {
@@ -624,7 +624,7 @@ public class GCal {
 	}
 
 	private void addTask(Task t) throws IOException {
-		logEntry("Add Google Task: " + t.getTitle());
+		logEntry(LogEntry.UPDATE,"Add Google Task:" + t.toPrettyString());
 		tservice.tasks().insert(taskList, t).execute();
 	}
 
@@ -639,18 +639,19 @@ public class GCal {
 	}
 
 	public void removeEvent(String id) throws IOException {
-		logEntry("Delete Google Event: " + id);
+		logEntry(LogEntry.UPDATE,"Remove Google Event:" + id);
 		service.events().delete(calendarId, id).execute();
 	}
 
 	public void updateEvent(Event ve1) throws IOException {
-		logEntry("Update Google Event: " + ve1.toPrettyString());
+		logEntry(LogEntry.UPDATE,"Update Google Event:" + ve1.toPrettyString());
 		service.events().update(calendarId, ve1.getId(), ve1).execute();
 	}
 
 	public void addEvent(Event ve1) throws IOException {
 		ve1.setId(null);
-		logEntry("Add Google Event: " + ve1.toPrettyString());
+		log.info(ve1.toPrettyString());
+		logEntry(LogEntry.UPDATE,"Add Google Event:" + ve1.toPrettyString());
 		service.events().insert(calendarId, ve1).execute();
 	}
 
@@ -730,7 +731,7 @@ public class GCal {
 					logEntry(LogEntry.WARN,"*** Todo not found on google - WILL LEAVE IN BORG: \n" + ap + " \n*** Use Sync with cleanup option to delete or handle manually");
 
 				} else {
-					logEntry("Appointment Not Found on server - Deleting: " + ap);
+					logEntry(LogEntry.UPDATE,"Appointment Not Found on server - Deleting: " + ap);
 					SyncLog.getReference().setProcessUpdates(false);
 					AppointmentModel.getReference().delAppt(ap.getKey());
 					SyncLog.getReference().setProcessUpdates(true);
@@ -784,7 +785,7 @@ public class GCal {
 
 				SyncLog.getReference().setProcessUpdates(false);
 				log.info(" save: " + event);
-				logEntry("Borg Save: " + newap);
+				logEntry(LogEntry.UPDATE," save borg appt: " + newap);
 				AppointmentModel.getReference().saveAppt(newap);
 			} finally {
 				SyncLog.getReference().setProcessUpdates(true);
@@ -812,7 +813,7 @@ public class GCal {
 
 					SyncLog.getReference().setProcessUpdates(false);
 					log.info(" save: " + event);
-					logEntry(" Borg Save: " + ap);
+					logEntry(LogEntry.UPDATE," save borg appt: " + ap);
 					AppointmentModel.getReference().saveAppt(ap);
 				} finally {
 					SyncLog.getReference().setProcessUpdates(true);
@@ -827,7 +828,7 @@ public class GCal {
 
 				SyncLog.getReference().setProcessUpdates(false);
 				log.info(" save: " + event);
-				logEntry(" Borg Save: " + newap);
+				logEntry(LogEntry.UPDATE," save borg appt: " + newap);
 				AppointmentModel.getReference().saveAppt(newap);
 			} finally {
 				SyncLog.getReference().setProcessUpdates(true);
@@ -871,7 +872,7 @@ public class GCal {
 					bt.setUrl(task.toPrettyString());
 					try {
 						SyncLog.getReference().setProcessUpdates(false);
-						logEntry(" Borg Save: " + bt);
+						logEntry(LogEntry.UPDATE," save: " + bt);
 						TaskModel.getReference().savetask(bt);
 					} finally {
 						SyncLog.getReference().setProcessUpdates(true);
@@ -886,7 +887,7 @@ public class GCal {
 					bt.setUrl(task.toPrettyString());
 					try {
 						SyncLog.getReference().setProcessUpdates(false);
-						logEntry(" Borg Save: " + bt);
+						logEntry(LogEntry.UPDATE," save: " + bt);
 						TaskModel.getReference().saveSubTask(bt);
 					} finally {
 						SyncLog.getReference().setProcessUpdates(true);
@@ -899,7 +900,7 @@ public class GCal {
 			serverUids.add(uid);
 			Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 			if (ap == null) {
-				logEntry(LogEntry.WARN," ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
+				logEntry(LogEntry.WARN," ***WARNING*** could not find appt with UID: " + uid + " ignoring google task ....");
 				return 0;
 			}
 
@@ -922,7 +923,7 @@ public class GCal {
 
 			if (task.getStatus().equals("completed")) {
 				// do_todo
-				logEntry(" BORG do_todo: " + ap);
+				logEntry(LogEntry.UPDATE," do_todo: " + ap);
 				AppointmentModel.getReference().do_todo(ap.getKey(), false);
 				return 1;
 			}
@@ -993,7 +994,7 @@ public class GCal {
 			}
 			AppointmentModel.getReference().saveAppt(ap);
 			serverUids.add(ap.getUid());
-			logEntry(" save from google-created task: " + ap);
+			logEntry(LogEntry.UPDATE," save from google-created task: " + ap);
 			return 1;
 
 		}
