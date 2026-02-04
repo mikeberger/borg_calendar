@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -45,6 +46,7 @@ import com.google.gson.stream.MalformedJsonException;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 
 /*
@@ -577,6 +579,97 @@ public class GDrive {
 		dialog.setLocationRelativeTo(ownerFrame); // Center the dialog on the screen (relative to the invisible owner)
 		dialog.setVisible(true);
 
+	}
+	
+	/*
+	 * upload the db to google drive while the db connection is open
+	 * implemented for sqlite only using the VACUUM command
+	 */
+	public void vacuumAndUpload() {
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		if( !"sqlite".equals(dbtype)) {
+			Errmsg.getErrorHandler().notice("Only Sqlite databases can be uploaded while BORG is running");
+			return;
+		}
+		
+		String googleFilePath = Prefs.getPref(PrefName.GOOGLE_DB_FILE_PATH);
+		if (googleFilePath == null || googleFilePath.isEmpty()) {
+			Errmsg.getErrorHandler().notice("Google File Path is not set");
+			return;
+		}
+		
+		String dbfolder = Prefs.getPref(PrefName.SQLITEDIR);
+		String newDBFilename = "borg_backup.db";
+		String fullpath = dbfolder + "/" + newDBFilename;
+		
+		try {
+			Files.delete(Paths.get(fullpath));
+		} catch (IOException e) {
+			
+		}
+
+		// vacuum the db
+		try {
+			
+
+			DBHelper.getController().beginTransaction();
+			DBHelper.getController().execQuery("VACUUM INTO '" + fullpath + "'");
+			DBHelper.getController().commitTransaction();
+
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+			return;
+		}
+		
+		JFrame ownerFrame = new JFrame();
+		ownerFrame.setSize(0, 0); // Keep it invisible
+		ownerFrame.setVisible(false);
+		JDialog loadingDialog = new JDialog(ownerFrame, "Please Wait", true);
+		loadingDialog.add(new JLabel("Uploading... Please wait."), BorderLayout.CENTER);
+		loadingDialog.setSize(250, 100);
+		loadingDialog.setLocationRelativeTo(ownerFrame);
+		loadingDialog.setModal(true);
+		
+		try {
+			
+
+			// 2. Create the SwingWorker
+			SwingWorker<Void, Void> worker = new SwingWorker<>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					
+					GDrive.getReference().uploadFile(googleFilePath, fullpath);
+					return null;
+				}
+
+				@Override
+				protected void done() {
+					try {
+						get();
+						JOptionPane.showMessageDialog(ownerFrame, "Upload Completed Successfully!");
+					} catch (Exception e1) {
+						showErrorDialog(true, "<html>The upload failed. Error: " + e1.getMessage()
+								+ "<br/>It is recommended that you exit and try again, or fix the issue manually</html>");
+					}
+					loadingDialog.dispose();
+
+
+				}
+			};
+
+			// 4. Start the worker and show the dialog
+			worker.execute();
+			loadingDialog.setVisible(true);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			showErrorDialog(true, "<html>The upload failed. Error: " + e1.getMessage()
+					+ "<br/>It is recommended that you exit and try again, or fix the issue manually</html>");
+
+		}
+		loadingDialog.dispose();
+		ownerFrame.dispose();
+		
 	}
 
 }

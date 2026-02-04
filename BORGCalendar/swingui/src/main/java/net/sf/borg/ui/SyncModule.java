@@ -31,6 +31,7 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.sync.SyncLog;
 import net.sf.borg.model.sync.google.GCal;
+import net.sf.borg.model.sync.google.GDrive;
 import net.sf.borg.model.sync.ical.CardDav;
 import net.sf.borg.model.sync.ical.ICal;
 import net.sf.borg.ui.MultiView.Module;
@@ -332,6 +333,21 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		});
 		gcalmenu.add(forceDlMI);
+		
+		JMenuItem uploadDBMI = new JMenuItem("Upload DB");
+		uploadDBMI.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					GDrive.getReference().vacuumAndUpload();
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+		gcalmenu.add(uploadDBMI);
+
 
 
 		m.add(gcalmenu);
