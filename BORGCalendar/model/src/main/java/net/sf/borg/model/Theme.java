@@ -66,6 +66,7 @@ public class Theme {
 	// giving the default theme a name is easier than having it empty.
 	private final static String DEFAULT_THEME_NAME = "BORG";
 	private final static String DEFAULT_DARK_THEME_NAME = "BORG_DARK";
+	private final static String DEFAULT_BLACK_THEME_NAME = "BORG_BLACK";
 
 	// theme cache
 	private static Map<String, Theme> themes = null;
@@ -75,8 +76,8 @@ public class Theme {
 	}
 
 	/**
-	 * class that listens for an import of the options and triggers a sync of
-	 * the themes cache
+	 * class that listens for an import of the options and triggers a sync of the
+	 * themes cache
 	 *
 	 */
 	private static class OptionListener implements Model.Listener {
@@ -93,24 +94,25 @@ public class Theme {
 	}
 
 	/**
-	 * convert a string containing a color to an integer 
-	 * code calling this method should handle the value "strike" outside of this method if needed
+	 * convert a string containing a color to an integer code calling this method
+	 * should handle the value "strike" outside of this method if needed
 	 */
 	public int colorFromString(String s) {
 
-		if( s == null ) return getTextColor4();
+		if (s == null)
+			return getTextColor4();
 
 		// includes legacy mappings of color strings to use tunable colors
 		// should only be in this class
 		if (s.equals("red") || s.equals(COLOR1)) {
 			return getTextColor1();
-		} else if (s.equals("blue")|| s.equals(COLOR2)) {
+		} else if (s.equals("blue") || s.equals(COLOR2)) {
 			return getTextColor2();
-		} else if (s.equals("green")|| s.equals(COLOR3)) {
+		} else if (s.equals("green") || s.equals(COLOR3)) {
 			return getTextColor3();
-		} else if (s.equals("black")|| s.equals(COLOR4)) {
+		} else if (s.equals("black") || s.equals(COLOR4)) {
 			return getTextColor4();
-		} else if (s.equals("white")|| s.equals(COLOR5)) {
+		} else if (s.equals("white") || s.equals(COLOR5)) {
 			return getTextColor5();
 		} else if (s.equals(TASKCOLOR)) {
 			return getTaskTextColor();
@@ -119,7 +121,7 @@ public class Theme {
 		} else if (s.equals(HOLIDAYCOLOR)) {
 			return getHolidayTextColor();
 		}
-		
+
 		// if string is a number, return it
 		try {
 			Integer i = Integer.parseInt(s);
@@ -133,16 +135,16 @@ public class Theme {
 	/**
 	 * delete a theme by name
 	 * 
-	 * @param name
-	 *            the Theme name
+	 * @param name the Theme name
 	 * @throws Exception
 	 */
 	public static void delete(String name) throws Exception {
 		if (name == null || name.isEmpty())
 			return;
 
-		// do not allow the default theme to be deleted
-		if (name.equals(DEFAULT_THEME_NAME))
+		// do not allow the default themes to be deleted
+		if (name.equals(DEFAULT_THEME_NAME) || name.equals(DEFAULT_BLACK_THEME_NAME)
+				|| name.equals(DEFAULT_DARK_THEME_NAME))
 			return;
 
 		// delete from cache
@@ -180,8 +182,7 @@ public class Theme {
 	/**
 	 * map the theme name to a persistence key for a theme
 	 * 
-	 * @param name
-	 *            - the name
+	 * @param name - the name
 	 * @return - the persistence key
 	 */
 	private static String getKey(String name) {
@@ -191,8 +192,7 @@ public class Theme {
 	/**
 	 * find a Theme by name
 	 * 
-	 * @param name
-	 *            the Theme name
+	 * @param name the Theme name
 	 * @return the Theme or null
 	 */
 	public static final Theme getTheme(String name) {
@@ -211,8 +211,8 @@ public class Theme {
 	}
 
 	/**
-	 * sync with the db. called if the options table is changed by something
-	 * other than the UI (such as import)
+	 * sync with the db. called if the options table is changed by something other
+	 * than the UI (such as import)
 	 */
 	public static void sync() {
 		loadThemes();
@@ -222,8 +222,8 @@ public class Theme {
 	}
 
 	/**
-	 * load all themes from the database into the cache. should only be called
-	 * to initialized the cache once
+	 * load all themes from the database into the cache. should only be called to
+	 * initialized the cache once
 	 */
 	private static void loadThemes() {
 
@@ -256,31 +256,11 @@ public class Theme {
 				Errmsg.getErrorHandler().errmsg(e);
 			}
 			Prefs.putPref(CURRENT_THEME, DEFAULT_THEME_NAME);
-			
+
 		}
 		if (themes.get(DEFAULT_DARK_THEME_NAME) == null) {
-			Theme t = new Theme();
-			t.birthdayTextColor = -13395457;
-			t.defaultBg = -12632257;
-			t.defaultFg = -3355444;
-			t.halfdayBg = -13421824;
-			t.holidayBg = -13421773;
-			t.holidayTextColor = -10066432;
-			t.reminderBg = -16777216;
-			t.stripeBg = -13421773;
-			t.taskTextColor = -16711681;
-			t.textColor1 = -52429;
-			t.textColor2 = -16724788;
-			t.textColor3 = -10027162;
-			t.textColor4 = -3355444;
-			t.textColor5 = -6710887;
-			t.todayBg = -16751002;
-			t.vacationBg = -16764160;
-			t.weekdayBg = -12632257;
-			t.weekendBg = -12632257;
-			t.trayIconBg = -13421773;
-			t.trayIconFg = -3355444;
-			
+			Theme t = getDefaults(DEFAULT_DARK_THEME_NAME);
+
 			t.setName(DEFAULT_DARK_THEME_NAME);
 			themes.put(t.getName(), t);
 			try {
@@ -288,7 +268,19 @@ public class Theme {
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 			}
-			
+		}
+
+		if (themes.get(DEFAULT_BLACK_THEME_NAME) == null) {
+			Theme t = getDefaults(DEFAULT_BLACK_THEME_NAME);
+
+			t.setName(DEFAULT_BLACK_THEME_NAME);
+			themes.put(t.getName(), t);
+			try {
+				t.save();
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+
 		}
 
 	}
@@ -296,8 +288,7 @@ public class Theme {
 	/**
 	 * Set a theme to be the active theme
 	 * 
-	 * @param t
-	 *            the Theme
+	 * @param t the Theme
 	 * @throws Warning
 	 * @throws Exception
 	 */
@@ -335,6 +326,7 @@ public class Theme {
 	private int weekendBg = 255 * 256 * 256 + 225 * 256 + 196;
 	private int trayIconBg = 255 * 256 * 256 + 255 * 256 + 255;
 	private int trayIconFg = 153;
+	private boolean pills = true;
 
 	/**
 	 * save the current theme in the database
@@ -362,4 +354,59 @@ public class Theme {
 		OptionModel.getReference().setOption(option);
 	}
 
+	public static Theme getDefaults(String name) {
+		if (DEFAULT_DARK_THEME_NAME.equals(name)) {
+			Theme t = new Theme();
+			t.birthdayTextColor = -13395457;
+			t.defaultBg = -12632257;
+			t.defaultFg = -3355444;
+			t.halfdayBg = -13421824;
+			t.holidayBg = -13421773;
+			t.holidayTextColor = -10066432;
+			t.reminderBg = -16777216;
+			t.stripeBg = -13421773;
+			t.taskTextColor = -16711681;
+			t.textColor1 = -52429;
+			t.textColor2 = -16724788;
+			t.textColor3 = -10027162;
+			t.textColor4 = -3355444;
+			t.textColor5 = -6710887;
+			t.todayBg = -16751002;
+			t.vacationBg = -16764160;
+			t.weekdayBg = -12632257;
+			t.weekendBg = -12632257;
+			t.trayIconBg = -13421773;
+			t.trayIconFg = -3355444;
+			t.pills = true;
+			return t;
+		}
+		else if( DEFAULT_BLACK_THEME_NAME.equals(name)) {
+			Theme t = new Theme();
+			t.birthdayTextColor = -13395457;
+			t.defaultBg = 0;
+			t.defaultFg = -3355444;
+			t.halfdayBg = 0;
+			t.holidayBg = 0;
+			t.holidayTextColor = -10066432;
+			t.reminderBg = 0;
+			t.stripeBg = -13421773;
+			t.taskTextColor = -16711681;
+			t.textColor1 = -52429;
+			t.textColor2 = -16724788;
+			t.textColor3 = -10027162;
+			t.textColor4 = -3355444;
+			t.textColor5 = -6710887;
+			t.todayBg = -16751002;
+			t.vacationBg = 0;
+			t.weekdayBg = 0;
+			t.weekendBg = 0;
+			t.trayIconBg = -13421773;
+			t.trayIconFg = -3355444;
+			t.pills = true;
+			return t;
+		}
+		
+		return new Theme();
+
+	}
 }

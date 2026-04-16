@@ -19,6 +19,7 @@
 package net.sf.borg.ui.calendar;
 
 import java.awt.Color;
+import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -223,19 +224,37 @@ public class NoteBox extends Box implements Box.Draggable {
 		stmap.put(TextAttribute.FONT, sm_font);
 
 		Theme t = Theme.getCurrentTheme();
+		
+		// Draw oval pill background
+		int cornerRadius = bounds.height / 2;  // Creates pill-shaped ends
+
+		g2.setColor(new Color(t.colorFromString(getTextColor())));
+
+		// Only draw background if not strike-through
+		if (!getTextColor().equals("strike") && t.isPills()) {
+			// Apply slight transparency for better visual appeal
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+			g2.fillRoundRect(bounds.x + 1, bounds.y + 4, bounds.width - 2, bounds.height, 
+							cornerRadius, cornerRadius);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		}
 
 		// use white background to highlight selected box
 		if (isSelected == true) {
 			g2.setColor(new Color(t.getDefaultFg()));
-			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+			g2.fillRoundRect(bounds.x + 1, bounds.y + 4, bounds.width - 2, bounds.height, 
+							cornerRadius, cornerRadius);
 		}
 
-		// default is black text
-		g2.setColor(Color.BLACK);
+		
+		// default
+		g2.setColor(new Color(t.getDefaultFg()));
 
 		// set alternate text color if needed
 		if (getTextColor().equals("strike")) {
 
+			if( isSelected == true)
+				g2.setColor(new Color(t.getDefaultBg()));
 			AttributedString as = new AttributedString(getText(), stmap);
 			g2.drawString(as.getIterator(), bounds.x + 2, bounds.y
 					+ smfontHeight);

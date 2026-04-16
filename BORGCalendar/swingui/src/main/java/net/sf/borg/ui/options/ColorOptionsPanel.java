@@ -82,6 +82,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 	private final JCheckBox cb_ucs_marktodo;
 	private final JCheckBox cb_ucs_ontodo;
 	private final JCheckBox gradientApptBox = new JCheckBox();
+	private final JCheckBox pillBox = new JCheckBox();
 	private final JTextField tf_ucs_marker;
 
 	private final JComboBox<String> themeChooser = new JComboBox<String>();
@@ -177,7 +178,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		JPanel colorPanel = new JPanel();
-		colorPanel.setLayout(new GridLayout(12, 2));
+		colorPanel.setLayout(new GridLayout(13, 2));
 
 		cb_ucs_ontodo = new JCheckBox();
 		ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
@@ -230,7 +231,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		btn_ucs_restore.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Theme t = new Theme();
+				Theme t = Theme.getDefaults((String)themeChooser.getSelectedItem());
 
 				btn_ucs_red.setColorProperty(new Color(t.getTextColor1()));
 				btn_ucs_blue.setColorProperty(new Color(t.getTextColor2()));
@@ -276,6 +277,8 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		colorPanel.add(btn_tray_fg);
 		colorPanel.add(btn_tray_bg);
 		colorPanel.add(btn_ucs_reminderBg);
+		pillBox.setText(Resource.getResourceString("draw_background_pills"));
+		colorPanel.add(pillBox);
 		colorPanel.add(btn_ucs_restore);
 		colorPanel.add(cb_ucs_ontodo);
 
@@ -287,6 +290,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 
 		gradientApptBox.setText(Resource.getResourceString("gradient_appts"));
 		colorPanel.add(gradientApptBox);
+		
 
 		this.add(colorPanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH, 1.0, 1.0));
@@ -403,6 +407,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		t.setTrayIconFg(btn_tray_fg.getColorProperty().getRGB());
 		t.setTrayIconBg(btn_tray_bg.getColorProperty().getRGB());
 		t.setReminderBg(btn_ucs_reminderBg.getColorProperty().getRGB());
+		t.setPills(pillBox.isSelected());
 
 	}
 
@@ -435,6 +440,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		btn_tray_fg.setColorProperty(new Color(t.getTrayIconFg()));
 		btn_tray_bg.setColorProperty(new Color(t.getTrayIconBg()));
 		btn_ucs_reminderBg.setColorProperty(new Color(t.getReminderBg()));
+		pillBox.setSelected(t.isPills());
 	}
 
 	@Override

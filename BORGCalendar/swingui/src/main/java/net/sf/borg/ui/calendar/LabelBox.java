@@ -24,8 +24,9 @@ import net.sf.borg.model.entity.LabelEntity;
 import java.awt.*;
 
 /**
- * A Box that shows a text label on the calendar. It cannot be edited, moved, or deleted.
- * It is associated with a label entity, such as a hard-coded holiday or birthday
+ * A Box that shows a text label on the calendar. It cannot be edited, moved, or
+ * deleted. It is associated with a label entity, such as a hard-coded holiday
+ * or birthday
  */
 class LabelBox extends Box {
 
@@ -33,12 +34,13 @@ class LabelBox extends Box {
 	 * the model entity that the LabelBox is showing
 	 */
 	private LabelEntity entity = null;
-	
+
 	/**
-	 * constructor 
-	 * @param ap calendar entity associated with this box
+	 * constructor
+	 * 
+	 * @param ap     calendar entity associated with this box
 	 * @param bounds bounds
-	 * @param clip clip
+	 * @param clip   clip
 	 */
 	public LabelBox(LabelEntity ap, Rectangle bounds, Rectangle clip) {
 		super(bounds, clip);
@@ -55,9 +57,19 @@ class LabelBox extends Box {
 		int smfontHeight = g2.getFontMetrics().getHeight();
 		Theme t = Theme.getCurrentTheme();
 
+		int cornerRadius = bounds.height - 2; // Creates pill-shaped ends
+
+		// Draw colored pill background
+		if (t.isPills()) {
+			g2.setColor(new Color(t.colorFromString(getTextColor())));
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+			g2.fillRoundRect(bounds.x, bounds.y + 4, bounds.width, bounds.height, cornerRadius, cornerRadius);
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		}
+
 		if (isSelected == true) {
 			g2.setColor(new Color(t.getDefaultFg()));
-			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+			g2.fillRoundRect(bounds.x, bounds.y + 4, bounds.width, bounds.height, cornerRadius, cornerRadius);
 		}
 
 		if (isSelected == true)
@@ -72,7 +84,6 @@ class LabelBox extends Box {
 
 	}
 
-
 	@Override
 	public String getText() {
 		return entity.getText();
@@ -80,6 +91,7 @@ class LabelBox extends Box {
 
 	/**
 	 * get the text color of the associated entity
+	 * 
 	 * @return the text color or null
 	 */
 	private String getTextColor() {
@@ -90,8 +102,8 @@ class LabelBox extends Box {
 	}
 
 	@Override
-	public void onClick(){
-	  //empty
+	public void onClick() {
+		// empty
 	}
 
 	@Override
