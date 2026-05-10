@@ -44,10 +44,12 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Theme;
+import net.sf.borg.model.sync.google.GDrive;
 import net.sf.borg.ui.TrayIconProxy.TrayIconProxyI;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.popup.ReminderManager;
@@ -72,6 +74,7 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 	/** the TrayIcon */
 	private TrayIcon trayIcon = null;
 	private TrayIcon syncIcon = null;
+	private TrayIcon uploadIcon = null; 
 
 	/**
 	 * initalize the system tray
@@ -182,6 +185,25 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 		SystemTray tray = SystemTray.getSystemTray();
 		tray.add(trayIcon);
 
+		uploadIcon = new TrayIcon(
+				Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Up16.gif")));
+
+		PopupMenu uploadMenu = new PopupMenu();
+		MenuItem uploadItem = new MenuItem();
+		uploadItem.setLabel("Upload Database");
+		uploadItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Trigger upload action
+				try {
+					GDrive.getReference().vacuumAndUpload();
+				} catch (Exception ex) {
+					Errmsg.getErrorHandler().errmsg(ex);
+				}
+			}
+		});
+		uploadMenu.add(uploadItem);
+		uploadIcon.setPopupMenu(uploadMenu);
 		PopupMenu menu = new PopupMenu();
 		MenuItem sitem = new MenuItem();
 		sitem.setLabel(Resource.getResourceString("Sync"));
@@ -295,6 +317,20 @@ public class SunTrayIconProxy implements Prefs.Listener, TrayIconProxyI {
 	public void disableTrayIcon() {
 		SystemTray.getSystemTray().remove(syncIcon);
 
+	}
+	
+	@Override
+	public void enableUploadTrayIcon() {
+		try {
+			SystemTray.getSystemTray().add(uploadIcon);
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void disableUploadTrayIcon() {
+		SystemTray.getSystemTray().remove(uploadIcon);
 	}
 
 }

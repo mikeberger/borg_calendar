@@ -96,12 +96,10 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		JPanel themePanel = new JPanel();
 		themePanel.setLayout(new GridBagLayout());
 
-		themePanel.add(new JLabel(Resource.getResourceString("Theme") + ":"),
-				GridBagConstraintsFactory.create(0, 0));
+		themePanel.add(new JLabel(Resource.getResourceString("Theme") + ":"), GridBagConstraintsFactory.create(0, 0));
 
 		themeChooser.setEditable(false);
-		themePanel.add(themeChooser, GridBagConstraintsFactory.create(1, 0,
-				GridBagConstraints.BOTH, 1.0, 0.0));
+		themePanel.add(themeChooser, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		themeChooser.addActionListener(new ActionListener() {
 
@@ -119,16 +117,14 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		});
 
 		JButton saveButton = new JButton();
-		saveButton.setIcon(IconHelper.getIcon(
-				"/resource/Add16.gif"));
+		saveButton.setIcon(IconHelper.getIcon("/resource/Add16.gif"));
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
 				// create a new theme and store in the db
-				String name = JOptionPane.showInputDialog(Resource
-						.getResourceString("New_Theme_Name"));
+				String name = JOptionPane.showInputDialog(Resource.getResourceString("New_Theme_Name"));
 				if (name == null)
 					return;
 
@@ -155,8 +151,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		themePanel.add(saveButton, GridBagConstraintsFactory.create(2, 0));
 
 		JButton delButton = new JButton();
-		delButton.setIcon(IconHelper.getIcon(
-				"/resource/Delete16.gif"));
+		delButton.setIcon(IconHelper.getIcon("/resource/Delete16.gif"));
 		delButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -174,8 +169,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		});
 		themePanel.add(delButton, GridBagConstraintsFactory.create(3, 0));
 
-		this.add(themePanel,
-				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		this.add(themePanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		JPanel colorPanel = new JPanel();
 		colorPanel.setLayout(new GridLayout(13, 2));
@@ -185,53 +179,32 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		cb_ucs_marktodo = new JCheckBox();
 		ResourceHelper.setText(cb_ucs_marktodo, "ucolortext2");
 		tf_ucs_marker = new JTextField("! ");
-		btn_ucs_red = new ColorChooserButton(
-				Resource.getResourceString("ucolortext4"), Color.WHITE);
-		btn_ucs_blue = new ColorChooserButton(
-				Resource.getResourceString("ucolortext5"), Color.WHITE);
-		btn_ucs_green = new ColorChooserButton(
-				Resource.getResourceString("ucolortext6"), Color.WHITE);
-		btn_ucs_black = new ColorChooserButton(
-				Resource.getResourceString("ucolortext7"), Color.WHITE);
-		btn_ucs_white = new ColorChooserButton(
-				Resource.getResourceString("ucolortext8"), Color.WHITE);
-		btn_ucs_tasks = new ColorChooserButton(
-				Resource.getResourceString("ucolortext9"), Color.WHITE);
-		btn_ucs_holidays = new ColorChooserButton(
-				Resource.getResourceString("ucolortext10"), Color.WHITE);
-		btn_ucs_birthdays = new ColorChooserButton(
-				Resource.getResourceString("ucolortext11"), Color.WHITE);
-		btn_ucs_defaultBg = new ColorChooserButton(
-				Resource.getResourceString("ucolortext12"), Color.WHITE);
-		btn_ucs_defaultFg = new ColorChooserButton(
-				Resource.getResourceString("defaultfg"), Color.WHITE);
-		btn_ucs_holiday = new ColorChooserButton(
-				Resource.getResourceString("ucolortext13"), Color.WHITE);
-		btn_ucs_halfday = new ColorChooserButton(
-				Resource.getResourceString("ucolortext14"), Color.WHITE);
-		btn_ucs_vacation = new ColorChooserButton(
-				Resource.getResourceString("ucolortext15"), Color.WHITE);
-		btn_ucs_today = new ColorChooserButton(
-				Resource.getResourceString("ucolortext16"), Color.WHITE);
-		btn_ucs_weekend = new ColorChooserButton(
-				Resource.getResourceString("ucolortext17"), Color.WHITE);
-		btn_ucs_weekday = new ColorChooserButton(
-				Resource.getResourceString("ucolortext18"), Color.WHITE);
-		btn_ucs_stripe = new ColorChooserButton(
-				Resource.getResourceString("stripecolor"), Color.WHITE);
-		btn_tray_fg = new ColorChooserButton(
-				Resource.getResourceString("tray_fg"), Color.WHITE);
-		btn_tray_bg = new ColorChooserButton(
-				Resource.getResourceString("tray_bg"), Color.WHITE);
-		btn_ucs_reminderBg = new ColorChooserButton(
-				Resource.getResourceString("reminder_bg"), Color.WHITE);
-		JButton btn_ucs_restore = new JButton(
-				Resource.getResourceString("restore_defaults"));
+		btn_ucs_red = new ColorChooserButton(Resource.getResourceString("ucolortext4"), Color.WHITE);
+		btn_ucs_blue = new ColorChooserButton(Resource.getResourceString("ucolortext5"), Color.WHITE);
+		btn_ucs_green = new ColorChooserButton(Resource.getResourceString("ucolortext6"), Color.WHITE);
+		btn_ucs_black = new ColorChooserButton(Resource.getResourceString("ucolortext7"), Color.WHITE);
+		btn_ucs_white = new ColorChooserButton(Resource.getResourceString("ucolortext8"), Color.WHITE);
+		btn_ucs_tasks = new ColorChooserButton(Resource.getResourceString("ucolortext9"), Color.WHITE);
+		btn_ucs_holidays = new ColorChooserButton(Resource.getResourceString("ucolortext10"), Color.WHITE);
+		btn_ucs_birthdays = new ColorChooserButton(Resource.getResourceString("ucolortext11"), Color.WHITE);
+		btn_ucs_defaultBg = new ColorChooserButton(Resource.getResourceString("ucolortext12"), Color.WHITE);
+		btn_ucs_defaultFg = new ColorChooserButton(Resource.getResourceString("defaultfg"), Color.WHITE);
+		btn_ucs_holiday = new ColorChooserButton(Resource.getResourceString("ucolortext13"), Color.WHITE);
+		btn_ucs_halfday = new ColorChooserButton(Resource.getResourceString("ucolortext14"), Color.WHITE);
+		btn_ucs_vacation = new ColorChooserButton(Resource.getResourceString("ucolortext15"), Color.WHITE);
+		btn_ucs_today = new ColorChooserButton(Resource.getResourceString("ucolortext16"), Color.WHITE);
+		btn_ucs_weekend = new ColorChooserButton(Resource.getResourceString("ucolortext17"), Color.WHITE);
+		btn_ucs_weekday = new ColorChooserButton(Resource.getResourceString("ucolortext18"), Color.WHITE);
+		btn_ucs_stripe = new ColorChooserButton(Resource.getResourceString("stripecolor"), Color.WHITE);
+		btn_tray_fg = new ColorChooserButton(Resource.getResourceString("tray_fg"), Color.WHITE);
+		btn_tray_bg = new ColorChooserButton(Resource.getResourceString("tray_bg"), Color.WHITE);
+		btn_ucs_reminderBg = new ColorChooserButton(Resource.getResourceString("reminder_bg"), Color.WHITE);
+		JButton btn_ucs_restore = new JButton(Resource.getResourceString("restore_defaults"));
 
 		btn_ucs_restore.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Theme t = Theme.getDefaults((String)themeChooser.getSelectedItem());
+				Theme t = Theme.getDefaults((String) themeChooser.getSelectedItem());
 
 				btn_ucs_red.setColorProperty(new Color(t.getTextColor1()));
 				btn_ucs_blue.setColorProperty(new Color(t.getTextColor2()));
@@ -239,10 +212,8 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 				btn_ucs_black.setColorProperty(new Color(t.getTextColor4()));
 				btn_ucs_white.setColorProperty(new Color(t.getTextColor5()));
 				btn_ucs_tasks.setColorProperty(new Color(t.getTaskTextColor()));
-				btn_ucs_holidays.setColorProperty(new Color(t
-						.getHolidayTextColor()));
-				btn_ucs_birthdays.setColorProperty(new Color(t
-						.getBirthdayTextColor()));
+				btn_ucs_holidays.setColorProperty(new Color(t.getHolidayTextColor()));
+				btn_ucs_birthdays.setColorProperty(new Color(t.getBirthdayTextColor()));
 				btn_ucs_defaultBg.setColorProperty(new Color(t.getDefaultBg()));
 				btn_ucs_defaultFg.setColorProperty(new Color(t.getDefaultFg()));
 				btn_ucs_today.setColorProperty(new Color(t.getTodayBg()));
@@ -290,10 +261,8 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 
 		gradientApptBox.setText(Resource.getResourceString("gradient_appts"));
 		colorPanel.add(gradientApptBox);
-		
 
-		this.add(colorPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		this.add(colorPanel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		loadThemes();
 
@@ -313,14 +282,18 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText());
 
 		/*
-		 * When changes are applied, save the current theme and make the
-		 * currently shown theme active
+		 * When changes are applied, save the current theme and make the currently shown
+		 * theme active
 		 */
 		Theme t = new Theme();
 		setTheme(t);
 
 		try {
-			t.save();
+			// don't update to the db if no changes
+			Theme orig = Theme.getTheme(t.getName());
+			if (!t.equals(orig)) {
+				t.save();
+			}
 			Theme.setCurrentTheme(t);
 			loadThemes();
 		} catch (Warning e1) {
@@ -331,7 +304,6 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 			return;
 		}
 
-		
 	}
 
 	@Override
@@ -378,8 +350,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 	/**
 	 * set the data items in a theme object from the values shown on the UI
 	 * 
-	 * @param t
-	 *            - the Theme to be set
+	 * @param t - the Theme to be set
 	 */
 	private void setTheme(Theme t) {
 		t.setName((String) themeChooser.getSelectedItem());
@@ -414,8 +385,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 	/**
 	 * set the UI from the values in a Theme
 	 * 
-	 * @param t
-	 *            - the Theme to show on the UI
+	 * @param t - the Theme to show on the UI
 	 */
 	private void showTheme(Theme t) {
 		btn_ucs_red.setColorProperty(new Color(t.getTextColor1()));

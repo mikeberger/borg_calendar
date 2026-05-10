@@ -165,6 +165,13 @@ final public class JdbcDB {
 					String s = "PRAGMA foreign_keys = ON";
 					log.fine("SQL: " + s);
 					execSQL(s);
+					
+					// Initialize the update hook for dirty tracking
+					try {
+						DbDirtyManager.getReference().initUpdateHook(connection_);
+					} catch (Exception e) {
+						log.warning("Update hook initialization failed, dirty flag will not work: " + e.getMessage());
+					}
 
 					InputStream is = JdbcDB.class.getResourceAsStream("/borg_sqlite.sql");
 					StringBuffer sb = new StringBuffer();

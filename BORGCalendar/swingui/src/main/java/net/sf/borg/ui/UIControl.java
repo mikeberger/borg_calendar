@@ -177,6 +177,7 @@ public class UIControl {
 		mv.addModule(new FileView(System.getProperty("user.home", "") + "/.borg.log",
 				Resource.getResourceString("view_log")));
 		mv.addModule(new SyncModule());
+		mv.addModule(new UploadModule());
 
 		// allow start to system tray if option set and there is a system tray
 		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART) && TrayIconProxy.hasTrayIcon();

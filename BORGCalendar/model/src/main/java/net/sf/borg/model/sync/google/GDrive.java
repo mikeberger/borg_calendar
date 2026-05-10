@@ -47,6 +47,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.db.jdbc.DbDirtyManager;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 
 /*
@@ -382,6 +383,7 @@ public class GDrive {
 					protected void done() {
 						try {
 							get();
+							DbDirtyManager.getReference().setClean();
 							JOptionPane.showMessageDialog(ownerFrame, "Upload Completed Successfully!");
 						} catch (Exception e1) {
 							showErrorDialog(true, "<html>The upload failed. Error: " + e1.getMessage()
@@ -581,6 +583,21 @@ public class GDrive {
 
 	}
 	
+	public boolean isUploading() {
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		if( !"sqlite".equals(dbtype)) {
+			return false;
+		}
+		
+		String googleFilePath = Prefs.getPref(PrefName.GOOGLE_DB_FILE_PATH);
+		if (googleFilePath == null || googleFilePath.isEmpty()) {
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	/*
 	 * upload the db to google drive while the db connection is open
 	 * implemented for sqlite only using the VACUUM command
@@ -646,6 +663,7 @@ public class GDrive {
 				protected void done() {
 					try {
 						get();
+						DbDirtyManager.getReference().setClean();
 						JOptionPane.showMessageDialog(ownerFrame, "Upload Completed Successfully!");
 					} catch (Exception e1) {
 						showErrorDialog(true, "<html>The upload failed. Error: " + e1.getMessage()

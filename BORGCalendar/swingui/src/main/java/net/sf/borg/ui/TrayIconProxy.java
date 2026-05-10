@@ -94,6 +94,10 @@ public class TrayIconProxy {
 		
 		void disableTrayIcon();
 
+		void enableUploadTrayIcon();
+
+		void disableUploadTrayIcon();
+
 	}
 	
 	public static void enableTrayIcon() {
@@ -102,6 +106,17 @@ public class TrayIconProxy {
 	
 	public static void disableTrayIcon() {
 		singleton.disableTrayIcon();
+	}
+
+	public static void enableUploadTrayIcon() {
+		singleton.enableUploadTrayIcon();
+
+		
+	}
+
+	public static void disableUploadTrayIcon() {
+		singleton.disableUploadTrayIcon();
+		
 	}
 	
 	
