@@ -33,6 +33,16 @@ public class DbDirtyManager {
 	}
 	
 	private volatile boolean dbDirty = false;
+	private volatile boolean enabled = true;
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	private final List<DbDirtyListener> listeners = new ArrayList<>();
 	
 	/**
@@ -47,6 +57,7 @@ public class DbDirtyManager {
 	
 	private DbDirtyManager() {
 	}
+	
 	
 	/**
 	 * Initialize the SQLite update hook on the given connection.
@@ -92,7 +103,7 @@ public class DbDirtyManager {
 	 * Automatically called by the SQLite update hook, but can also be called manually.
 	 */
 	public void setDirty() {
-		if (!dbDirty) {
+		if (!dbDirty && enabled) {
 			log.fine("Database marked as dirty");
 			dbDirty = true;
 			notifyDirtyListeners();

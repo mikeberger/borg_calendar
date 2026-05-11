@@ -22,6 +22,7 @@ package net.sf.borg.control;
 import net.sf.borg.common.*;
 import net.sf.borg.model.*;
 import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.db.jdbc.DbDirtyManager;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.sync.google.GDrive;
 import net.sf.borg.ui.UIControl;
@@ -89,6 +90,7 @@ public class Borg implements SocketServer.SocketHandler {
 
 		try {
 			// close the db
+			DbDirtyManager.getReference().setEnabled(false); // don't react to the writing of the db shutdown timestamp
 			DBHelper.getController().close();
 		} catch (Exception e) {
 			e.printStackTrace();

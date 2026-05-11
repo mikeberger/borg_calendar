@@ -61,8 +61,8 @@ public class UploadModule implements Module, Prefs.Listener, Model.Listener {
 		});
 		// Add toolbar button for upload status
 		uploadToolbarButton = MultiView.getMainView().addToolBarItem(
-				IconHelper.getIcon("/resource/Up16.gif"), "",
-				//Resource.getResourceString("Database_Upload_Pending"), 
+				IconHelper.getIcon("/resource/Up16.gif"), 
+				"Upload", 
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
