@@ -113,7 +113,8 @@ public class PrefName {
 	/** use system tray */
 	static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");
 	
-	
+	/** minimize main window on close button instead of exiting */
+	static public PrefName MINIMIZE_ON_CLOSE = new PrefName("minimize_on_close", "false");
 
 	/** show date is system tray */
 	static public PrefName SYSTRAYDATE = new PrefName("sysTrayDate", "true");

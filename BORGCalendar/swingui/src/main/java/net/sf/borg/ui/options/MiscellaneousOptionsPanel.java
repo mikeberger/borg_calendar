@@ -61,6 +61,8 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private final JCheckBox verboseLogging = new JCheckBox();
 	private final JCheckBox auditLogging = new JCheckBox();
+	
+	private final JCheckBox minimizeOnClose = new JCheckBox();
 
 	private final JComboBox<String> shutdownAction = new JComboBox<String>();
 
@@ -99,6 +101,10 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 				.getResourceString("show_date_in_systray"));
 		this.add(dateInSysTray,
 				GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
+		
+		minimizeOnClose.setText(Resource.getResourceString("minimize_on_close"));
+		this.add(minimizeOnClose,
+				GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
 
 		JPanel backp = new JPanel();
 		backp.setLayout(new GridBagLayout());
@@ -183,6 +189,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 		OptionsPanel.setBooleanPref(splashbox, PrefName.SPLASH);
 		OptionsPanel.setBooleanPref(stackbox, PrefName.STACKTRACE);
+		OptionsPanel.setBooleanPref(minimizeOnClose, PrefName.MINIMIZE_ON_CLOSE);
 
 		OptionsPanel.setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
@@ -225,6 +232,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 		OptionsPanel.setCheckBox(splashbox, PrefName.SPLASH);
 		OptionsPanel.setCheckBox(stackbox, PrefName.STACKTRACE);
+		OptionsPanel.setCheckBox(minimizeOnClose, PrefName.MINIMIZE_ON_CLOSE);
 
 		OptionsPanel.setCheckBox(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);

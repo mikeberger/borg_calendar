@@ -35,6 +35,7 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -46,6 +47,7 @@ import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.options.StartupViewsOptionsPanel;
@@ -204,7 +206,11 @@ public class MultiView extends View {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				closeMainwindow();
+				if (Prefs.getBoolPref(PrefName.MINIMIZE_ON_CLOSE)) {
+					setExtendedState(JFrame.ICONIFIED);
+				} else {
+					closeMainwindow();
+				}
 			}
 		});
 
