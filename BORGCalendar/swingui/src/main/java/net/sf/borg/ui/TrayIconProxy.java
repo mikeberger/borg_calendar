@@ -51,6 +51,13 @@ public class TrayIconProxy {
 				e.printStackTrace();
 				trayIconStarted = false;
 			}
+			
+			if( !trayIconStarted )
+			{
+				
+				singleton = new JFrameIconTray();
+				trayIconStarted = true;
+			}
 		}
 
 	}
