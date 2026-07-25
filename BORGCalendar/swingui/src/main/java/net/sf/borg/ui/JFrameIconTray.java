@@ -395,7 +395,6 @@ public class JFrameIconTray extends View implements Prefs.Listener, TrayIconProx
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (e.isPopupTrigger()) {
-				//showPopup(e);
 	            SafePopupShower.showSafely(popup, e.getComponent(), e.getX(), e.getY());
 
 			}
@@ -403,25 +402,17 @@ public class JFrameIconTray extends View implements Prefs.Listener, TrayIconProx
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			if (e.isPopupTrigger()) {
-				//showPopup(e);
-	            SafePopupShower.showSafely(popup, e.getComponent(), e.getX(), e.getY());
-
-			}
+			
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (SwingUtilities.isRightMouseButton(e)) {
-				//showPopup(e);
-	            SafePopupShower.showSafely(popup, e.getComponent(), e.getX(), e.getY());
-
+			if( SwingUtilities.isLeftMouseButton(e)) {
+				UIControl.toFront();
 			}
 		}
 
-		//private void showPopup(MouseEvent e) {
-		//	popup.show(e.getComponent(), e.getX(), e.getY());
-		//}
+	
 	}
 
 	@Override
