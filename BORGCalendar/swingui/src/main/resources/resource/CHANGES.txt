@@ -1,3 +1,11 @@
+BORG 2.0.1
+----------
+Add ability to upload the database to google drive while BORG is running.
+Add option to draw background pill boxes - per theme
+Add toolbar and system tray icon to show database is dirty and needs to be uploaded (if uploading to drive)
+Add minimize on close option
+Generate a system tray window on Linux if the desktop lacks support for the Java System Tray
+
 BORG 2.0.0
 ----------
 Add ability to sync the database to google drive from within BORG

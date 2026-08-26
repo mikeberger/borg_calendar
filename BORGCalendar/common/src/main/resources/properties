@@ -1,3 +1,3 @@
-borg.version=2.0.0
+borg.version=2.0.1
 build.time=${timestamp}
 build.number=${buildNumber}
