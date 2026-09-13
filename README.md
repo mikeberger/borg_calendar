@@ -36,8 +36,8 @@ BORG downloads and releases are available on Github: https://github.com/mikeberg
 
 * Some knowledge of Java and Apache Maven is assumed.
 * Checkout the project from Github
-* Have a JDK installed of version 17 or higher. openjdk-17 is currently being used.
-* Import the project into any IDE as a Maven project (optional)
+* Have a JDK installed of version 25 or higher. openjdk-25 is currently being used.
+* Import the project into any IDE as a Maven project (optional) - IntelliJ recommended. Getting lombok to work in Eclipse is a chore.
 * Build using Maven from the IDE or by installing Apache Maven and running mvn from the command line (use clean and install targets)
 * To build an executable installer with bundled Java, edit and run the appropriate script in the install folder - winpackage.bat for windows or linpackage.sh for linux
 * The installer is built using the jpackage utility that is part of openjdk. An additional product called WiX Toolset needs to be installed for jpackage to build an msi installer on windows.
