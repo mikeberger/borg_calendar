@@ -149,6 +149,7 @@ public class Borg implements SocketServer.SocketHandler {
 
 		// testing flag
 		boolean testing = false;
+		boolean traystart = false;
 
 		// process command line args
 		for (int i = 0; i < args.length; i++) {
@@ -161,6 +162,8 @@ public class Borg implements SocketServer.SocketHandler {
 				testdb = args[i];
 			} else if (args[i].equals("-test")) {
 				testing = true;
+			} else if (args[i].equals("-tray")) {
+				traystart = true;
 			}
 
 		}
@@ -322,10 +325,11 @@ public class Borg implements SocketServer.SocketHandler {
 			PwMigration.migratePasswords();
 
 			// start the UI thread
+			boolean finalTraystart = traystart;
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					UIControl.startUI();
+					UIControl.startUI(finalTraystart);
 				}
 			});
 

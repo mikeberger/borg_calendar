@@ -74,7 +74,7 @@ public class UIControl {
 	 * Main UI initialization.
 	 *
 	 */
-	public static void startUI() {
+	public static void startUI(boolean trayStart) {
 
 		Errmsg.setErrorHandler(new UIErrorHandler());
 
@@ -131,13 +131,13 @@ public class UIControl {
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					completeUIInitialization();
+					completeUIInitialization(trayStart);
 				}
 			});
 			t.setRepeats(false);
 			t.start();
 		} else
-			completeUIInitialization();
+			completeUIInitialization(trayStart);
 
 	}
 
@@ -146,7 +146,7 @@ public class UIControl {
 	 * has shown for a while
 	 *
 	 */
-	private static void completeUIInitialization() {
+	private static void completeUIInitialization(boolean trayStart) {
 
 		// tray icon
 		TrayIconProxy.startTrayIcon();
@@ -180,7 +180,7 @@ public class UIControl {
 		mv.addModule(new UploadModule());
 
 		// allow start to system tray if option set and there is a system tray
-		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART) && TrayIconProxy.hasTrayIcon();
+		boolean bgStart = (Prefs.getBoolPref(PrefName.BACKGSTART) || trayStart ) && TrayIconProxy.hasTrayIcon();
 
 		// make the main window visible
 		if (!bgStart) {
