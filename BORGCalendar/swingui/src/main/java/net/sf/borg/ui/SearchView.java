@@ -129,6 +129,7 @@ public class SearchView extends DockableView implements Module {
 
     private JCheckBox projectCheckBox = null;
 
+    private JCheckBox subscribedCheckBox = null;
     /**
      * The repeat check box.
      */
@@ -450,6 +451,11 @@ public class SearchView extends DockableView implements Module {
         linkCheckBox = new JCheckBox();
         linkCheckBox.setText(Resource.getResourceString("haslinks"));
         checkBoxPanel.add(linkCheckBox, GridBagConstraintsFactory.create(4, 1, GridBagConstraints.BOTH, 1.0, 1.0));
+
+        subscribedCheckBox = new JCheckBox();
+        ResourceHelper.setText(subscribedCheckBox, "Subscribed");
+        checkBoxPanel.add(subscribedCheckBox, GridBagConstraintsFactory.create(5, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+
         return checkBoxPanel;
     }
 
@@ -890,7 +896,10 @@ public class SearchView extends DockableView implements Module {
                 }
 
             }
-            
+        }
+
+        if( subscribedCheckBox.isSelected()){
+
             Collection<LabelEntity> labels = SubscribedCalendars.getReference().search(criteria);
             for( LabelEntity label : labels ) {
             	Object[] ro = new Object[6];
