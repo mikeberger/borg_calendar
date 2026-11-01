@@ -330,7 +330,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
                 if (due == null)
                     continue;
 
-                int key = DateUtil.dayOfEpoch(due);
+                int key = DateUtil.dayOfEpoch(DateUtil.nearestLocalMidnight(due));
 
                 // add the task string to the btmap_
                 // add the task to the mrs_ Vector. This is used by the todo gui
@@ -356,7 +356,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
                 // use task due date to build a day key
                 Date due = pj.getDueDate();
-                int key = DateUtil.dayOfEpoch(due);
+                int key = DateUtil.dayOfEpoch(DateUtil.nearestLocalMidnight(due));
 
                 // add the string to the btmap_
                 Collection<Project> o = pmap_.get(Integer.valueOf(key));
@@ -382,7 +382,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
                 // use task due date to build a day key
                 Date due = st.getDueDate();
-                int key = DateUtil.dayOfEpoch(due);
+                int key = DateUtil.dayOfEpoch(DateUtil.nearestLocalMidnight(due));
 
                 // add the string to the btmap_
                 Collection<Subtask> o = stmap_.get(Integer.valueOf(key));

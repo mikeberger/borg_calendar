@@ -190,4 +190,30 @@ public class DateUtil {
 			days = 0;
 		return days;
 	}
+
+	public static Date nearestLocalMidnight(Date d) {
+		if (d == null) {
+			return null;
+		}
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+
+		Calendar prevMidnight = (Calendar) c.clone();
+		prevMidnight.set(Calendar.HOUR_OF_DAY, 0);
+		prevMidnight.set(Calendar.MINUTE, 0);
+		prevMidnight.set(Calendar.SECOND, 0);
+		prevMidnight.set(Calendar.MILLISECOND, 0);
+
+		Calendar nextMidnight = (Calendar) prevMidnight.clone();
+		nextMidnight.add(Calendar.DAY_OF_YEAR, 1);
+
+		long prevDelta = c.getTimeInMillis() - prevMidnight.getTimeInMillis();
+		long nextDelta = nextMidnight.getTimeInMillis() - c.getTimeInMillis();
+
+		if (prevDelta <= nextDelta) {
+			return prevMidnight.getTime();
+		}
+		return nextMidnight.getTime();
+	}
 }

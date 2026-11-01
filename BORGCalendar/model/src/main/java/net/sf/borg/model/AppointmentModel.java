@@ -183,7 +183,10 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 				continue;
 			}
 
-			int dkey = DateUtil.dayOfEpoch(appt.getDate());
+			Date d = ("Y".equals(appt.getUntimed()))
+					? DateUtil.nearestLocalMidnight(appt.getDate())
+					: appt.getDate();
+			int dkey = DateUtil.dayOfEpoch(d);
 
 			// if appt does not repeat, we can add its
 			// key to a single day
@@ -226,7 +229,10 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 					}
 
 					// get the day key for the repeat
-					int rkey = DateUtil.dayOfEpoch(current.getTime());
+					d = ("Y".equals(appt.getUntimed()))
+							? DateUtil.nearestLocalMidnight(current.getTime())
+							: current.getTime();
+					int rkey = DateUtil.dayOfEpoch(d);
 
 					int cyear = current.get(Calendar.YEAR);
 
