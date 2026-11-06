@@ -1,4 +1,3 @@
-
 -- 
 -- Table structure for table addresses
 -- 
@@ -64,6 +63,7 @@ CREATE TABLE IF NOT EXISTS appointments (
   lastmod datetime default '1980-01-01 00:00:00' NOT NULL,
   uid longvarchar,
   url longvarchar,
+  timezone varchar(100) default NULL,
 
   PRIMARY KEY  (appt_num)
 );
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS projects (
   parent integer default NULL,
   FOREIGN KEY (parent) REFERENCES projects ( id)
      ON DELETE CASCADE,
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS tasks (
@@ -103,68 +103,5 @@ CREATE TABLE IF NOT EXISTS tasks (
   priority integer default '3' NOT NULL,
   state varchar(10) default '' NOT NULL,
   type varchar(10) default '' NOT NULL,
-  description longvarchar,
-  resolution longvarchar,
-  category varchar(255) default NULL,
-  close_date date default NULL,
-  project integer default NULL,
-  summary longvarchar NOT NULL,
-  create_time datetime default '1980-01-01 00:00:00' NOT NULL,
-  lastmod datetime default '1980-01-01 00:00:00' NOT NULL,
-  uid longvarchar,
-  url longvarchar,
-  PRIMARY KEY  (tasknum),
-  FOREIGN KEY (project) REFERENCES projects ( id)
-     ON DELETE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS subtasks (
-  id integer default '0' NOT NULL,
-  create_date date NOT NULL ,
-  due_date date default NULL,
-  close_date date default NULL,
-  description longvarchar NOT NULL,
-  task integer default '0' NOT NULL,
-   create_time datetime default '1980-01-01 00:00:00' NOT NULL,
-  lastmod datetime default '1980-01-01 00:00:00' NOT NULL,
-  uid longvarchar,
-  url longvarchar,
-  PRIMARY KEY  (id),
-  FOREIGN KEY (task) REFERENCES tasks ( tasknum)
-     ON DELETE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS tasklog (
-  id integer default '0' NOT NULL,
-  logtime datetime default '1000-01-01 00:00:00' NOT NULL,
-  description longvarchar NOT NULL,
-  task integer default '0' NOT NULL,
-  PRIMARY KEY ( id ),
-  FOREIGN KEY (task) REFERENCES tasks ( tasknum )
-     ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS memos (
-  memoname varchar(50) NOT NULL,
-  memotext longvarchar,
-  encrypted char(1) default NULL,
-  PRIMARY KEY  (memoname)
-);
-
-
-CREATE TABLE IF NOT EXISTS links (
-  id integer default '0' NOT NULL,
-  linktype varchar(15) NOT NULL,
-  ownerkey integer default '0' NOT NULL,
-  ownertype varchar(15),
-  path varchar(250),
-  PRIMARY KEY  (id)
-);
-
-CREATE TABLE IF NOT EXISTS checklists (
-  name varchar(50) NOT NULL,
-  text longvarchar,
-  PRIMARY KEY  (name)
+  PRIMARY KEY (tasknum)
 );
